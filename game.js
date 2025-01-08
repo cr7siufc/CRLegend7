@@ -2,6 +2,7 @@
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
+let cr7siuTokenConversionRate = 2500; // 1 CR7SIU Token = 2500 CR7SIU Points
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -28,6 +29,7 @@ function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("player-level").textContent = playerLevel;
+    document.getElementById("cr7siu-tokens").textContent = calculateTokens() + " CR7SIU Tokens"; // Display tokens
     showPage('home');
 }
 
@@ -40,9 +42,10 @@ function showPage(page) {
 
 // Handle points earning when the user taps
 function earnPoints() {
-    currentPoints += 5;
+    currentPoints += 5; // Each tap earns 5 points
     localStorage.setItem("points", currentPoints);
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("cr7siu-tokens").textContent = calculateTokens() + " CR7SIU Tokens"; // Update tokens display
     updateLevel();
 }
 
@@ -53,59 +56,29 @@ function updateLevel() {
     localStorage.setItem("level", playerLevel);
 }
 
-// Buy more points logic (for the button)
-function buyPoints() {
-    currentPoints += 1000;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-}
-
-// Function to convert points to CR7SIU tokens
+// Convert CR7SIU points to CR7SIU Tokens
 function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 2500);
-    if (tokens > 0) {
-        alert(`You converted ${tokens} CR7SIU tokens!`);
+    const tokensToConvert = Math.floor(currentPoints / cr7siuTokenConversionRate);
+    if (tokensToConvert > 0) {
+        currentPoints -= tokensToConvert * cr7siuTokenConversionRate; // Deduct points used in the conversion
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById("cr7siu-tokens").textContent = calculateTokens() + " CR7SIU Tokens"; // Update tokens
+        alert(`You converted ${tokensToConvert} CR7SIU tokens!`);
     } else {
         alert("You don't have enough points to convert.");
     }
 }
 
-// Set up 20 improvements and upgrade functionality
-function displayImprovements() {
-    const improvements = [
-        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 
-        'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 
-        'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 
-        'Ball Handling', 'Acceleration'
-    ];
-
-    const container = document.getElementById("attributes-container");
-    improvements.forEach((improvement, index) => {
-        const cost = 500 + 200 * index;
-        const card = document.createElement("div");
-        card.classList.add("attribute-card");
-        card.innerHTML = `
-            <h3>${improvement}</h3>
-            <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}" class="attribute-level">1</span></p>
-            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
-        `;
-        container.appendChild(card);
-    });
+// Calculate total CR7SIU tokens based on current points
+function calculateTokens() {
+    return Math.floor(currentPoints / cr7siuTokenConversionRate);
 }
 
-// Handle skill upgrades
-function upgradeSkill(cost, index) {
-    if (currentPoints >= cost) {
-        currentPoints -= cost;
-        document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert("Upgrade successful!");
-    } else {
-        alert("Not enough points!");
-    }
+// Show conversion ratio on the Airdrop page
+function showConversionRatio() {
+    document.getElementById("conversion-ratio").textContent = `1 CR7SIU Token = ${cr7siuTokenConversionRate} CR7SIU Points`;
 }
 
-// Initialize improvements page
-displayImprovements();
+// Display conversion rate on the airdrop page when it is loaded
+showConversionRatio();

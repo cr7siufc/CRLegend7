@@ -54,12 +54,12 @@ main {
     display: none;
 }
 
-/* Tap-to-Earn Button with Image and Text */
+/* Tap-to-Earn Button with Image */
 #tap-to-earn {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster.jpg");
+    background-image: url("images/cr7_poster.jpg"); /* Updated Image */
     background-size: cover;
     background-position: center;
     border: 2px solid #ffffff;
@@ -77,11 +77,9 @@ main {
 }
 
 .tap-text {
-    color: #fff;
+    color: #ffffff;
     font-size: 18px;
     font-weight: bold;
-    position: absolute;
-    bottom: 10px;
 }
 
 /* Improvements Page Styles */
