@@ -23,9 +23,9 @@
         <h2>Player Dashboard</h2>
         <p>Level: <span id="player-level">1</span></p>
         <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
-        <p>CR7SIU Tokens: <span id="cr7siu-tokens">0 CR7SIU Tokens</span></p>
+        <p>CR7SIU Tokens: <span id="tokens-display">0</span></p>
         <div id="tap-to-earn" onclick="earnPoints()">
-            <div class="tap-text">Tap to Earn</div>
+            <div>Tap to Earn</div>
         </div>
         <button onclick="buyPoints()">Buy More Points</button>
     </main>
@@ -41,7 +41,6 @@
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
         <p>Convert your CR7SIU points to CR7SIU Tokens</p>
-        <p id="conversion-ratio">1 CR7SIU Token = 2500 CR7SIU Points</p>
         <button onclick="convertToTokens()">Convert Points</button>
     </main>
 

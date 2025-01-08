@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-image: url("images/cr7_poster3.jpg"); /* Updated background image */
+    background-image: url("images/cr7_poster3.jpg"); /* Background Image */
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -54,12 +54,12 @@ main {
     display: none;
 }
 
-/* Tap-to-Earn Button with Image */
+/* Tap-to-Earn Button with Text */
 #tap-to-earn {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster.jpg"); /* Updated Image */
+    background-image: url("images/cr7_poster.jpg");
     background-size: cover;
     background-position: center;
     border: 2px solid #ffffff;
@@ -68,18 +68,17 @@ main {
     justify-content: center;
     align-items: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    color: transparent; /* Hide text inside button */
+    color: transparent;
     cursor: pointer;
+}
+
+#tap-to-earn div {
+    color: white;
+    font-size: 18px;
 }
 
 #tap-to-earn:hover {
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 1);
-}
-
-.tap-text {
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: bold;
 }
 
 /* Improvements Page Styles */
