@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CR7SIU Fan Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the CR7SIU Fan Game!</h1>
+        <div id="score-display">CR7SIU Points: <span id="score">0</span></div>
+    </header>
+    <main>
+        <section id="home">
+            <div id="player-level">Player Level: <span id="player-level-value">1</span></div>
+            <div id="boost">Boost: <span>Coming Soon</span></div>
+            <div id="shop">Shop: <span>Coming Soon</span></div>
+            <button id="tap-to-earn">
+                <img src="https://via.placeholder.com/150" alt="Cristiano Ronaldo Poster">
+            </button>
+        </section>
+        <nav>
+            <ul>
+                <li><button onclick="navigateTo('home')">Tap-to-Earn</button></li>
+                <li><button onclick="navigateTo('skills')">Football Skills</button></li>
+                <li><button onclick="navigateTo('offers')">Offers & Rewards</button></li>
+                <li><button onclick="navigateTo('airdrop')">Airdrop</button></li>
+            </ul>
+        </nav>
+        <section id="skills" class="hidden">
+            <h2>Football Skills</h2>
+            <ul id="skills-list"></ul>
+        </section>
+        <section id="offers" class="hidden">
+            <h2>Offers & Rewards</h2>
+            <p>Coming Soon</p>
+        </section>
+        <section id="airdrop" class="hidden">
+            <h2>Airdrop</h2>
+            <p>Coming Soon</p>
+        </section>
+    </main>
+    <script src="game.js"></script>
+</body>
+</html>

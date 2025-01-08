@@ -1,0 +1,59 @@
+body {
+    font-family: Roboto, sans-serif;
+    color: white;
+    background: url('https://via.placeholder.com/1920x1080') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#score-display {
+    font-size: 1.5rem;
+}
+
+main {
+    text-align: center;
+    padding: 20px;
+}
+
+#tap-to-earn {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, gold, crimson);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+#tap-to-earn img {
+    width: 80%;
+    border-radius: 50%;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: crimson;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+button:hover {
+    background-color: gold;
+}
+
+.hidden {
+    display: none;
+}
