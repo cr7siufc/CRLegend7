@@ -1,95 +1,109 @@
-// Track player score and attributes data
-let playerScore = 0; // Assume loaded from local storage
-let attributeData = [
-    { name: "Stamina", rank: 1, cost: 500 },
-    { name: "Strength", rank: 1, cost: 500 },
-    { name: "Header Attributes", rank: 1, cost: 500 },
-    { name: "Shooting Power", rank: 1, cost: 500 },
-    { name: "Dribbling", rank: 1, cost: 500 },
-    { name: "Passing", rank: 1, cost: 500 },
-    { name: "Defense", rank: 1, cost: 500 },
-    { name: "Speed", rank: 1, cost: 500 },
-    { name: "Agility", rank: 1, cost: 500 },
-    { name: "Balance", rank: 1, cost: 500 },
-    { name: "Tackling", rank: 1, cost: 500 },
-    { name: "Vision", rank: 1, cost: 500 },
-    { name: "Reaction Time", rank: 1, cost: 500 },
-    { name: "Positioning", rank: 1, cost: 500 },
-    { name: "Teamwork", rank: 1, cost: 500 },
-    { name: "Crossing", rank: 1, cost: 500 },
-    { name: "Finishing", rank: 1, cost: 500 },
-    { name: "Heading Accuracy", rank: 1, cost: 500 },
-    { name: "Curve", rank: 1, cost: 500 },
-    { name: "Penalties", rank: 1, cost: 500 }
-];
+// Store username and points in localStorage
+let username = localStorage.getItem("username");
+let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 
-// Show the specified page
+// Show the username setup if it's the user's first session
+if (!username) {
+    document.getElementById("username-setup").classList.remove("hidden");
+    document.getElementById("username-input").focus();
+} else {
+    loadSession();
+}
+
+// Set username
+function setUsername() {
+    const input = document.getElementById("username-input").value.trim();
+    if (input !== "") {
+        localStorage.setItem("username", input);
+        username = input;
+        loadSession();
+    } else {
+        alert("Please enter a valid username.");
+    }
+}
+
+// Load session data
+function loadSession() {
+    document.getElementById("username-setup").classList.add("hidden");
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    showPage('home');
+    updateLevel();
+}
+
+// Show page based on button click
 function showPage(page) {
-    document.getElementById("home").classList.add("hidden");
-    document.getElementById("improvements").classList.add("hidden");
-    document.getElementById("airdrop").classList.add("hidden");
-    document.getElementById("rewards").classList.add("hidden");
+    const pages = document.querySelectorAll("main");
+    pages.forEach(p => p.classList.add("hidden"));
     document.getElementById(page).classList.remove("hidden");
 }
 
-// Load improvements page with 20 attributes
-function loadImprovementsPage() {
-    const container = document.getElementById("attributes-container");
-    container.innerHTML = ""; // Clear previous content
+// Handle points earning when the user taps
+function earnPoints() {
+    currentPoints += 5;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    updateLevel();
+}
 
-    attributeData.forEach((attr, index) => {
+// Update player level based on points
+function updateLevel() {
+    let level = Math.floor(currentPoints / 100000) + 1;
+    document.getElementById("player-level").textContent = level;
+}
+
+// Buy more points logic (for the button)
+function buyPoints() {
+    currentPoints += 1000;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+}
+
+// Function to convert points to CR7SIU tokens
+function convertToTokens() {
+    const tokens = Math.floor(currentPoints / 2500);
+    if (tokens > 0) {
+        alert(`You converted ${tokens} CR7SIU tokens!`);
+    } else {
+        alert("You don't have enough points to convert.");
+    }
+}
+
+// Set up 20 improvements and upgrade functionality
+function displayImprovements() {
+    const improvements = [
+        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 
+        'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 
+        'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 
+        'Ball Handling', 'Acceleration'
+    ];
+
+    const container = document.getElementById("attributes-container");
+    improvements.forEach((improvement, index) => {
+        const cost = 500 + 200 * index;
         const card = document.createElement("div");
         card.classList.add("attribute-card");
 
         card.innerHTML = `
-            <h2>${attr.name}</h2>
-            <p>Rank: ${attr.rank}</p>
-            <p>Upgrade Cost: ${attr.cost} Points</p>
-            <button onclick="upgradeAttribute(${index})">Upgrade</button>
+            <h3>${improvement} - Rank ${index + 1}</h3>
+            <p>Upgrade cost: ${cost} points</p>
+            <button onclick="upgrade(${cost}, '${improvement}')">Upgrade</button>
         `;
         container.appendChild(card);
     });
 }
 
-// Upgrade Attribute Logic
-function upgradeAttribute(index) {
-    const attr = attributeData[index];
-    if (playerScore >= attr.cost) {
-        playerScore -= attr.cost; // Deduct points
-        attr.rank++; // Increment rank
-        const refund = Math.floor(attr.cost * 0.1); // 10% refund
-        playerScore += refund; // Add refund
-        attr.cost += 200; // Increase cost for the next upgrade
-
-        // Update Improvements Page
-        loadImprovementsPage();
-
-        // Update Score Display
-        document.getElementById("score-display").innerText = `Score: ${playerScore} CR7SIU Points`;
+// Upgrade function
+function upgrade(cost, attribute) {
+    if (currentPoints >= cost) {
+        currentPoints -= cost;
+        localStorage.setItem("points", currentPoints);
+        alert(`Successfully upgraded ${attribute}! You have received a 10% refund of ${cost * 0.1} points.`);
+        currentPoints += Math.floor(cost * 0.1);
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     } else {
-        alert("Error: Insufficient CR7SIU points for upgrade.");
+        alert("You don't have enough points to upgrade this attribute.");
     }
 }
 
-// Earn Points
-function earnPoints() {
-    playerScore += 5; // Add 5 points per tap
-    document.getElementById("score-display").innerText = `Score: ${playerScore} CR7SIU Points`;
-}
-
-// Convert Points to CR7SIU Tokens
-function convertToTokens() {
-    if (playerScore >= 2500) {
-        const tokens = Math.floor(playerScore / 2500);
-        playerScore -= tokens * 2500;
-        alert(`You have converted ${tokens} tokens!`);
-        document.getElementById("score-display").innerText = `Score: ${playerScore} CR7SIU Points`;
-    } else {
-        alert("Error: Insufficient CR7SIU points to convert to tokens.");
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    showPage("home");
-    loadImprovementsPage();
-});
+document.addEventListener('DOMContentLoaded', displayImprovements);

@@ -112,3 +112,24 @@ main {
 .attribute-card button:hover {
     background-color: #888888;
 }
+
+/* Username Setup Dialog */
+#username-setup {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    border-radius: 10px;
+}
+
+#username-setup input {
+    padding: 10px;
+    margin: 10px;
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid #ffffff;
+}
