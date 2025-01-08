@@ -1,111 +1,106 @@
-// Store username and points in localStorage
-let username = localStorage.getItem("username");
-let currentPoints = parseInt(localStorage.getItem("points")) || 0;
-let playerLevel = parseInt(localStorage.getItem("level")) || 1;
+// Constants and setup for initial user session
+const MAX_POINTS = 5000;
+const REFILL_COST = 2500;
+let currentPoints = parseInt(localStorage.getItem('points')) || 0;
+let username = localStorage.getItem('username') || null;
 
-// Show the username setup if it's the user's first session
-if (!username) {
-    document.getElementById("username-setup").classList.remove("hidden");
-    document.getElementById("username-input").focus();
-} else {
-    loadSession();
-}
-
-// Set username
-function setUsername() {
-    const input = document.getElementById("username-input").value.trim();
-    if (input !== "") {
-        localStorage.setItem("username", input);
-        username = input;
-        loadSession();
-    } else {
-        alert("Please enter a valid username.");
+// Initialize the page
+function initializePage() {
+    if (!username) {
+        const name = prompt("Please enter a unique username to continue:");
+        if (name) {
+            username = name;
+            localStorage.setItem('username', username);
+        } else {
+            alert("Username is required!");
+            return;
+        }
     }
+
+    updateScoreDisplay();
+    displayImprovements();
+    displayAttributesLevels();
 }
 
-// Load session data
-function loadSession() {
-    document.getElementById("username-setup").classList.add("hidden");
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("player-level").textContent = playerLevel;
-    showPage('home');
-}
-
-// Show page based on button click
-function showPage(page) {
-    const pages = document.querySelectorAll("main");
-    pages.forEach(p => p.classList.add("hidden"));
-    document.getElementById(page).classList.remove("hidden");
-}
-
-// Handle points earning when the user taps
-function earnPoints() {
-    currentPoints += 5;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    updateLevel();
-}
-
-// Update player level based on points
-function updateLevel() {
-    playerLevel = Math.floor(currentPoints / 100000) + 1;
-    document.getElementById("player-level").textContent = playerLevel;
-    localStorage.setItem("level", playerLevel);
-}
-
-// Buy more points logic (for the button)
-function buyPoints() {
-    currentPoints += 1000;
-    localStorage.setItem("points", currentPoints);
+// Display the score on the home page
+function updateScoreDisplay() {
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
 }
 
-// Function to convert points to CR7SIU tokens
-function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 2500);
-    if (tokens > 0) {
-        alert(`You converted ${tokens} CR7SIU tokens!`);
-    } else {
-        alert("You don't have enough points to convert.");
+// Handle the tap to earn button
+document.getElementById("tap-button").addEventListener("click", function() {
+    if (currentPoints >= MAX_POINTS) {
+        alert("Maximum points reached for the day!");
+        return;
     }
-}
 
-// Set up 20 improvements and upgrade functionality
+    currentPoints += 5; // Add points for each tap
+    if (currentPoints > MAX_POINTS) {
+        currentPoints = MAX_POINTS;
+    }
+
+    localStorage.setItem('points', currentPoints);
+    updateScoreDisplay();
+});
+
+// Improvements page: Display skill upgrades
+const skills = [
+    "Stamina", "Strength", "Header", "Shooting Power", "Dribbling", 
+    "Passing", "Accuracy", "Speed", "Tackling", "Balance", 
+    "Agility", "Endurance", "Mental Strength", "Recovery", "Teamwork", 
+    "Positioning", "Vision", "Composure", "Finishing", "Control"
+];
+
+// Logic to display the improvements and upgrade them
 function displayImprovements() {
-    const improvements = [
-        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 
-        'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 
-        'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 
-        'Ball Handling', 'Acceleration'
-    ];
+    let container = document.getElementById('attributes-container');
+    container.innerHTML = ''; // Clear the container
 
-    const container = document.getElementById("attributes-container");
-    improvements.forEach((improvement, index) => {
-        const cost = 500 + 200 * index;
-        const card = document.createElement("div");
-        card.classList.add("attribute-card");
-        card.innerHTML = `
-            <h3>${improvement}</h3>
-            <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}" class="attribute-level">1</span></p>
-            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
+    skills.forEach((skill, index) => {
+        let level = parseInt(localStorage.getItem(`${username}_${skill}_level`)) || 1;
+        let cost = 500 + (index * 200);
+
+        let div = document.createElement('div');
+        div.classList.add('attribute');
+        div.innerHTML = `
+            <h3>${skill}</h3>
+            <p>Level: ${level}</p>
+            <p>Upgrade Cost: ${cost} Points</p>
+            <button onclick="upgradeSkill('${skill}', ${cost}, ${level})">Upgrade</button>
         `;
-        container.appendChild(card);
+        container.appendChild(div);
     });
 }
 
-// Handle skill upgrades
-function upgradeSkill(cost, index) {
+// Upgrade logic for a skill
+function upgradeSkill(skill, cost, level) {
     if (currentPoints >= cost) {
-        currentPoints -= cost;
-        document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        currentPoints -= cost; // Deduct points for the upgrade
+        localStorage.setItem('points', currentPoints);
+
+        // Update the skill level
+        level++;
+        localStorage.setItem(`${username}_${skill}_level`, level);
+
+        updateScoreDisplay();
+        displayImprovements();
         alert("Upgrade successful!");
     } else {
         alert("Not enough points!");
     }
 }
 
-// Initialize improvements page
-displayImprovements();
+// Airdrop: Convert points to tokens
+document.getElementById("convert-button").addEventListener("click", function() {
+    if (currentPoints >= REFILL_COST) {
+        currentPoints -= REFILL_COST; // Convert points to tokens
+        localStorage.setItem('points', currentPoints);
+        alert("Converted to CR7SIU Tokens!");
+        updateScoreDisplay();
+    } else {
+        alert("Not enough points to convert.");
+    }
+});
+
+// Run the initialization function on load
+initializePage();

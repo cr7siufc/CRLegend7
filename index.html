@@ -7,53 +7,39 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to the CR7SIU Fan Game</h1>
-        <nav>
-            <ul>
-                <li><button onclick="showPage('home')">Home</button></li>
-                <li><button onclick="showPage('improvements')">Improvements</button></li>
-                <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards & Offers</button></li>
-            </ul>
-        </nav>
-    </header>
+    <main>
+        <header>
+            <h1>Welcome to CR7SIU Fan Game</h1>
+        </header>
 
-    <main id="home">
-        <h2>Player Dashboard</h2>
-        <p>Level: <span id="player-level">1</span></p>
-        <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
-        <div id="tap-to-earn" onclick="earnPoints()">
-            <!-- Image and tap-to-earn logic in CSS -->
-        </div>
-        <button onclick="buyPoints()">Buy More Points</button>
+        <!-- Home Page Section -->
+        <section id="home" class="page">
+            <div id="score-display">0 CR7SIU Points</div>
+            <button id="tap-button">
+                <img src="images/cr7_poster2.jpg" alt="CR7 Tap to Earn">
+            </button>
+            <button id="boost-button" disabled>Boost (Coming Soon)</button>
+            <button id="shop-button" disabled>Shop (Coming Soon)</button>
+        </section>
+
+        <!-- Improvements Page Section -->
+        <section id="improvements" class="page">
+            <h2>Improve Football Attributes</h2>
+            <div id="attributes-container"></div>
+        </section>
+
+        <!-- Airdrop Page Section -->
+        <section id="airdrop" class="page">
+            <h2>Airdrop</h2>
+            <button id="convert-button" disabled>Convert CR7SIU Points to Tokens</button>
+        </section>
+
+        <!-- Rewards & Offers Section -->
+        <section id="rewards" class="page">
+            <h2>Rewards & Offers</h2>
+            <p>Special offers will be listed here.</p>
+        </section>
     </main>
-
-    <main id="improvements" class="hidden">
-        <h1>Improvements</h1>
-        <p>Upgrade your football skills to earn more points!</p>
-        <div id="attributes-container">
-            <!-- Attributes will be dynamically inserted here -->
-        </div>
-    </main>
-
-    <main id="airdrop" class="hidden">
-        <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points to CR7SIU Tokens</p>
-        <button onclick="convertToTokens()">Convert Points</button>
-    </main>
-
-    <main id="rewards" class="hidden">
-        <h1>Rewards & Offers</h1>
-        <p>Check for available rewards and offers!</p>
-    </main>
-
-    <!-- New Username Setup Dialog -->
-    <div id="username-setup" class="hidden">
-        <h2>Welcome! Please enter your username to start:</h2>
-        <input type="text" id="username-input" placeholder="Enter Username">
-        <button onclick="setUsername()">Set Username</button>
-    </div>
 
     <script src="game.js"></script>
 </body>
