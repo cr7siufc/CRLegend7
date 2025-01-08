@@ -82,28 +82,26 @@ function displayImprovements() {
         const cost = 500 + 200 * index;
         const card = document.createElement("div");
         card.classList.add("attribute-card");
-
         card.innerHTML = `
-            <h3>${improvement} - Rank ${index + 1}</h3>
-            <p>Upgrade cost: ${cost} points</p>
-            <button onclick="upgrade(${cost}, '${improvement}')">Upgrade</button>
+            <h3>${improvement}</h3>
+            <p>Upgrade Cost: ${cost} points</p>
+            <button onclick="upgradeSkill(${cost})">Upgrade</button>
         `;
         container.appendChild(card);
     });
 }
 
-// Upgrade function
-function upgrade(cost, attribute) {
+// Handle skill upgrades
+function upgradeSkill(cost) {
     if (currentPoints >= cost) {
         currentPoints -= cost;
         localStorage.setItem("points", currentPoints);
-        alert(`Successfully upgraded ${attribute}! You have received a 10% refund of ${cost * 0.1} points.`);
-        currentPoints += Math.floor(cost * 0.1);
-        localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        alert("Upgrade successful!");
     } else {
-        alert("You don't have enough points to upgrade this attribute.");
+        alert("Not enough points!");
     }
 }
 
-document.addEventListener('DOMContentLoaded', displayImprovements);
+// Initialize improvements page
+displayImprovements();
