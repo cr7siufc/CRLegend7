@@ -1,16 +1,19 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #1a1a1a;
-    color: #f2f2f2;
+    background-image: url("images/cr7_poster.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     margin: 0;
     padding: 0;
+    color: #f2f2f2;
 }
 
 header {
     text-align: center;
     padding: 20px;
-    background-color: #333333;
+    background-color: rgba(0, 0, 0, 0.8);
     color: #ffffff;
 }
 
@@ -51,22 +54,24 @@ main {
     display: none;
 }
 
-/* Tap-to-Earn Button */
+/* Tap-to-Earn Button with Image */
 #tap-to-earn {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-color: black;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
+    background-image: url("images/cr7_poster2.jpg");
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #ffffff;
     margin: 20px auto;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
+    color: transparent; /* Hide text inside button */
+    cursor: pointer;
 }
 
 #tap-to-earn:hover {
-    background-color: #666666;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 1);
 }
