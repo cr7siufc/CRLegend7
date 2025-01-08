@@ -1,59 +1,61 @@
+// Initialize global variables
+let score = localStorage.getItem("score") ? parseInt(localStorage.getItem("score")) : 0;
+let playerLevel = localStorage.getItem("playerLevel") ? parseInt(localStorage.getItem("playerLevel")) : 1;
+let tokens = localStorage.getItem("tokens") ? parseInt(localStorage.getItem("tokens")) : 0;
+let username = localStorage.getItem("username") || "";
 
-let score = 0;
-let playerLevel = 1;
-const dailyLimit = 5000;
-let pointsToday = 0;
+// Function to update displayed data
+function updateDisplay() {
+    document.getElementById("score-display").textContent = score;
+    document.getElementById("player-level-display").textContent = playerLevel;
+    document.getElementById("token-display").textContent = tokens;
+    document.getElementById("username-display").textContent = username || "New Player";
+}
 
+// Prompt for username if not already set
+if (!username) {
+    username = prompt("Enter your username:");
+    localStorage.setItem("username", username);
+}
+
+// Update the display with initial values
+updateDisplay();
+
+// Handle tap-to-earn button click
 document.getElementById("tap-to-earn").addEventListener("click", () => {
-    if (pointsToday < dailyLimit) {
-        score += 5;
-        pointsToday += 5;
-        updateScoreDisplay();
-        checkPlayerLevel();
-    } else {
-        alert("Daily limit reached! Refill required.");
-    }
+    score += 5; // Add points per tap
+    checkPlayerLevel();
+    localStorage.setItem("score", score);
+    updateDisplay();
 });
 
-function updateScoreDisplay() {
-    document.getElementById("score").textContent = score;
-}
-
+// Function to check and update player level
 function checkPlayerLevel() {
-    const level = Math.floor(score / 100000) + 1;
-    if (level > playerLevel) {
-        playerLevel = level;
-        document.getElementById("player-level-value").textContent = playerLevel;
+    const newLevel = Math.floor(score / 100000) + 1;
+    if (newLevel > playerLevel) {
+        playerLevel = newLevel;
+        localStorage.setItem("playerLevel", playerLevel);
     }
 }
 
-function navigateTo(section) {
-    document.querySelectorAll("main section").forEach(sec => sec.classList.add("hidden"));
-    document.getElementById(section).classList.remove("hidden");
-}
-
-const skills = [
-    "Stamina", "Strength", "Header", "Shooting Power", "Dribbling", "Passing", "Vision",
-    "Tackling", "Speed", "Ball Control", "Agility", "Balance", "Composure", "Crossing",
-    "Finishing", "Free Kicks", "Interceptions", "Marking", "Positioning", "Leadership"
-];
-
-const skillsList = document.getElementById("skills-list");
-
-skills.forEach((skill, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${skill} - Upgrade Cost: ${500 + 200 * index} Points`;
-    li.addEventListener("click", () => upgradeSkill(index, skill));
-    skillsList.appendChild(li);
+// Handle conversion of points to tokens
+document.getElementById("convert-tokens").addEventListener("click", () => {
+    const conversionRate = 2500;
+    if (score >= conversionRate) {
+        const convertedTokens = Math.floor(score / conversionRate);
+        tokens += convertedTokens;
+        score -= convertedTokens * conversionRate;
+        localStorage.setItem("tokens", tokens);
+        localStorage.setItem("score", score);
+        alert(`You converted ${convertedTokens} tokens!`);
+    } else {
+        alert("Insufficient CR7SIU points to convert!");
+    }
+    updateDisplay();
 });
 
-function upgradeSkill(index, skill) {
-    const cost = 500 + 200 * index;
-    if (score >= cost) {
-        score -= cost;
-        updateScoreDisplay();
-        alert(`${skill} upgraded!`);
-    } else {
-        alert("Error: Insufficient CR7SIU points for upgrade.");
-    }
+// Navigation functionality
+function navigateTo(section) {
+    document.querySelectorAll("main > section").forEach((sec) => sec.classList.add("hidden"));
+    document.getElementById(section).classList.remove("hidden");
 }

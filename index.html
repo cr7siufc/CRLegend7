@@ -8,37 +8,46 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to the CR7SIU Fan Game!</h1>
-        <div id="score-display">CR7SIU Points: <span id="score">0</span></div>
+        <h1>CR7SIU Fan Game</h1>
     </header>
+    <nav>
+        <ul>
+            <li><button onclick="navigateTo('home')">Home</button></li>
+            <li><button onclick="navigateTo('improvements')">Improvements</button></li>
+            <li><button onclick="navigateTo('airdrop')">Airdrop</button></li>
+            <li><button onclick="navigateTo('rewards')">Rewards & Offers</button></li>
+        </ul>
+    </nav>
     <main>
+        <!-- Home Section -->
         <section id="home">
-            <div id="player-level">Player Level: <span id="player-level-value">1</span></div>
-            <div id="boost">Boost: <span>Coming Soon</span></div>
-            <div id="shop">Shop: <span>Coming Soon</span></div>
-            <button id="tap-to-earn">
-                <img src="https://via.placeholder.com/150" alt="Cristiano Ronaldo Poster">
-            </button>
+            <h2>Welcome to the Home Page</h2>
+            <div id="player-info">
+                Username: <span id="username-display"></span><br>
+                CR7SIU Points: <span id="score-display">0</span><br>
+                Player Level: <span id="player-level-display">1</span>
+            </div>
+            <button id="tap-to-earn">Tap to Earn</button>
         </section>
-        <nav>
-            <ul>
-                <li><button onclick="navigateTo('home')">Tap-to-Earn</button></li>
-                <li><button onclick="navigateTo('skills')">Football Skills</button></li>
-                <li><button onclick="navigateTo('offers')">Offers & Rewards</button></li>
-                <li><button onclick="navigateTo('airdrop')">Airdrop</button></li>
-            </ul>
-        </nav>
-        <section id="skills" class="hidden">
-            <h2>Football Skills</h2>
+
+        <!-- Improvements Section -->
+        <section id="improvements" class="hidden">
+            <h2>Improvements</h2>
             <ul id="skills-list"></ul>
         </section>
-        <section id="offers" class="hidden">
-            <h2>Offers & Rewards</h2>
-            <p>Coming Soon</p>
-        </section>
+
+        <!-- Airdrop Section -->
         <section id="airdrop" class="hidden">
             <h2>Airdrop</h2>
-            <p>Coming Soon</p>
+            <p>Convert your CR7SIU Points to Tokens:</p>
+            <button id="convert-tokens">Convert</button>
+            <p>Tokens: <span id="token-display">0</span></p>
+        </section>
+
+        <!-- Rewards & Offers Section -->
+        <section id="rewards" class="hidden">
+            <h2>Rewards & Offers</h2>
+            <p>Exclusive deals and bonuses coming soon!</p>
         </section>
     </main>
     <script src="game.js"></script>
