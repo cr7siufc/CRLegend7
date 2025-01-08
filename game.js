@@ -1,6 +1,7 @@
 // Store username and points in localStorage
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
+let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -26,8 +27,8 @@ function setUsername() {
 function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("player-level").textContent = playerLevel;
     showPage('home');
-    updateLevel();
 }
 
 // Show page based on button click
@@ -47,8 +48,9 @@ function earnPoints() {
 
 // Update player level based on points
 function updateLevel() {
-    let level = Math.floor(currentPoints / 100000) + 1;
-    document.getElementById("player-level").textContent = level;
+    playerLevel = Math.floor(currentPoints / 100000) + 1;
+    document.getElementById("player-level").textContent = playerLevel;
+    localStorage.setItem("level", playerLevel);
 }
 
 // Buy more points logic (for the button)
@@ -85,16 +87,18 @@ function displayImprovements() {
         card.innerHTML = `
             <h3>${improvement}</h3>
             <p>Upgrade Cost: ${cost} points</p>
-            <button onclick="upgradeSkill(${cost})">Upgrade</button>
+            <p>Level: <span id="attribute-level-${index}" class="attribute-level">1</span></p>
+            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
         `;
         container.appendChild(card);
     });
 }
 
 // Handle skill upgrades
-function upgradeSkill(cost) {
+function upgradeSkill(cost, index) {
     if (currentPoints >= cost) {
         currentPoints -= cost;
+        document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
         localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
         alert("Upgrade successful!");
