@@ -1,164 +1,111 @@
-/* Universal Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+// Store username and points in localStorage
+let username = localStorage.getItem("username");
+let currentPoints = parseInt(localStorage.getItem("points")) || 0;
+let playerLevel = parseInt(localStorage.getItem("level")) || 1;
+
+// Show the username setup if it's the user's first session
+if (!username) {
+    document.getElementById("username-setup").classList.remove("hidden");
+    document.getElementById("username-input").focus();
+} else {
+    loadSession();
 }
 
-/* Main Page Styling */
-body {
-    background-image: url('cr7_poster5.jpg');
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-}
-
-/* Center Container */
-#main-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    text-align: center;
-    padding: 20px;
-}
-
-/* Header and Footer Text */
-h1, p {
-    color: white;
-    font-size: 2em;
-    margin: 10px 0;
-}
-
-/* Hide pages on load */
-.hidden {
-    display: none;
-}
-
-/* "Tap to Earn" Button */
-.tap-button {
-    background-color: #fff;
-    border-radius: 50%;
-    display: inline-block;
-    margin-top: 20px;
-    padding: 20px;
-    cursor: pointer;
-    width: 150px;
-    height: 150px;
-    background-image: url('cr7_poster2.jpg');
-    background-size: cover;
-    background-position: center;
-}
-
-/* Alignment for the "Improvements" page */
-#attributes-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    width: 100%;
-}
-
-.row {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 15px;
-}
-
-/* Improvement Cards */
-.attribute-card {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 20px;
-    width: 250px;
-    margin: 10px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.attribute-card h3 {
-    font-size: 1.5em;
-}
-
-.attribute-card p {
-    font-size: 1em;
-}
-
-button {
-    background-color: #FFD700;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #FFAC33;
-}
-
-/* Rewards Page - Align Buttons */
-#tasks-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.launch-task-button {
-    background-color: #FF6347;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    cursor: pointer;
-    border-radius: 10px;
-}
-
-.launch-task-button:hover {
-    background-color: #FF4500;
-}
-
-/* Mobile Optimization */
-@media screen and (max-width: 768px) {
-    #main-container {
-        padding: 10px;
-    }
-
-    h1, p {
-        font-size: 1.5em;
-    }
-
-    .tap-button {
-        width: 120px;
-        height: 120px;
-        padding: 15px;
-    }
-
-    .attribute-card {
-        width: 200px;
-    }
-
-    .launch-task-button {
-        padding: 10px 20px;
+// Set username
+function setUsername() {
+    const input = document.getElementById("username-input").value.trim();
+    if (input !== "") {
+        localStorage.setItem("username", input);
+        username = input;
+        loadSession();
+    } else {
+        alert("Please enter a valid username.");
     }
 }
 
-/* Scaling for small Telegram Web views (Mini Games and Desktop) */
-@media screen and (max-width: 500px) {
-    .attribute-card {
-        width: 100%;
-    }
+// Load session data
+function loadSession() {
+    document.getElementById("username-setup").classList.add("hidden");
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("player-level").textContent = playerLevel;
+    showPage('home');
+}
 
-    .tap-button {
-        width: 100px;
-        height: 100px;
-        padding: 10px;
-    }
+// Show page based on button click
+function showPage(page) {
+    const pages = document.querySelectorAll("main");
+    pages.forEach(p => p.classList.add("hidden"));
+    document.getElementById(page).classList.remove("hidden");
+}
 
-    .launch-task-button {
-        width: 80%;
+// Handle points earning when the user taps
+function earnPoints() {
+    currentPoints += 5;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    updateLevel();
+}
+
+// Update player level based on points
+function updateLevel() {
+    playerLevel = Math.floor(currentPoints / 100000) + 1;
+    document.getElementById("player-level").textContent = playerLevel;
+    localStorage.setItem("level", playerLevel);
+}
+
+// Buy more points logic (for the button)
+function buyPoints() {
+    currentPoints += 1000;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+}
+
+// Function to convert points to CR7SIU tokens
+function convertToTokens() {
+    const tokens = Math.floor(currentPoints / 2500);
+    if (tokens > 0) {
+        alert(`You converted ${tokens} CR7SIU tokens!`);
+    } else {
+        alert("You don't have enough points to convert.");
     }
 }
+
+// Set up 20 improvements and upgrade functionality
+function displayImprovements() {
+    const improvements = [
+        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 
+        'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 
+        'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 
+        'Ball Handling', 'Acceleration'
+    ];
+
+    const container = document.getElementById("attributes-container");
+    improvements.forEach((improvement, index) => {
+        const cost = 500 + 200 * index;
+        const card = document.createElement("div");
+        card.classList.add("attribute-card");
+        card.innerHTML = `
+            <h3>${improvement}</h3>
+            <p>Upgrade Cost: ${cost} points</p>
+            <p>Level: <span id="attribute-level-${index}" class="attribute-level">1</span></p>
+            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// Handle skill upgrades
+function upgradeSkill(cost, index) {
+    if (currentPoints >= cost) {
+        currentPoints -= cost;
+        document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        alert("Upgrade successful!");
+    } else {
+        alert("Not enough points!");
+    }
+}
+
+// Initialize improvements page
+displayImprovements();
