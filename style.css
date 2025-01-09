@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-image: url("images/cr7_poster7.jpg"); /* Background image updated to cr7_poster7.jpg */
+    background-image: url("images/cr7_poster8.jpg"); /* Background image updated to cr7_poster8.jpg */
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -91,7 +91,7 @@ main {
     font-size: 1.2em;
     margin-top: 15px;
     font-style: italic;
-    color: #ffffff;
+    color: black; /* Vision statement font color changed to black */
     text-align: center;
     max-width: 90%;
     margin: 20px auto;
