@@ -138,6 +138,9 @@ function openUrl(platform) {
     if (platform === 'facebook') url = 'https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL';
     
     window.open(url, '_blank');
+    
+    // Track task completion after user clicks URL
+    taskCompleted(platform);
 }
 
 // Show tasks interface

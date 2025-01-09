@@ -29,7 +29,22 @@
 
     <main id="home">
         <h2>Player Dashboard</h2>
-        <div id="username-display-container"></div>
+        
+        <div id="username-display-container">
+            <div id="username-container">
+                <p><strong>Username:</strong> <span id="username">JohnDoe</span></p>
+            </div>
+            <div id="player-level-container">
+                <p><strong>Player Level:</strong> <span id="player-level">1</span></p>
+            </div>
+            <div id="cr7siu-points-container">
+                <p><strong>CR7SIU Points:</strong> <span id="cr7siu-points">0</span></p>
+            </div>
+            <div id="cr7siu-tokens-container">
+                <p><strong>CR7SIU Tokens:</strong> <span id="cr7siu-tokens">0</span></p>
+            </div>
+        </div>
+
         <div id="tap-to-earn" onclick="earnPoints()">
             <!-- Tap-to-earn Button with Image in CSS -->
         </div>
@@ -61,7 +76,6 @@
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
         <p>Complete tasks to earn 1000 CR7SIU points!</p>
-        <button id="tasks-button" onclick="showTasks()">Tasks</button>
         <div id="tasks-container" class="hidden">
             <p>Complete the following actions to earn your reward:</p>
             <div id="task-list">
