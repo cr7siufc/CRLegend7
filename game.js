@@ -31,6 +31,8 @@ function loadSession() {
     document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
     document.getElementById("player-level-display").textContent = `Level: ${playerLevel}`;
     document.getElementById("tokens-display").textContent = `CR7SIU Tokens: ${currentTokens}`;
+    document.getElementById("username-display").textContent = `Username: ${username}`;
+    document.getElementById("username-display-container").textContent = `Hello, ${username}`;
     showPage('home');
 }
 

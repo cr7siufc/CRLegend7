@@ -59,6 +59,11 @@ main {
     margin: 15px 0;
 }
 
+#username-display {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
 /* Tap-to-Earn Button with Image */
 #tap-to-earn {
     width: 200px;
