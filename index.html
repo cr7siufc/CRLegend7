@@ -9,15 +9,21 @@
 <body>
     <header>
         <h1>Welcome to the CR7SIU Fan Game</h1>
+        <p id="username-display">Username: </p>
         <nav>
             <ul>
                 <li><button onclick="showPage('home')">Home</button></li>
                 <li><button onclick="showPage('improvements')">Improvements</button></li>
                 <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards & Offers</button></li>
+                <li><button onclick="showPage('rewards')">Rewards</button></li>
             </ul>
         </nav>
     </header>
+
+    <div id="global-info">
+        <p>CR7SIU Points: <span id="global-points-display">0</span></p>
+        <p>CR7SIU Tokens: <span id="global-tokens-display">0</span></p>
+    </div>
 
     <main id="home">
         <h2>Player Dashboard</h2>
@@ -27,7 +33,6 @@
         <div id="tap-to-earn" onclick="earnPoints()">
             <div>Tap to Earn</div>
         </div>
-        <button onclick="buyPoints()">Buy More Points</button>
     </main>
 
     <main id="improvements" class="hidden">
@@ -40,13 +45,16 @@
 
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points to CR7SIU Tokens</p>
+        <p>Convert your CR7SIU points to CR7SIU Tokens.</p>
+        <p>Conversion Ratio: 2500 points = 1 token</p>
         <button onclick="convertToTokens()">Convert Points</button>
+        <button onclick="buyPoints()">Buy More Points</button>
     </main>
 
     <main id="rewards" class="hidden">
-        <h1>Rewards & Offers</h1>
-        <p>Check for available rewards and offers!</p>
+        <h1>Rewards</h1>
+        <p>Complete tasks and earn rewards!</p>
+        <button onclick="validateTask()">Complete Tasks</button>
     </main>
 
     <!-- New Username Setup Dialog -->
