@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-image: url("images/cr7-poster7.jpg"); /* Updated background image */
+    background-image: url("images/cr7_poster7.jpg"); /* Background image updated to cr7_poster7.jpg */
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
