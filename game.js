@@ -56,7 +56,7 @@ function updateLevel() {
     localStorage.setItem("level", playerLevel);
 }
 
-// Buy more points logic (for the button)
+// Buy more points logic (for the button, now on the airdrop page)
 function buyPoints() {
     currentPoints += 1000;
     localStorage.setItem("points", currentPoints);
@@ -103,14 +103,16 @@ function displayImprovements() {
     });
 }
 
-// Handle skill upgrades
+// Handle skill upgrades and cashback
 function upgradeSkill(cost, index) {
     if (currentPoints >= cost) {
         currentPoints -= cost;
+        const cashback = cost * 0.10;  // 10% cashback
+        currentPoints += cashback;    // Add cashback to current points
         document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
         localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
-        alert("Upgrade successful!");
+        alert(`Upgrade successful! You received ${cashback} points as cashback.`);
     } else {
         alert("Not enough points!");
     }

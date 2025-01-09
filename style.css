@@ -118,6 +118,12 @@ main {
     background-color: #888888;
 }
 
+/* Airdrop Page */
+#conversion-ratio {
+    font-size: 1.2em;
+    margin: 15px 0;
+}
+
 /* Username Setup Dialog */
 #username-setup {
     text-align: center;
