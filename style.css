@@ -54,6 +54,11 @@ main {
     display: none;
 }
 
+#progress-info {
+    text-align: center;
+    margin: 15px 0;
+}
+
 /* Tap-to-Earn Button with Image */
 #tap-to-earn {
     width: 200px;

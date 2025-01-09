@@ -2,6 +2,7 @@
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
+let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -14,8 +15,9 @@ if (!username) {
 // Set username
 function setUsername() {
     const input = document.getElementById("username-input").value.trim();
-    if (input !== "") {
+    if (input !== "" && input.length > 2 && !localStorage.getItem(input)) {
         localStorage.setItem("username", input);
+        localStorage.setItem(input, true);  // Store the username key to prevent duplicates
         username = input;
         loadSession();
     } else {
@@ -26,8 +28,9 @@ function setUsername() {
 // Load session data
 function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("player-level").textContent = playerLevel;
+    document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
+    document.getElementById("player-level-display").textContent = `Level: ${playerLevel}`;
+    document.getElementById("tokens-display").textContent = `CR7SIU Tokens: ${currentTokens}`;
     showPage('home');
 }
 
@@ -42,14 +45,14 @@ function showPage(page) {
 function earnPoints() {
     currentPoints += 5;
     localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
     updateLevel();
 }
 
 // Update player level based on points
 function updateLevel() {
     playerLevel = Math.floor(currentPoints / 100000) + 1;
-    document.getElementById("player-level").textContent = playerLevel;
+    document.getElementById("player-level-display").textContent = `Level: ${playerLevel}`;
     localStorage.setItem("level", playerLevel);
 }
 
@@ -57,13 +60,19 @@ function updateLevel() {
 function buyPoints() {
     currentPoints += 1000;
     localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
 }
 
 // Function to convert points to CR7SIU tokens
 function convertToTokens() {
     const tokens = Math.floor(currentPoints / 2500);
     if (tokens > 0) {
+        currentTokens += tokens;
+        currentPoints -= tokens * 2500;
+        localStorage.setItem("points", currentPoints);
+        localStorage.setItem("tokens", currentTokens);
+        document.getElementById("tokens-display").textContent = `CR7SIU Tokens: ${currentTokens}`;
+        document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
         alert(`You converted ${tokens} CR7SIU tokens!`);
     } else {
         alert("You don't have enough points to convert.");
@@ -100,7 +109,7 @@ function upgradeSkill(cost, index) {
         currentPoints -= cost;
         document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
         localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
         alert("Upgrade successful!");
     } else {
         alert("Not enough points!");
