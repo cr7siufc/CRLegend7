@@ -7,7 +7,7 @@ body {
     background-attachment: fixed;
     margin: 0;
     padding: 0;
-    color: black; /* Changed font color to black */
+    color: black; /* Font color changed to black */
 }
 
 header {
@@ -69,7 +69,7 @@ main {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster.jpg"); /* Updated background image */
+    background-image: url("images/cr7_poster.jpg"); /* Tap-to-Earn button image */
     background-size: cover;
     background-position: center;
     border: 2px solid #ffffff;
