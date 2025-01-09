@@ -14,7 +14,7 @@
                 <li><button onclick="showPage('home')">Home</button></li>
                 <li><button onclick="showPage('improvements')">Improvements</button></li>
                 <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards & Offers</button></li>
+                <li><button onclick="showPage('rewards')">Rewards</button></li>
             </ul>
         </nav>
     </header>
@@ -54,11 +54,21 @@
     </main>
 
     <main id="rewards" class="hidden">
-        <h1>Rewards & Offers</h1>
-        <p>Check for available rewards and offers!</p>
+        <h1>Rewards</h1>
+        <p>Complete tasks to earn 1000 CR7SIU points!</p>
+        <button id="tasks-button" onclick="showTasks()">Tasks</button>
+        <div id="tasks-container" class="hidden">
+            <p>Complete the following actions to earn your reward:</p>
+            <div id="task-list">
+                <button onclick="openUrl('youtube')">Subscribe to our YouTube Channel</button>
+                <button onclick="openUrl('x')">Join our X Account</button>
+                <button onclick="openUrl('facebook')">Like our Facebook Page</button>
+            </div>
+            <button onclick="validateTasks()">Validate Task Completion</button>
+            <p id="task-validation-message"></p>
+        </div>
     </main>
 
-    <!-- New Username Setup Dialog -->
     <div id="username-setup" class="hidden">
         <h2>Welcome! Please enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">

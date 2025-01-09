@@ -1,151 +1,148 @@
-/* General Styles */
+/* Base Styles */
 body {
     font-family: Arial, sans-serif;
-    background-image: url("images/cr7_poster5.jpg"); /* Updated background image */
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
     margin: 0;
     padding: 0;
-    color: #f2f2f2;
+    background: #0f0f0f;
+    color: #fff;
 }
 
 header {
-    text-align: center;
+    background: #111;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #ffffff;
+    text-align: center;
 }
 
-nav {
-    text-align: center;
-    margin: 10px 0;
+header h1 {
+    margin: 0;
+    color: #f5c518; /* Gold theme */
 }
 
 nav ul {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
 }
 
-nav li {
+nav ul li {
     display: inline;
-    margin: 0 10px;
+    margin: 0 15px;
 }
 
-nav button {
-    background-color: #444444;
-    color: #ffffff;
+nav ul li button {
+    background: #333;
+    color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
 }
 
-nav button:hover {
-    background-color: #888888;
+nav ul li button:hover {
+    background: #555;
 }
 
 main {
-    text-align: center;
-    padding: 20px;
-}
-
-.hidden {
     display: none;
+    padding: 20px;
+    background: #222;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 800px;
 }
 
-#progress-info {
-    text-align: center;
-    margin: 15px 0;
+/* Show the page when visible */
+main:not(.hidden) {
+    display: block;
 }
 
-#username-display {
-    font-weight: bold;
-    margin-left: 5px;
-}
-
-/* Tap-to-Earn Button with Image */
+/* Game Container */
 #tap-to-earn {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster2.jpg");
+    background-image: url('https://via.placeholder.com/200'); /* Image of Ronaldo */
     background-size: cover;
     background-position: center;
-    border: 2px solid #ffffff;
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    color: transparent; /* Hide text inside button */
     cursor: pointer;
-}
-
-#tap-to-earn:hover {
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 1);
-}
-
-/* Improvements Page Styles */
-#improvements {
-    text-align: center;
-    padding: 20px;
-}
-
-#attributes-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    max-width: 90%;
     margin: 0 auto;
 }
 
-.attribute-card {
-    background-color: rgba(50, 50, 50, 0.9);
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    color: #ffffff;
-}
-
-.attribute-card button {
-    margin-top: 10px;
-    background-color: #444444;
-    color: #ffffff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.attribute-card button:hover {
-    background-color: #888888;
-}
-
-/* Airdrop Page */
-#conversion-ratio {
-    font-size: 1.2em;
-    margin: 15px 0;
-}
-
-/* Username Setup Dialog */
+/* Username setup */
 #username-setup {
     text-align: center;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    border-radius: 10px;
 }
 
-#username-setup input {
-    padding: 10px;
-    margin: 10px;
-    width: 80%;
-    border-radius: 5px;
-    border: 1px solid #ffffff;
+/* Progress Info */
+#progress-info {
+    text-align: center;
+    margin-top: 20px;
 }
+
+#score-display, #player-level-display, #tokens-display {
+    margin: 10px;
+}
+
+/* Task Button & Task List */
+#tasks-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5c5c5c;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #888888;
+}
+
+/* Message for task validation */
+#task-validation-message {
+    color: red;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+#tasks-container button {
+    width: 100%;
+}
+
+#task-list {
+    margin-bottom: 20px;
+}
+
+#task-list button {
+    width: 80%;
+    margin: 10px auto;
+    display: block;
+}
+
+/* Hide elements for when page is not visible */
+.hidden {
+    display: none;
+}
+
+/* Conversion Ratio Text */
+#conversion-ratio {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* User Dashboard Info Section */
+#username-display-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#username-display, #score-display, #player-level-display, #tokens-display {
+    margin: 5px;
+}
+

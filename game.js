@@ -4,6 +4,13 @@ let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 
+// Task completion tracking
+let tasksCompleted = {
+    youtube: false,
+    x: false,
+    facebook: false
+};
+
 // Show the username setup if it's the user's first session
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
@@ -122,3 +129,36 @@ function upgradeSkill(cost, index) {
 
 // Initialize improvements page
 displayImprovements();
+
+// Open respective URL for tasks
+function openUrl(platform) {
+    let url = '';
+    if (platform === 'youtube') url = 'https://www.youtube.com/@CR7SIUnextbigthing';
+    if (platform === 'x') url = 'https://x.com/cr7siucoin';
+    if (platform === 'facebook') url = 'https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL';
+    
+    window.open(url, '_blank');
+}
+
+// Show tasks interface
+function showTasks() {
+    document.getElementById('tasks-container').classList.remove('hidden');
+    document.getElementById('tasks-button').style.display = 'none'; // Hide tasks button
+}
+
+// Validate if tasks are completed and reward user
+function validateTasks() {
+    if (tasksCompleted.youtube && tasksCompleted.x && tasksCompleted.facebook) {
+        currentPoints += 1000;
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
+        alert("Task completed. You have earned 1000 CR7SIU points!");
+    } else {
+        document.getElementById('task-validation-message').textContent = "Task not completed. Retry.";
+    }
+}
+
+// Set task completion as true once user opens the URL
+function taskCompleted(platform) {
+    tasksCompleted[platform] = true;
+}
