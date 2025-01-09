@@ -7,7 +7,7 @@ body {
     background-attachment: fixed;
     margin: 0;
     padding: 0;
-    color: black; /* Font color changed to black */
+    color: white; /* Font color changed to white */
 }
 
 header {
@@ -91,7 +91,7 @@ main {
     font-size: 1.2em;
     margin-top: 15px;
     font-style: italic;
-    color: black; /* Vision statement font color changed to black */
+    color: white; /* Vision statement font color changed to white */
     text-align: center;
     max-width: 90%;
     margin: 20px auto;
@@ -117,13 +117,13 @@ main {
     border-radius: 8px;
     text-align: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    color: #ffffff;
+    color: white; /* Text color set to white */
 }
 
 .attribute-card button {
     margin-top: 10px;
     background-color: #444444;
-    color: #ffffff;
+    color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
@@ -144,7 +144,7 @@ main {
 #airdrop-note {
     font-size: 1em;
     margin: 15px 0;
-    color: #ffffff;
+    color: white; /* Text color updated to white */
     font-style: italic;
 }
 
@@ -158,7 +158,7 @@ main {
     margin: 10px;
     padding: 12px 20px;
     background-color: #444444;
-    color: #fff;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -180,7 +180,7 @@ main {
 .task-status {
     font-size: 1.2em;
     margin-top: 10px;
-    color: #fff;
+    color: white;
 }
 
 .completed {
