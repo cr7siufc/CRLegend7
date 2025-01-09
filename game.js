@@ -1,154 +1,164 @@
-// Store user data in localStorage
-let username = localStorage.getItem("username");
-let currentPoints = parseInt(localStorage.getItem("points")) || 0;
-let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
-let playerLevel = parseInt(localStorage.getItem("level")) || 1;
-
-// Track completed tasks
-const tasksCompleted = {
-    youtube: localStorage.getItem("task_youtube") === "true" || false,
-    x: localStorage.getItem("task_x") === "true" || false,
-    facebook: localStorage.getItem("task_facebook") === "true" || false,
-};
-
-// Show the username setup if it's the user's first session
-if (!username) {
-    document.getElementById("username-setup").classList.remove("hidden");
-    document.getElementById("username-input").focus();
-} else {
-    loadSession();
+/* Universal Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-// Set the username
-function setUsername() {
-    const input = document.getElementById("username-input").value.trim();
-    if (input !== "") {
-        localStorage.setItem("username", input);
-        username = input;
-        loadSession();
-    } else {
-        alert("Please enter a valid username.");
+/* Main Page Styling */
+body {
+    background-image: url('cr7_poster5.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+/* Center Container */
+#main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Header and Footer Text */
+h1, p {
+    color: white;
+    font-size: 2em;
+    margin: 10px 0;
+}
+
+/* Hide pages on load */
+.hidden {
+    display: none;
+}
+
+/* "Tap to Earn" Button */
+.tap-button {
+    background-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    margin-top: 20px;
+    padding: 20px;
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    background-image: url('cr7_poster2.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Alignment for the "Improvements" page */
+#attributes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+/* Improvement Cards */
+.attribute-card {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 20px;
+    width: 250px;
+    margin: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.attribute-card h3 {
+    font-size: 1.5em;
+}
+
+.attribute-card p {
+    font-size: 1em;
+}
+
+button {
+    background-color: #FFD700;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #FFAC33;
+}
+
+/* Rewards Page - Align Buttons */
+#tasks-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.launch-task-button {
+    background-color: #FF6347;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.launch-task-button:hover {
+    background-color: #FF4500;
+}
+
+/* Mobile Optimization */
+@media screen and (max-width: 768px) {
+    #main-container {
+        padding: 10px;
+    }
+
+    h1, p {
+        font-size: 1.5em;
+    }
+
+    .tap-button {
+        width: 120px;
+        height: 120px;
+        padding: 15px;
+    }
+
+    .attribute-card {
+        width: 200px;
+    }
+
+    .launch-task-button {
+        padding: 10px 20px;
     }
 }
 
-// Load session data
-function loadSession() {
-    document.getElementById("username-setup").classList.add("hidden");
-    document.getElementById("username-display").textContent = username;
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("tokens-display").textContent = currentTokens;
-    document.getElementById("player-level").textContent = playerLevel;
-    showPage("home");
-}
+/* Scaling for small Telegram Web views (Mini Games and Desktop) */
+@media screen and (max-width: 500px) {
+    .attribute-card {
+        width: 100%;
+    }
 
-// Show the appropriate page when a button is clicked
-function showPage(page) {
-    const pages = document.querySelectorAll("main");
-    pages.forEach(p => p.classList.add("hidden"));
-    document.getElementById(page).classList.remove("hidden");
-}
+    .tap-button {
+        width: 100px;
+        height: 100px;
+        padding: 10px;
+    }
 
-// Earn points when tapping the "Tap-to-Earn" button
-function earnPoints() {
-    currentPoints += 5;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    updateLevel();
-}
-
-// Update player level based on total points
-function updateLevel() {
-    playerLevel = Math.floor(currentPoints / 100000) + 1;
-    document.getElementById("player-level").textContent = playerLevel;
-    localStorage.setItem("level", playerLevel);
-}
-
-// Buy additional points
-function buyPoints() {
-    currentPoints += 1000;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-}
-
-// Convert points to tokens
-function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 2500);
-    if (tokens > 0) {
-        currentPoints -= tokens * 2500; // Deduct the points
-        currentTokens += tokens;
-        localStorage.setItem("points", currentPoints);
-        localStorage.setItem("tokens", currentTokens);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        document.getElementById("tokens-display").textContent = currentTokens;
-        alert(`You converted ${tokens} CR7SIU tokens!`);
-    } else {
-        alert("Not enough points to convert!");
+    .launch-task-button {
+        width: 80%;
     }
 }
-
-// Display skill attributes on the "Improvements" page
-function displayImprovements() {
-    const improvements = [
-        "Stamina", "Strength", "Dribbling", "Shooting Power", "Speed", "Passing",
-        "Defending", "Crossing", "Finishing", "Heading", "Control", "Creativity",
-        "Leadership", "Tackling", "Positioning", "Composure", "Vision", "Shot Power",
-        "Ball Handling", "Acceleration"
-    ];
-
-    const container = document.getElementById("attributes-container");
-    container.innerHTML = ""; // Clear previous contents
-    improvements.forEach((skill, index) => {
-        const cost = 500 + 200 * index;
-        const card = document.createElement("div");
-        card.classList.add("attribute-card");
-        card.innerHTML = `
-            <h3>${skill}</h3>
-            <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}">1</span></p>
-            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
-        `;
-        container.appendChild(card);
-    });
-}
-
-// Upgrade a specific skill
-function upgradeSkill(cost, index) {
-    if (currentPoints >= cost) {
-        currentPoints -= cost;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById(`attribute-level-${index}`).textContent =
-            parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-
-        // Grant cashback
-        const cashback = Math.floor(cost * 0.1);
-        currentPoints += cashback;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-
-        alert(`Upgrade successful! You earned ${cashback} points as cashback.`);
-    } else {
-        alert("Not enough points to upgrade!");
-    }
-}
-
-// Validate tasks
-function validateTask(task) {
-    if (!tasksCompleted[task]) {
-        tasksCompleted[task] = true;
-        localStorage.setItem(`task_${task}`, "true");
-
-        currentPoints += 1000;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-
-        document.getElementById("task-feedback").textContent = "Task completed successfully!";
-        document.getElementById("task-feedback").style.color = "green";
-    } else {
-        document.getElementById("task-feedback").textContent = "Task already completed!";
-        document.getElementById("task-feedback").style.color = "orange";
-    }
-}
-
-// Initialize the "Improvements" page
-displayImprovements();

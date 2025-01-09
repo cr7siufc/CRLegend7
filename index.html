@@ -3,77 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CR7SIU Fan Game</title>
+    <title>CR7SIU - Tap to Earn</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>CR7SIU Fan Game</h1>
-        <nav>
-            <ul>
-                <li><button onclick="showPage('home')">Home</button></li>
-                <li><button onclick="showPage('improvements')">Improvements</button></li>
-                <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards</button></li>
-            </ul>
-        </nav>
-    </header>
 
-    <main id="home">
-        <h2>Player Dashboard</h2>
-        <p>Welcome, <span id="username-display">Player</span>!</p>
-        <p>Level: <span id="player-level">1</span></p>
-        <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
-        <p>CR7SIU Tokens: <span id="tokens-display">0</span></p>
-        <div id="tap-to-earn" onclick="earnPoints()">
-            <div>Tap to Earn</div>
-        </div>
-    </main>
-
-    <main id="improvements" class="hidden">
-        <h1>Improvements</h1>
-        <p>Upgrade your football skills to earn more points!</p>
-        <div id="attributes-container">
-            <!-- Dynamic attributes will be inserted here -->
-        </div>
-    </main>
-
-    <main id="airdrop" class="hidden">
-        <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points to CR7SIU Tokens.</p>
-        <p>Conversion Ratio: 2500 points = 1 CR7SIU Token</p>
-        <button onclick="convertToTokens()">Convert Points</button>
-        <button onclick="buyPoints()">Buy More Points</button>
-    </main>
-
-    <main id="rewards" class="hidden">
-        <h1>Rewards</h1>
-        <div id="tasks-section">
-            <h2>Complete Tasks to Earn Rewards</h2>
-            <ul>
-                <li>
-                    <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank">Subscribe to our YouTube Channel</a>
-                    <button onclick="validateTask('youtube')">Validate</button>
-                </li>
-                <li>
-                    <a href="https://x.com/cr7siucoin" target="_blank">Follow us on X</a>
-                    <button onclick="validateTask('x')">Validate</button>
-                </li>
-                <li>
-                    <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank">Like our Facebook Page</a>
-                    <button onclick="validateTask('facebook')">Validate</button>
-                </li>
-            </ul>
-            <p id="task-feedback"></p>
-        </div>
-    </main>
-
-    <div id="username-setup" class="hidden">
-        <h2>Welcome! Please enter your username to start:</h2>
-        <input type="text" id="username-input" placeholder="Enter Username">
-        <button onclick="setUsername()">Set Username</button>
+<div id="main-container">
+    <h1>Welcome to CR7SIU Tap to Earn!</h1>
+    <p>Click on the CR7 poster to start earning CR7SIU points!</p>
+    
+    <!-- Tap to Earn Button -->
+    <div class="tap-button" onclick="earnPoints()"></div>
+    
+    <!-- Main Content Section -->
+    <div id="points-display">
+        <p>Current Points: <span id="score-display">0</span> CR7SIU</p>
+    </div>
+    
+    <!-- Navigation Buttons -->
+    <div id="navigation-buttons">
+        <button onclick="showPage('improvements')">Improvements</button>
+        <button onclick="showPage('rewards')">Rewards</button>
     </div>
 
-    <script src="game.js"></script>
+    <!-- Improvements Page -->
+    <div id="improvements" class="hidden">
+        <h2>Skill Improvements</h2>
+        <div id="attributes-container">
+            <!-- Attribute Cards will be dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Rewards Page -->
+    <div id="rewards" class="hidden">
+        <h2>Complete Tasks to Earn Rewards</h2>
+        <div id="tasks-container">
+            <div class="task">
+                <h3>Subscribe to our YouTube Channel</h3>
+                <button class="launch-task-button" onclick="launchExternalLink('https://www.youtube.com/@CR7SIUnextbigthing')">Launch YouTube</button>
+            </div>
+            <div class="task">
+                <h3>Join our X Account</h3>
+                <button class="launch-task-button" onclick="launchExternalLink('https://x.com/cr7siucoin')">Launch X</button>
+            </div>
+            <div class="task">
+                <h3>Like and Join our Facebook Page</h3>
+                <button class="launch-task-button" onclick="launchExternalLink('https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL')">Launch Facebook</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="game.js"></script>
 </body>
 </html>
