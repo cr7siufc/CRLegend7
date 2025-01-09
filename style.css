@@ -1,13 +1,13 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-image: url("images/cr7_poster8.jpg"); /* Background image updated to cr7_poster8.jpg */
+    background-image: url("images/cr7_poster8.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     margin: 0;
     padding: 0;
-    color: white; /* Font color set to white */
+    color: white;
 }
 
 header {
@@ -15,21 +15,18 @@ header {
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.8);
     color: #ffffff;
-}
-
-nav {
-    text-align: center;
-    margin: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 nav ul {
     list-style: none;
     padding: 0;
+    display: flex;
+    justify-content: center;
 }
 
 nav li {
-    display: inline;
-    margin: 0 10px;
+    margin: 0 15px;
 }
 
 nav button {
@@ -39,10 +36,12 @@ nav button {
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 nav button:hover {
-    background-color: #888888;
+    background-color: #ffcc00;
+    transform: translateY(-2px);
 }
 
 main {
@@ -57,73 +56,52 @@ main {
 #progress-info {
     text-align: center;
     margin: 15px 0;
-}
-
-#username-display {
-    font-weight: bold;
-    margin-left: 5px;
+    font-size: 1.1em;
 }
 
 /* Home Page */
-#home-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
-}
-
-#home-page div {
-    margin: 10px 0;
-}
-
-/* Username, Player Level, CR7SIU Points, CR7SIU Tokens in separate lines under Home Page */
-#home-page span {
-    font-size: 1.2em;
-    font-weight: normal;
-}
-
-/* Tap-to-Earn Button with Image */
 #tap-to-earn {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster.jpg"); /* Tap-to-Earn button image */
+    background-image: url("images/cr7_poster.jpg");
     background-size: cover;
     background-position: center;
-    border: 2px solid #ffffff;
+    border: 4px solid #ffffff;
     margin: 20px auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    color: transparent; /* Hide text inside button */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.8);
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 #tap-to-earn:hover {
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 1);
+    transform: scale(1.1);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 1);
 }
 
-/* Tap to Earn Note */
+/* Tap-to-Earn Button Text */
+#tap-button {
+    display: none; /* Hidden because button functionality is visual */
+}
+
+/* Vision Note */
 #vision-note {
-    font-size: 1.2em;
+    font-size: 1.1em;
     margin-top: 15px;
-    font-style: italic;
-    color: white; /* Vision statement font color changed to white */
-    text-align: center;
+    color: white;
+    text-align: justify;
     max-width: 90%;
     margin: 20px auto;
+    font-style: italic;
 }
 
-/* Improvements Page Styles */
-#improvements {
-    text-align: center;
-    padding: 20px;
-}
-
+/* Improvements Page */
 #attributes-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
     max-width: 90%;
     margin: 0 auto;
@@ -134,104 +112,71 @@ main {
     padding: 15px;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    color: white; /* Text color set to white */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.attribute-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 1);
 }
 
 .attribute-card button {
-    margin-top: 10px;
     background-color: #444444;
     color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .attribute-card button:hover {
-    background-color: #888888;
+    background-color: #ffcc00;
 }
 
-/* Airdrop Page */
-#conversion-ratio {
-    font-size: 1.2em;
-    margin: 15px 0;
+/* Rewards Page */
+#tasks-container button {
+    background-color: #444444;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    margin: 5px auto;
 }
 
-/* Airdrop Page Note */
-#airdrop-note {
-    font-size: 1em;
-    margin: 15px 0;
-    color: white; /* Text color updated to white */
+#tasks-container button:hover {
+    background-color: #ffcc00;
+    transform: scale(1.05);
+}
+
+#task-validation-message {
     font-style: italic;
-}
-
-/* Rewards Page - URL validation */
-#rewards-page {
-    text-align: center;
-    padding: 20px;
-}
-
-#rewards-page a {
-    color: white;
-    font-size: 1.2em;
-    text-decoration: none;
-    margin: 10px 0;
-    display: block;
-}
-
-/* Tasks Button Styling */
-#tasks-container {
-    text-align: center;
-    padding: 20px;
-}
-
-/* Task Completion Button Effects */
-button:hover {
-    transform: scale(1.05); /* Slight zoom on hover */
-    background-color: #888888;
-}
-
-#task-list {
-    margin-top: 30px;
-}
-
-#task-list li {
-    list-style: none;
-    margin: 10px 0;
-}
-
-.task-status {
-    font-size: 1.2em;
-    margin-top: 10px;
-    color: white;
-}
-
-.completed {
-    color: green;
     font-weight: bold;
+    margin: 10px auto;
 }
 
-.failed {
-    color: red;
-}
-
-/* Username Setup Dialog */
+/* Username Setup */
 #username-setup {
-    text-align: center;
-    padding: 20px;
     background-color: rgba(0, 0, 0, 0.7);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
+    padding: 20px;
     border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
 }
 
 #username-setup input {
     padding: 10px;
-    margin: 10px;
+    margin-bottom: 10px;
     width: 80%;
     border-radius: 5px;
     border: 1px solid #ffffff;
@@ -240,17 +185,11 @@ button:hover {
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     nav ul {
-        display: block;
-        text-align: center;
+        flex-direction: column;
     }
 
-    nav ul li {
-        display: block;
+    nav li {
         margin: 10px 0;
-    }
-
-    #tasks-container button {
-        width: 90%;
     }
 
     #tap-to-earn {
@@ -259,11 +198,6 @@ button:hover {
     }
 
     .attribute-card {
-        width: 80%;
-        margin: 10px auto;
-    }
-
-    #task-list button {
-        width: 90%;
+        width: 100%;
     }
 }

@@ -21,7 +21,7 @@
 
     <!-- User Progress Bar on All Pages -->
     <div id="progress-info">
-        <span id="username-display">Username: </span>
+        <span id="username-display">Username: </span> |
         <span id="player-level-display">Level: 1</span> |
         <span id="score-display">CR7SIU Points: 0</span> |
         <span id="tokens-display">CR7SIU Tokens: 0</span>
@@ -32,7 +32,7 @@
         
         <div id="username-display-container">
             <div id="username-container">
-                <p><strong>Username:</strong> <span id="username">JohnDoe</span></p>
+                <p><strong>Username:</strong> <span id="username"></span></p>
             </div>
             <div id="player-level-container">
                 <p><strong>Player Level:</strong> <span id="player-level">1</span></p>
@@ -46,18 +46,20 @@
         </div>
 
         <div id="tap-to-earn" onclick="earnPoints()">
-            <!-- Tap-to-earn Button with Image in CSS -->
+            <button id="tap-button">Tap to Earn</button>
         </div>
 
-        <!-- Vision note under Tap-to-Earn -->
         <div id="vision-note">
-            <p>Vision: CR7SIU Meme Coin is a cryptocurrency designed to celebrate the legacy of Cristiano Ronaldo while fostering engagement among football fans, crypto enthusiasts, and gamers. By connecting fans with their idol and football through exclusive content, NFTs, games, and token-based utilities, CR7SIU aims to create a unique and profitable digital ecosystem. This business plan outlines the strategies for development, marketing, monetization, compliance, and growth to establish CR7SIU as a sustainable and impactful digital asset.</p>
+            <p>
+                Vision: CR7SIU Meme Coin is a cryptocurrency designed to celebrate the legacy of Cristiano Ronaldo while fostering engagement among football fans, crypto enthusiasts, and gamers. 
+                By connecting fans with exclusive content, NFTs, and token-based utilities, CR7SIU creates a unique and profitable digital ecosystem.
+            </p>
         </div>
     </main>
 
     <main id="improvements" class="hidden">
         <h1>Improvements</h1>
-        <p>Upgrade your football skills to earn more points!</p>
+        <p>Upgrade your football skills to earn more points and cashback!</p>
         <div id="attributes-container">
             <!-- Attributes will be dynamically inserted here -->
         </div>
@@ -65,30 +67,29 @@
 
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points to CR7SIU Tokens</p>
+        <p>Convert your CR7SIU points into CR7SIU Tokens:</p>
+        <p>1 CR7SIU Token = 2500 Points</p>
         <button onclick="convertToTokens()">Convert Points</button>
-        <div id="conversion-ratio">
-            <p>1 CR7SIU Token = 2500 CR7SIU Points</p>
-        </div>
         <button onclick="buyPoints()">Buy More Points</button>
     </main>
 
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
-        <p>Complete tasks to earn 1000 CR7SIU points!</p>
-        <div id="tasks-container" class="hidden">
-            <p>Complete the following actions to earn your reward:</p>
+        <p>Complete tasks to earn 1000 CR7SIU points:</p>
+        <div id="tasks-container">
+            <p>Perform the following actions:</p>
             <div id="task-list">
-                <button onclick="openUrl('youtube')">Subscribe to our YouTube Channel</button>
-                <button onclick="openUrl('x')">Join our X Account</button>
-                <button onclick="openUrl('facebook')">Like our Facebook Page</button>
+                <button onclick="openUrl('youtube')">Subscribe to YouTube</button>
+                <button onclick="openUrl('x')">Follow on X</button>
+                <button onclick="openUrl('facebook')">Like on Facebook</button>
             </div>
             <p id="task-validation-message"></p>
+            <button onclick="validateTasks()">Validate Tasks</button>
         </div>
     </main>
 
     <div id="username-setup" class="hidden">
-        <h2>Welcome! Please enter your unique username to start:</h2>
+        <h2>Welcome! Enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
         <button onclick="setUsername()">Set Username</button>
     </div>
