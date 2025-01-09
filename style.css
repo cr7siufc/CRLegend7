@@ -86,6 +86,17 @@ main {
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 1);
 }
 
+/* Tap to Earn Note */
+#vision-note {
+    font-size: 1.2em;
+    margin-top: 15px;
+    font-style: italic;
+    color: #ffffff;
+    text-align: center;
+    max-width: 90%;
+    margin: 20px auto;
+}
+
 /* Improvements Page Styles */
 #improvements {
     text-align: center;
@@ -127,6 +138,14 @@ main {
 #conversion-ratio {
     font-size: 1.2em;
     margin: 15px 0;
+}
+
+/* Airdrop Page Note */
+#airdrop-note {
+    font-size: 1em;
+    margin: 15px 0;
+    color: #ffffff;
+    font-style: italic;
 }
 
 /* Tasks Button Styling */
@@ -230,4 +249,3 @@ button:hover {
     transform: scale(1.05); /* Slight zoom on hover */
     background-color: #888888;
 }
-
