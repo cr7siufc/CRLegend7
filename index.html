@@ -27,7 +27,7 @@
                 <p>Username: <span id="player-username">Player</span></p>
             </div>
             <div id="score-align">
-                <p>CR7SIU Coins: <span id="cr7siu-coins">0</span></p>
+                <p>CR7SIU Points: <span id="cr7siu-coins">0</span></p>
                 <p>CR7SIU Tokens: <span id="cr7siu-tokens">0</span></p>
             </div>
         </div>
@@ -134,7 +134,7 @@
             card.classList.add('attribute-card');
             card.innerHTML = `
                 <h3>${attribute.charAt(0).toUpperCase() + attribute.slice(1)}</h3>
-                <p id="${attribute}-level">Level: ${attributes[attribute]}</p>
+                <p id="${attribute}-level">Level: ${attributes[attribute] / 200}</p>
                 <button id="upgrade-${attribute}" onclick="upgradeAttribute('${attribute}')">Upgrade</button>
             `;
             container.appendChild(card);
