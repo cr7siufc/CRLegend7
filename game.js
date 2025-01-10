@@ -1,4 +1,4 @@
-// Store username, points, player level, completed tasks, and referral information in localStorage 
+// Store username, points, player level, completed tasks, and referral information in localStorage
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
