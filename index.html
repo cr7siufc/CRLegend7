@@ -60,6 +60,7 @@
         <h2>Welcome! Enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
         <button onclick="setUsername()">Set Username</button>
+        <p id="error-message" style="color:red; display:none;">Please enter a valid username</p>
     </div>
 
     <script>
@@ -80,11 +81,14 @@
 
         // Function to set the username
         function setUsername() {
-            var username = document.getElementById('username-input').value;
-            if (username.trim() === "") {
-                alert("Please enter a valid username");
+            var username = document.getElementById('username-input').value.trim();
+
+            // If the username is not valid (empty or spaces), show error message
+            if (username === "") {
+                document.getElementById('error-message').style.display = "block"; // Show error message
                 return;
             }
+
             // Save the username in localStorage
             localStorage.setItem('username', username);
             // Update the username display on home page
@@ -93,6 +97,7 @@
             // Hide the username setup page and show the home page
             document.getElementById('username-setup').classList.add('hidden');
             document.getElementById('home').classList.remove('hidden');
+            document.getElementById('error-message').style.display = "none"; // Hide error message
         }
 
         // Example of functions to switch between pages
@@ -107,6 +112,15 @@
             // Implementation for earning points (replace with your logic)
             alert("You earned points!");
         }
+
+        // Function to reset all logins (testing purposes)
+        function resetLogin() {
+            localStorage.removeItem('username');
+            location.reload();
+        }
+
+        // Uncomment this function in testing phase to reset username
+        // resetLogin();
     </script>
 
     <script src="game.js"></script>
