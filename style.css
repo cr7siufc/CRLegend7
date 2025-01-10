@@ -109,30 +109,6 @@ nav a:hover {
     font-style: italic;
 }
 
-/* Username Setup */
-#username-setup {
-    background-color: rgba(0, 0, 0, 0.8);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 1);
-    width: 90%;
-    max-width: 450px;
-    text-align: center;
-}
-
-#username-setup input {
-    padding: 12px;
-    margin-bottom: 15px;
-    width: 85%;
-    border-radius: 8px;
-    border: 2px solid #ffffff;
-    font-size: 1em;
-}
-
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     nav ul {
