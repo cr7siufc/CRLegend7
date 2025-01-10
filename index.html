@@ -11,10 +11,10 @@
         <h1>Welcome to CR7SIU Crypto</h1>
         <nav>
             <ul>
-                <li><button onclick="showPage('home')" class="hd-button">Home</button></li>
-                <li><button onclick="showPage('improvements')" class="hd-button">Improvements</button></li>
-                <li><button onclick="showPage('airdrop')" class="hd-button">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')" class="hd-button">Rewards</button></li>
+                <li><button onclick="showPage('home')">Home</button></li>
+                <li><button onclick="showPage('improvements')">Improvements</button></li>
+                <li><button onclick="showPage('airdrop')">Airdrop</button></li>
+                <li><button onclick="showPage('rewards')">Rewards</button></li>
             </ul>
         </nav>
     </header>
@@ -43,7 +43,7 @@
         </div>
 
         <div id="tap-to-earn" onclick="earnPoints()">
-            <button id="tap-button" class="hd-button">Tap to Earn</button>
+            <button id="tap-button">Tap to Earn</button>
         </div>
         <p id="click-to-earn-text">Click here to Earn</p>
 
@@ -55,11 +55,47 @@
         </div>
     </main>
 
+    <!-- Improvements Page -->
+    <main id="improvements" class="hidden">
+        <h2>Football Skill Improvements</h2>
+
+        <div id="attributes-container">
+            <div class="attribute-card">
+                <h3>Stamina</h3>
+                <p>Increase player endurance for longer performance.</p>
+                <button onclick="upgradeSkill('stamina')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Strength</h3>
+                <p>Enhance player’s strength to perform better in tackles.</p>
+                <button onclick="upgradeSkill('strength')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Dribbling</h3>
+                <p>Improve your dribbling skills to bypass defenders.</p>
+                <button onclick="upgradeSkill('dribbling')">Upgrade</button>
+            </div>
+            <!-- Add more attributes here -->
+        </div>
+    </main>
+
+    <!-- Airdrop Page -->
+    <main id="airdrop" class="hidden">
+        <h2>Airdrop</h2>
+        <p>Airdrop is currently under maintenance. Stay tuned for upcoming promotions!</p>
+    </main>
+
+    <!-- Rewards Page -->
+    <main id="rewards" class="hidden">
+        <h2>Rewards</h2>
+        <p>Coming soon! You'll be able to exchange CR7SIU points for exclusive rewards!</p>
+    </main>
+
     <!-- Username Setup Page (Only visible if no username is set) -->
-    <div id="username-setup" class="hidden">
+    <div id="username-setup">
         <h2>Welcome! Enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
-        <button onclick="setUsername()" class="hd-button">Set Username</button>
+        <button onclick="setUsername()">Set Username</button>
         <p id="error-message" style="color:red; display:none;">Please enter a valid username</p>
     </div>
 
@@ -113,6 +149,12 @@
         // Placeholder function for earning points (for example purposes)
         function earnPoints() {
             alert("You earned points!");
+        }
+
+        // Function for upgrading skills (attributes) in the improvements page
+        function upgradeSkill(skill) {
+            alert(`Upgraded ${skill}!`);
+            // Logic for upgrading each skill goes here, updating points and player level accordingly
         }
 
         // Initialize the page and check for existing username
