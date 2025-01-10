@@ -131,7 +131,7 @@ function upgradeSkill(cost, index) {
 // Show tasks for completion
 function showTasks() {
     document.getElementById('tasks-container').classList.remove('hidden');
-    document.getElementById('tasks-button').style.display = 'none'; // Hide button after tasks are shown
+    document.getElementById('tasks-button').style.display = 'none';
 }
 
 // Open respective URLs for tasks

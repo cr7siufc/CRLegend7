@@ -58,7 +58,7 @@ main {
     align-items: center;
     justify-content: center;
     min-height: 80vh;
-    display: none; /* Make pages hidden initially */
+    display: none;
 }
 
 /* Home Page */
@@ -66,8 +66,8 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    width: 80%; /* Adjust layout width */
-    margin: 0 auto 30px auto; /* Vertical alignment spacing */
+    width: 80%;
+    margin: 0 auto 30px auto;
     font-size: 1.1em;
 }
 
@@ -122,7 +122,7 @@ main {
 
 /* Tap-to-Earn Button Text */
 #tap-button {
-    display: none; /* Hidden because button functionality is visual */
+    display: none;
 }
 
 /* Improvements Page */
