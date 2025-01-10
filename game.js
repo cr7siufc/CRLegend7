@@ -4,6 +4,7 @@ let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || {};
 let referralLink = localStorage.getItem("referralLink") || generateReferralLink(); // Referral link generator
+let improvementsData = JSON.parse(localStorage.getItem("improvements")) || {}; // Stores improvements levels
 
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
@@ -108,31 +109,36 @@ function displayImprovements() {
     ];
 
     const container = document.getElementById("attributes-container");
+    container.innerHTML = "";  // Clear container before displaying
+
     improvements.forEach((improvement, index) => {
         const cost = 500 + 200 * index;
+        const currentLevel = improvementsData[index] || 1;
         const card = document.createElement("div");
         card.classList.add("attribute-card");
         card.innerHTML = `
             <h3>${improvement}</h3>
             <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}" class="attribute-level">1</span></p>
-            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
+            <p>Level: <span id="attribute-level-${index}" class="attribute-level">${currentLevel}</span></p>
+            <button onclick="upgradeSkill(${cost}, ${index}, '${improvement}')">Upgrade</button>
         `;
         container.appendChild(card);
     });
 }
 
 // Handle skill upgrades
-function upgradeSkill(cost, index) {
+function upgradeSkill(cost, index, improvement) {
     if (currentPoints >= cost) {
         currentPoints -= cost;
-        document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
+        improvementsData[index] = (improvementsData[index] || 0) + 1;
         localStorage.setItem("points", currentPoints);
+        localStorage.setItem("improvements", JSON.stringify(improvementsData));
+        document.getElementById(`attribute-level-${index}`).textContent = improvementsData[index];
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
         alert("Upgrade successful!");
 
         // Cashback every 10th upgrade
-        if (parseInt(document.getElementById(`attribute-level-${index}`).textContent) % 10 === 0) {
+        if (improvementsData[index] % 10 === 0) {
             currentPoints += 2500;
             localStorage.setItem("points", currentPoints);
             document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
@@ -140,7 +146,7 @@ function upgradeSkill(cost, index) {
         }
 
         // Bonus after every 5 levels upgrade
-        if (parseInt(document.getElementById(`attribute-level-${index}`).textContent) % 5 === 0) {
+        if (improvementsData[index] % 5 === 0) {
             currentPoints += 5000;
             localStorage.setItem("points", currentPoints);
             document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
