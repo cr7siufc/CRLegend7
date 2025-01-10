@@ -40,8 +40,14 @@
         <h1>Airdrop</h1>
         <p>Convert your CR7SIU points to CR7SIU Tokens</p>
         <button onclick="convertToTokens()">Convert Points</button>
-        <h2>Buy More Points (Feature Coming Soon)</h2>
-        <button onclick="buyPoints()">Buy More Points</button>
+        <p><strong>1 CR7SIU Token = 2500 CR7SIU Points</strong></p>
+        <p>Your current score: <span id="score-display-airdrop">0 CR7SIU Points</span></p>
+        <div id="referral-section">
+            <h2>Referral Program</h2>
+            <p>Share your referral link and earn 10,000 CR7SIU Points for each new user that joins the game!</p>
+            <button onclick="generateReferralLink()">Generate Referral Link</button>
+            <p>Your referral link: <span id="referral-link"></span></p>
+        </div>
     </main>
 
     <main id="rewards" class="hidden">

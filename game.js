@@ -1,8 +1,9 @@
-// Store username and points in localStorage
+// Store username, points, player level, completed tasks, and referral information in localStorage
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || {};
+let referralLink = localStorage.getItem("referralLink") || generateReferralLink(); // Referral link generator
 
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
@@ -11,16 +12,22 @@ if (!username) {
     loadSession();
 }
 
-// Set username
+// Set username and referral link
 function setUsername() {
     const input = document.getElementById("username-input").value.trim();
     if (input !== "") {
         localStorage.setItem("username", input);
         username = input;
+        localStorage.setItem("referralLink", generateReferralLink());
         loadSession();
     } else {
         alert("Please enter a valid username.");
     }
+}
+
+// Generate unique referral link
+function generateReferralLink() {
+    return `https://yourgame.com/referral?user=${username}`;
 }
 
 // Load session data
@@ -28,6 +35,9 @@ function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("player-level").textContent = playerLevel;
+    document.getElementById("referral-link").textContent = referralLink;  // Show referral link
+    document.getElementById("convert-note").textContent = "(1 CR7SIU Token = 2500 CR7SIU Points)";
+    document.getElementById("player-info").textContent = `${username} | Points: ${currentPoints} | Tokens: ${Math.floor(currentPoints / 2500)}`;
     showPage('home');
 }
 
@@ -53,12 +63,7 @@ function updateLevel() {
     localStorage.setItem("level", playerLevel);
 }
 
-// Buy more points logic (to show feature not yet available)
-function buyPoints() {
-    alert("Feature coming soon");
-}
-
-// Function to convert points to CR7SIU tokens
+// Convert points to CR7SIU tokens
 function convertToTokens() {
     const tokens = Math.floor(currentPoints / 2500);
     if (tokens > 0) {
@@ -125,8 +130,28 @@ function upgradeSkill(cost, index) {
         localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
         alert("Upgrade successful!");
+
+        // Cashback every 10th upgrade
+        if (parseInt(document.getElementById(`attribute-level-${index}`).textContent) % 10 === 0) {
+            currentPoints += 2500;
+            localStorage.setItem("points", currentPoints);
+            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+            alert("You have received cashback of 2500 CR7SIU Points!");
+        }
     } else {
         alert("Not enough points!");
+    }
+}
+
+// Handle referral link clicks and reward points to referrers
+function handleReferral(referrerUsername) {
+    if (referrerUsername) {
+        alert(`${referrerUsername} successfully referred you!`);
+        // Add 10000 points to referrer for a successful referral
+        let referrerPoints = parseInt(localStorage.getItem("points")) || 0;
+        referrerPoints += 10000;
+        localStorage.setItem("points", referrerPoints);
+        alert(`${referrerUsername} has earned 10000 CR7SIU Points!`);
     }
 }
 
