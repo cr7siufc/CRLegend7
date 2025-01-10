@@ -31,7 +31,17 @@
     <main id="home" class="hidden">
         <h2>Player Dashboard</h2>
 
-        <!-- Tap to Earn -->
+        <div class="home-info">
+            <div class="info-left">
+                <p><strong>Username:</strong> <span id="username"></span></p>
+                <p><strong>CR7SIU Points:</strong> <span id="cr7siu-points">0</span></p>
+            </div>
+            <div class="info-right">
+                <p><strong>Player Level:</strong> <span id="player-level">1</span></p>
+                <p><strong>CR7SIU Tokens:</strong> <span id="cr7siu-tokens">0</span></p>
+            </div>
+        </div>
+
         <div id="tap-to-earn" onclick="earnPoints()">
             <button id="tap-button">Tap to Earn</button>
         </div>
@@ -46,7 +56,7 @@
     </main>
 
     <!-- Username Setup Page (Only visible if no username is set) -->
-    <div id="username-setup" class="hidden">
+    <div id="username-setup">
         <h2>Welcome! Enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
         <button onclick="setUsername()">Set Username</button>
@@ -57,11 +67,13 @@
         // Check if username already exists in local storage and display relevant content
         function checkUsername() {
             const username = localStorage.getItem('username');
+            console.log("Stored username:", username); // Debugging line
             if (username) {
                 // If there's already a saved username, show the home page and hide the setup
                 document.getElementById('username-setup').style.display = 'none';
                 document.getElementById('home').style.display = 'block';
                 // Restore the stored username and update the UI
+                document.getElementById('username').textContent = username;
                 document.getElementById('username-display').textContent = `Username: ${username}`;
             } else {
                 // If no username is stored, show the setup screen
@@ -83,6 +95,7 @@
             // Save the valid username in localStorage
             localStorage.setItem('username', username);
             // Update the username in the UI
+            document.getElementById('username').textContent = username;
             document.getElementById('username-display').textContent = `Username: ${username}`;
             // Hide the username setup and show the home page
             document.getElementById('username-setup').style.display = 'none';
