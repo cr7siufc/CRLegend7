@@ -28,7 +28,7 @@
     </div>
 
     <!-- Home Page -->
-    <main id="home">
+    <main id="home" class="hidden">
         <h2>Player Dashboard</h2>
 
         <div class="home-info">
@@ -56,7 +56,7 @@
     </main>
 
     <!-- Username Setup Page (Only visible if no username is set) -->
-    <div id="username-setup" class="hidden">
+    <div id="username-setup">
         <h2>Welcome! Enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
         <button onclick="setUsername()">Set Username</button>
@@ -67,17 +67,18 @@
         // Check if username already exists in local storage and display relevant content
         function checkUsername() {
             const username = localStorage.getItem('username');
+            console.log("Stored username:", username); // Debugging line
             if (username) {
                 // If there's already a saved username, show the home page and hide the setup
-                document.getElementById('username-setup').classList.add('hidden');
-                document.getElementById('home').classList.remove('hidden');
+                document.getElementById('username-setup').style.display = 'none';
+                document.getElementById('home').style.display = 'block';
                 // Restore the stored username and update the UI
                 document.getElementById('username').textContent = username;
                 document.getElementById('username-display').textContent = `Username: ${username}`;
             } else {
                 // If no username is stored, show the setup screen
-                document.getElementById('username-setup').classList.remove('hidden');
-                document.getElementById('home').classList.add('hidden');
+                document.getElementById('username-setup').style.display = 'block';
+                document.getElementById('home').style.display = 'none';
             }
         }
 
@@ -97,16 +98,16 @@
             document.getElementById('username').textContent = username;
             document.getElementById('username-display').textContent = `Username: ${username}`;
             // Hide the username setup and show the home page
-            document.getElementById('username-setup').classList.add('hidden');
-            document.getElementById('home').classList.remove('hidden');
+            document.getElementById('username-setup').style.display = 'none';
+            document.getElementById('home').style.display = 'block';
             document.getElementById('error-message').style.display = "none"; // Hide error message
         }
 
         // Function to handle page transitions
         function showPage(page) {
             let pages = document.querySelectorAll('main');
-            pages.forEach(p => p.classList.add('hidden')); // Hide all pages
-            document.getElementById(page).classList.remove('hidden'); // Show the selected page
+            pages.forEach(p => p.style.display = 'none'); // Hide all pages
+            document.getElementById(page).style.display = 'block'; // Show the selected page
         }
 
         // Placeholder function for earning points (for example purposes)
