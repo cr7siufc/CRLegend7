@@ -60,28 +60,32 @@
     <!-- Rewards Page -->
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
+        
+        <!-- Ads Section -->
         <div id="ads-section">
             <h2>Ads</h2>
-            <p>Watch ads to earn extra rewards!</p>
+            <button onclick="launchAd()">Watch Ad</button>
+            <button id="ad-claim-button" onclick="claimAdReward()" disabled>Claim Ad Reward</button>
         </div>
+        
+        <!-- Tasks Section -->
         <div id="task-section">
             <h2>Tasks</h2>
-            <p>Complete the tasks below to earn 1000 CR7SIU points:</p>
             <div class="task">
-                <a href="#" target="_blank">Subscribe to our Youtube Channel</a>
-                <button onclick="completeTask('youtube')">Validate</button>
+                <a id="task-youtube" href="#" target="_blank" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
+                <button id="validate-youtube" onclick="completeTask('youtube')" disabled>Validate</button>
             </div>
             <div class="task">
-                <a href="#" target="_blank">Join our X Account</a>
-                <button onclick="completeTask('xAccount')">Validate</button>
+                <a id="task-x" href="#" target="_blank" onclick="enableTaskButton('x')">Join our X Account</a>
+                <button id="validate-x" onclick="completeTask('x')" disabled>Validate</button>
             </div>
             <div class="task">
-                <a href="#" target="_blank">Like and Join our Facebook Page</a>
-                <button onclick="completeTask('facebook')">Validate</button>
+                <a id="task-facebook" href="#" target="_blank" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
+                <button id="validate-facebook" onclick="completeTask('facebook')" disabled>Validate</button>
             </div>
+            <button id="claim-rewards-btn" onclick="claimRewards()" disabled>Claim Rewards</button>
             <p id="task-feedback"></p>
         </div>
-        <button id="claim-rewards-btn" onclick="claimRewards()">Claim Rewards</button>
     </main>
 
     <!-- New Username Setup Dialog -->

@@ -89,22 +89,27 @@ function convertToTokens() {
 
 // Display tasks for rewards validation
 function displayTasks() {
-    const tasksContainer = document.getElementById("tasks-container");
+    const tasksContainer = document.getElementById("task-section");
     tasksContainer.innerHTML = `
         <div class="task">
-            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank">Subscribe to our YouTube Channel</a>
-            <button onclick="completeTask('youtube')">Mark as Done</button>
+            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
+            <button id="validate-youtube" onclick="completeTask('youtube')" disabled>Mark as Done</button>
         </div>
         <div class="task">
-            <a href="https://x.com/cr7siucoin" target="_blank">Join our X Account</a>
-            <button onclick="completeTask('xAccount')">Mark as Done</button>
+            <a href="https://x.com/cr7siucoin" target="_blank" onclick="enableTaskButton('xAccount')">Join our X Account</a>
+            <button id="validate-xAccount" onclick="completeTask('xAccount')" disabled>Mark as Done</button>
         </div>
         <div class="task">
-            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank">Like and Join our Facebook Page</a>
-            <button onclick="completeTask('facebook')">Mark as Done</button>
+            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
+            <button id="validate-facebook" onclick="completeTask('facebook')" disabled>Mark as Done</button>
         </div>
     `;
     updateTaskButtons();
+}
+
+// Enable task validation button
+function enableTaskButton(task) {
+    document.getElementById(`validate-${task}`).disabled = false;
 }
 
 // Mark a task as completed
@@ -117,25 +122,33 @@ function completeTask(task) {
 
 // Update task buttons based on completion status
 function updateTaskButtons() {
-    document.querySelectorAll(".task button").forEach((button, index) => {
-        const taskKeys = Object.keys(tasksCompleted);
-        if (tasksCompleted[taskKeys[index]]) {
+    for (const task in tasksCompleted) {
+        const button = document.getElementById(`validate-${task}`);
+        if (tasksCompleted[task]) {
             button.disabled = true;
             button.textContent = "Completed";
             button.classList.add("completed");
         }
-    });
+    }
+    // Enable claim button if all tasks are complete
+    const allTasksCompleted = Object.values(tasksCompleted).every(Boolean);
+    document.getElementById("claim-rewards-btn").disabled = !allTasksCompleted;
 }
 
 // Claim Rewards
 function claimRewards() {
-    if (tasksCompleted.youtube && tasksCompleted.xAccount && tasksCompleted.facebook) {
-        currentPoints += 1000; // Add reward points
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert("Congratulations! You earned 1000 CR7SIU Points for completing all tasks.");
+    if (Object.values(tasksCompleted).every(Boolean)) {
+        if (!localStorage.getItem("rewardsClaimed")) {
+            currentPoints += 5000; // Add reward points
+            localStorage.setItem("points", currentPoints);
+            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+            alert("Congratulations! You earned 5000 CR7SIU Points for completing all tasks.");
+            localStorage.setItem("rewardsClaimed", true); // Mark rewards as claimed
+        } else {
+            alert("You have already claimed your rewards.");
+        }
     } else {
-        alert("Task not completed. Retry.");
+        alert("Complete all tasks before claiming rewards.");
     }
 }
 
