@@ -101,5 +101,86 @@
     </footer>
 
     <script src="game.js"></script>
+
+    <script>
+        // Initialize user's attribute progress
+        const attributes = {
+            stamina: 500,
+            strength: 500,
+            heading: 500,
+            shooting: 500,
+            dribbling: 500,
+            passing: 500,
+            agility: 500,
+            speed: 500,
+            control: 500,
+            fitness: 500
+        };
+
+        // Retrieve previous data if it exists
+        window.onload = function() {
+            loadAttributes();
+        };
+
+        // Load stored attributes from localStorage
+        function loadAttributes() {
+            for (let attribute in attributes) {
+                let savedValue = localStorage.getItem(attribute);
+                if (savedValue) {
+                    attributes[attribute] = parseInt(savedValue);
+                }
+                displayAttribute(attribute);
+            }
+        }
+
+        // Display each attribute and its level on the improvements page
+        function displayAttribute(attribute) {
+            let container = document.getElementById('attributes-container');
+            let card = document.createElement('div');
+            card.classList.add('attribute-card');
+            card.innerHTML = `
+                <h3>${attribute.charAt(0).toUpperCase() + attribute.slice(1)}</h3>
+                <p id="${attribute}-level">Level: ${attributes[attribute]}</p>
+                <button id="upgrade-${attribute}" onclick="upgradeAttribute('${attribute}')">Upgrade</button>
+            `;
+            container.appendChild(card);
+        }
+
+        // Upgrade an attribute when the button is clicked
+        function upgradeAttribute(attribute) {
+            const upgradeCost = attributes[attribute] + 200;
+            let userPoints = parseInt(localStorage.getItem('userPoints') || 0); // Get current points from storage
+            if (userPoints >= upgradeCost) {
+                attributes[attribute] += 200;
+                localStorage.setItem(attribute, attributes[attribute]); // Save updated attribute value
+                userPoints -= upgradeCost;
+                localStorage.setItem('userPoints', userPoints);
+                loadAttributes();
+                updatePointsDisplay();
+            } else {
+                alert("Insufficient CR7SIU Points for this upgrade.");
+            }
+        }
+
+        // Update points display
+        function updatePointsDisplay() {
+            let userPoints = localStorage.getItem('userPoints');
+            document.getElementById('score-display').innerText = `${userPoints} CR7SIU Points`;
+        }
+
+        // Add tap functionality for earning points (to be defined further)
+        function earnPoints() {
+            let userPoints = localStorage.getItem('userPoints') || 0;
+            userPoints = parseInt(userPoints) + 10; // Example increment
+            localStorage.setItem('userPoints', userPoints);
+            updatePointsDisplay();
+        }
+
+        function showPage(pageId) {
+            let pages = document.querySelectorAll('main');
+            pages.forEach(page => page.classList.add('hidden')); // Hide all pages
+            document.getElementById(pageId).classList.remove('hidden'); // Show the selected page
+        }
+    </script>
 </body>
 </html>

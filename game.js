@@ -1,4 +1,4 @@
-// Store username, points, player level, completed tasks, and referral information in localStorage
+// Store username, points, player level, completed tasks, and referral information in localStorage 
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
@@ -8,9 +8,10 @@ let improvementsData = JSON.parse(localStorage.getItem("improvements")) || Array
 
 // Initialize Improvements for users without data
 function initializeImprovementsData() {
-    if (!localStorage.getItem("improvements")) {
+    if (!localStorage.getItem("improvements") || improvementsData.length === 0) {
         const defaultImprovementsData = Array(20).fill(1); // Default: all attributes start at level 1
         localStorage.setItem("improvements", JSON.stringify(defaultImprovementsData));
+        improvementsData = defaultImprovementsData; // update local copy
     }
 }
 
