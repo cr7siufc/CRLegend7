@@ -21,7 +21,7 @@
 
     <!-- User Progress Bar on All Pages -->
     <div id="progress-info">
-        <span id="username-display">Username: User123</span> |
+        <span id="username-display">Username: </span> |
         <span id="player-level-display">Level: 1</span> |
         <span id="score-display">CR7SIU Points: 0</span> |
         <span id="tokens-display">CR7SIU Tokens: 0</span>
@@ -30,10 +30,10 @@
     <!-- Home Page -->
     <main id="home">
         <h2>Player Dashboard</h2>
-        
+
         <div class="home-info">
             <div class="info-left">
-                <p><strong>Username:</strong> <span id="username">User123</span></p>
+                <p><strong>Username:</strong> <span id="username"></span></p>
                 <p><strong>CR7SIU Points:</strong> <span id="cr7siu-points">0</span></p>
             </div>
             <div class="info-right">
@@ -55,46 +55,59 @@
         </div>
     </main>
 
-    <!-- Improvements Page -->
-    <main id="improvements" class="hidden">
-        <h1>Improvements</h1>
-        <p>Upgrade your football skills to earn more points and cashback!</p>
-        <div id="attributes-container">
-            <!-- Attributes will be dynamically inserted here -->
-        </div>
-    </main>
-
-    <!-- Airdrop Page -->
-    <main id="airdrop" class="hidden">
-        <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points into CR7SIU Tokens:</p>
-        <p>1 CR7SIU Token = 2500 Points</p>
-        <button onclick="convertToTokens()">Convert Points</button>
-        <button onclick="buyPoints()">Buy More Points</button>
-    </main>
-
-    <!-- Rewards Page -->
-    <main id="rewards" class="hidden">
-        <h1>Rewards</h1>
-        <p>Complete tasks to earn 1000 CR7SIU points:</p>
-        <div id="tasks-container">
-            <p>Perform the following actions:</p>
-            <div id="task-list">
-                <button onclick="openUrl('youtube')">Subscribe to YouTube</button>
-                <button onclick="openUrl('x')">Follow on X</button>
-                <button onclick="openUrl('facebook')">Like on Facebook</button>
-            </div>
-            <p id="task-validation-message"></p>
-            <button onclick="validateTasks()">Validate Tasks</button>
-        </div>
-    </main>
-
-    <!-- Username Setup Page -->
+    <!-- Username Setup Page (Only visible if no username is set) -->
     <div id="username-setup" class="hidden">
         <h2>Welcome! Enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
         <button onclick="setUsername()">Set Username</button>
     </div>
+
+    <script>
+        // Check if username already exists in local storage
+        if (localStorage.getItem('username')) {
+            // Skip the username setup page and show the home page
+            document.getElementById('username-setup').classList.add('hidden');
+            document.getElementById('home').classList.remove('hidden');
+            // Restore the stored username from localStorage and display it
+            let username = localStorage.getItem('username');
+            document.getElementById('username').textContent = username;
+            document.getElementById('username-display').textContent = `Username: ${username}`;
+        } else {
+            // Show the username setup page if no username exists
+            document.getElementById('username-setup').classList.remove('hidden');
+            document.getElementById('home').classList.add('hidden');
+        }
+
+        // Function to set the username
+        function setUsername() {
+            var username = document.getElementById('username-input').value;
+            if (username.trim() === "") {
+                alert("Please enter a valid username");
+                return;
+            }
+            // Save the username in localStorage
+            localStorage.setItem('username', username);
+            // Update the username display on home page
+            document.getElementById('username').textContent = username;
+            document.getElementById('username-display').textContent = `Username: ${username}`;
+            // Hide the username setup page and show the home page
+            document.getElementById('username-setup').classList.add('hidden');
+            document.getElementById('home').classList.remove('hidden');
+        }
+
+        // Example of functions to switch between pages
+        function showPage(page) {
+            let pages = document.querySelectorAll('main');
+            pages.forEach(p => p.classList.add('hidden'));  // Hide all pages
+            document.getElementById(page).classList.remove('hidden');  // Show the selected page
+        }
+
+        // Example of function to simulate earning points
+        function earnPoints() {
+            // Implementation for earning points (replace with your logic)
+            alert("You earned points!");
+        }
+    </script>
 
     <script src="game.js"></script>
 </body>
