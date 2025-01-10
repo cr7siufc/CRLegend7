@@ -135,17 +135,9 @@
         </section>
     </main>
 
-    <!-- New Username Setup Dialog -->
-    <div id="username-setup" class="hidden">
-        <h2>Welcome! Please enter your username to start:</h2>
-        <input type="text" id="username-input" placeholder="Enter Username">
-        <button onclick="setUsername()">Set Username</button>
-    </div>
-
     <footer>
         <div id="bottom-menu">
-                <p>CR7SIU Coin (Ticker: CR7SIU) is a decentralized cryptocurrency and fan engagement platform designed for football enthusiasts and Cristiano Ronaldo fans. The platform integrates live football updates, exclusive content, gamified experiences, and blockchain-based rewards. Built on the Binance Smart Chain (BSC), CR7SIU Coin fosters a fan-driven economy where users can earn tokens, access NFTs, and engage with CR7-related content.</p>
-                <p>CR7 Coin's business model combines the excitement of sports fandom with blockchain technology, offering users the ability to "Tap to Earn," engage in games, and purchase exclusive digital collectibles. This business plan outlines the roadmap to build, market, and scale CR7 Coin into a global fan engagement platform.</p>
+                <p>CR7SIU Coin is a decentralized cryptocurrency and fan engagement platform designed for football enthusiasts and Cristiano Ronaldo fans.</p>
         </div>
     </footer>
 
@@ -217,6 +209,8 @@
         function updatePointsDisplay() {
             let userPoints = localStorage.getItem('userPoints');
             document.getElementById('score-display').innerText = `${userPoints} CR7SIU Points`;
+            document.getElementById('score-display-airdrop').innerText = `${userPoints} CR7SIU Points`;
+            document.getElementById('cr7siu-coins').innerText = `${userPoints}`;
         }
         
         function earnPoints() {
