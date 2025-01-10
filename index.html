@@ -61,27 +61,27 @@
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
         <div id="ads-section">
-            <h2>Watch and Earn</h2>
-            <button onclick="openAd()">Watch Video</button>
-            <button id="claim-ad-reward" onclick="claimAdReward()" disabled>Claim Reward</button>
+            <h2>Ads</h2>
+            <p>Watch ads to earn extra rewards!</p>
         </div>
         <div id="task-section">
-            <h2>Complete Tasks to Earn</h2>
+            <h2>Tasks</h2>
+            <p>Complete the tasks below to earn 1000 CR7SIU points:</p>
             <div class="task">
-                <a href="#" id="task1-link" target="_blank">Subscribe to our Youtube Channel</a>
-                <button id="task1-btn" onclick="completeTask('task1')" disabled>Validate</button>
+                <a href="#" target="_blank">Subscribe to our Youtube Channel</a>
+                <button onclick="completeTask('youtube')">Validate</button>
             </div>
             <div class="task">
-                <a href="#" id="task2-link" target="_blank">Join our X Account</a>
-                <button id="task2-btn" onclick="completeTask('task2')" disabled>Validate</button>
+                <a href="#" target="_blank">Join our X Account</a>
+                <button onclick="completeTask('xAccount')">Validate</button>
             </div>
             <div class="task">
-                <a href="#" id="task3-link" target="_blank">Like and Join our Facebook Page</a>
-                <button id="task3-btn" onclick="completeTask('task3')" disabled>Validate</button>
+                <a href="#" target="_blank">Like and Join our Facebook Page</a>
+                <button onclick="completeTask('facebook')">Validate</button>
             </div>
             <p id="task-feedback"></p>
         </div>
-        <button id="claim-rewards-btn" onclick="claimAllRewards()" disabled>Claim All Rewards</button>
+        <button id="claim-rewards-btn" onclick="claimRewards()">Claim Rewards</button>
     </main>
 
     <!-- New Username Setup Dialog -->
@@ -91,63 +91,6 @@
         <button onclick="setUsername()">Set Username</button>
     </div>
 
-    <script>
-        const rewardsClaimed = {
-            tasks: false,
-            ad: false,
-        };
-
-        function openAd() {
-            window.open("https://youtu.be/byZi0lcy-jw?si=56AqjoUSUCbS4jMe", "_blank");
-            document.getElementById("claim-ad-reward").disabled = false;
-        }
-
-        function claimAdReward() {
-            if (!rewardsClaimed.ad) {
-                addPoints(5000);
-                rewardsClaimed.ad = true;
-                alert("You have claimed 5000 CR7SIU Points from the ad!");
-                document.getElementById("claim-ad-reward").disabled = true;
-            }
-        }
-
-        function enableTaskButton(taskId) {
-            document.getElementById(`${taskId}-btn`).disabled = false;
-        }
-
-        function completeTask(taskId) {
-            if (document.getElementById(`${taskId}-btn`).disabled === false) {
-                addPoints(5000);
-                document.getElementById(`${taskId}-btn`).disabled = true;
-                checkAllTasksCompleted();
-                document.getElementById(`${taskId}-link`).style.pointerEvents = "none";
-            }
-        }
-
-        function checkAllTasksCompleted() {
-            const task1Done = document.getElementById("task1-btn").disabled;
-            const task2Done = document.getElementById("task2-btn").disabled;
-            const task3Done = document.getElementById("task3-btn").disabled;
-
-            if (task1Done && task2Done && task3Done) {
-                rewardsClaimed.tasks = true;
-                document.getElementById("claim-rewards-btn").disabled = false;
-            }
-        }
-
-        function claimAllRewards() {
-            if (rewardsClaimed.tasks) {
-                alert("You have successfully claimed all task rewards!");
-                document.getElementById("claim-rewards-btn").disabled = true;
-            }
-        }
-
-        function addPoints(points) {
-            let currentPoints = parseInt(localStorage.getItem("score") || "0");
-            currentPoints += points;
-            localStorage.setItem("score", currentPoints);
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        }
-    </script>
+    <script src="game.js"></script>
 </body>
 </html>
