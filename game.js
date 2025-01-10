@@ -1,8 +1,9 @@
-// Store username, points and tokens in localStorage
+// Store username, points, tokens, and attribute progress in localStorage
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
+let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -27,9 +28,11 @@ function setUsername() {
 // Load session data
 function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
+    document.getElementById("username-display").textContent = username;
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
+    displayImprovements(); // Ensure attributes are displayed with correct levels
     showPage('home');
 }
 
@@ -64,9 +67,9 @@ function buyPoints() {
 
 // Function to convert points to CR7SIU tokens
 function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 2500);
+    const tokens = Math.floor(currentPoints / 100); // Conversion rate: 100 points = 1 token
     if (tokens > 0) {
-        currentPoints -= tokens * 2500; // Deduct points from the balance after conversion
+        currentPoints -= tokens * 100; // Deduct points after conversion
         currentTokens += tokens;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("tokens", currentTokens);
@@ -78,7 +81,7 @@ function convertToTokens() {
     }
 }
 
-// Set up 20 improvements and upgrade functionality
+// Display improvements and handle upgrade progress
 function displayImprovements() {
     const improvements = [
         'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing',
@@ -88,28 +91,41 @@ function displayImprovements() {
     ];
 
     const container = document.getElementById("attributes-container");
-    container.innerHTML = ""; // Clear previous contents to refresh the attributes
+    container.innerHTML = ""; // Clear previous contents
     improvements.forEach((improvement, index) => {
-        const cost = 500 + 200 * index;
+        const level = attributes[improvement] || 1;
+        const cost = 500 + 200 * (level - 1);
         const card = document.createElement("div");
         card.classList.add("attribute-card");
         card.innerHTML = `
             <h3>${improvement}</h3>
             <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}" class="attribute-level">1</span></p>
-            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
+            <p>Level: <span id="attribute-level-${index}">${level}</span></p>
+            <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
         `;
         container.appendChild(card);
     });
 }
 
 // Handle skill upgrades
-function upgradeSkill(cost, index) {
+function upgradeSkill(attribute, index, cost) {
+    const level = attributes[attribute] || 1;
     if (currentPoints >= cost) {
         currentPoints -= cost;
-        document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
+        attributes[attribute] = level + 1; // Increase attribute level
         localStorage.setItem("points", currentPoints);
+        localStorage.setItem("attributes", JSON.stringify(attributes));
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
+
+        // Bonus cashback for every 10th level
+        if (attributes[attribute] % 10 === 0) {
+            currentPoints += 2500;
+            localStorage.setItem("points", currentPoints);
+            alert("Level milestone achieved! Cashback of 2500 points awarded.");
+            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        }
+
         alert("Upgrade successful!");
     } else {
         alert("Not enough points!");
