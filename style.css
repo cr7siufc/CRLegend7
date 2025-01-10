@@ -62,6 +62,21 @@ main {
     font-size: 16px;
 }
 
+/* Aligning Player Level and CR7SIU Tokens */
+#player-level-align, #score-align {
+    display: inline-block;
+}
+
+#player-level-align {
+    text-align: left;
+    flex: 1;
+}
+
+#score-align {
+    text-align: right;
+    flex: 1;
+}
+
 /* Tap-to-Earn Button (Black Background) */
 #tap-to-earn {
     width: 200px;
@@ -192,15 +207,10 @@ footer button:focus {
     outline: none;
 }
 
-/* Alignment of Player Level and CR7SIU Tokens */
-#player-level-align, #score-align {
-    display: inline-block;
-}
-
-#player-level-align {
-    text-align: left;
-}
-
-#score-align {
-    text-align: right;
+/* Bottom Menu (Responsive) */
+#bottom-menu {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
 }

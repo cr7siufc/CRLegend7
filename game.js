@@ -8,7 +8,6 @@ let improvementsData = JSON.parse(localStorage.getItem("improvements")) || Array
 
 // Initialize Improvements for users without data
 function initializeImprovementsData() {
-    // If improvementsData doesn't exist, initialize with level 1 for all 20 attributes
     if (!localStorage.getItem("improvements")) {
         const defaultImprovementsData = Array(20).fill(1); // Default: all attributes start at level 1
         localStorage.setItem("improvements", JSON.stringify(defaultImprovementsData));
@@ -42,9 +41,7 @@ function generateReferralLink() {
 
 // Load session data
 function loadSession() {
-    // Initialize improvements if they don't exist
     initializeImprovementsData();
-
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("player-level").textContent = playerLevel;
@@ -173,7 +170,6 @@ function upgradeSkill(cost, index, improvement) {
 function handleReferral(referrerUsername) {
     if (referrerUsername) {
         alert(`${referrerUsername} successfully referred you!`);
-        // Add 10000 points to referrer for a successful referral
         let referrerPoints = parseInt(localStorage.getItem("points")) || 0;
         referrerPoints += 10000;
         localStorage.setItem("points", referrerPoints);
@@ -183,4 +179,3 @@ function handleReferral(referrerUsername) {
 
 // Initialize improvements page
 displayImprovements();
-

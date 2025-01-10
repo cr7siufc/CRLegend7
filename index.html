@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,16 @@
 
     <main id="home">
         <h2>Player Dashboard</h2>
-        <p>Level: <span id="player-level">1</span></p>
+        <div id="player-info" class="left-right">
+            <div id="player-level-align">
+                <p>Player Level: <span id="player-level">1</span></p>
+                <p>Username: <span id="player-username">Player</span></p>
+            </div>
+            <div id="score-align">
+                <p>CR7SIU Coins: <span id="cr7siu-coins">0</span></p>
+                <p>CR7SIU Tokens: <span id="cr7siu-tokens">0</span></p>
+            </div>
+        </div>
         <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
         <div id="tap-to-earn" onclick="earnPoints()">
             <img src="cr7_poster6.jpg" alt="Tap to Earn" />
@@ -83,10 +92,6 @@
     </div>
 
     <footer>
-        <div id="player-info">
-            <span id="player-level-align">Player Level: <span id="player-level">1</span></span>
-            <span id="score-align">Score: <span id="score-display">0 CR7SIU Points</span></span>
-        </div>
         <div id="bottom-menu">
             <button onclick="showPage('home')">Home</button>
             <button onclick="showPage('improvements')">Improvements</button>
