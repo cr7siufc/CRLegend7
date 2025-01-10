@@ -214,3 +214,18 @@ footer button:focus {
     width: 100%;
     margin-top: 20px;
 }
+
+/* Bottom Menu alignment fix - Side-by-Side Buttons for Full Width */
+footer button {
+    flex: 1;
+}
+
+/* Responsive adjustments to align bottom menu as requested */
+footer {
+    flex-direction: row;
+}
+
+#bottom-menu button {
+    flex: 1;
+    text-align: center;
+}

@@ -39,15 +39,21 @@ function generateReferralLink() {
     return `https://yourgame.com/referral?user=${username}`;
 }
 
-// Load session data
+// Load session data (user's details, points, tokens, etc.)
 function loadSession() {
     initializeImprovementsData();
     document.getElementById("username-setup").classList.add("hidden");
+
+    // Fetch and update user details
+    document.getElementById("player-username").textContent = username;
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("player-level").textContent = playerLevel;
+    document.getElementById("cr7siu-coins").textContent = Math.floor(currentPoints / 10);
+    document.getElementById("cr7siu-tokens").textContent = Math.floor(currentPoints / 2500);
+    
     document.getElementById("referral-link").textContent = referralLink;  // Show referral link
     document.getElementById("convert-note").textContent = "(1 CR7SIU Token = 2500 CR7SIU Points)";
-    document.getElementById("player-info").textContent = `${username} | Points: ${currentPoints} | Tokens: ${Math.floor(currentPoints / 2500)}`;
+
     showPage('home');
 }
 
@@ -62,7 +68,7 @@ function showPage(page) {
 function earnPoints() {
     currentPoints += 5;
     localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    updateSession();
     updateLevel();
 }
 
@@ -102,10 +108,17 @@ function validateTask(task) {
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
         document.getElementById("task-message").textContent = `You have completed the task for ${task}. You earned 1000 CR7SIU Points!`;
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        updateSession();
     } else {
         document.getElementById("task-message").textContent = "Task not completed. Retry.";
     }
+}
+
+// Update the session details on screen
+function updateSession() {
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("cr7siu-coins").textContent = Math.floor(currentPoints / 10);
+    document.getElementById("cr7siu-tokens").textContent = Math.floor(currentPoints / 2500);
 }
 
 // Initialize Improvements Page with 20 skills for upgrading
@@ -143,14 +156,14 @@ function upgradeSkill(cost, index, improvement) {
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("improvements", JSON.stringify(improvementsData));
         document.getElementById(`attribute-level-${index}`).textContent = improvementsData[index];
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        updateSession();
         alert("Upgrade successful!");
 
         // Cashback every 10th upgrade
         if (improvementsData[index] % 10 === 0) {
             currentPoints += 2500;
             localStorage.setItem("points", currentPoints);
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+            updateSession();
             alert("You have received cashback of 2500 CR7SIU Points!");
         }
 
@@ -158,7 +171,7 @@ function upgradeSkill(cost, index, improvement) {
         if (improvementsData[index] % 5 === 0) {
             currentPoints += 5000;
             localStorage.setItem("points", currentPoints);
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+            updateSession();
             alert("You have earned a bonus of 5000 CR7SIU Points!");
         }
     } else {
