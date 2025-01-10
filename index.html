@@ -6,7 +6,7 @@
     <title>CR7SIU Fan Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body style="background-image: url('cr7_poster9.jpg');">
     <header>
         <h1>Welcome to the CR7SIU Fan Game</h1>
         <div style="display: flex; justify-content: space-between; padding: 0 15px;">
@@ -35,7 +35,7 @@
     <main id="home">
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
-        <div id="tap-to-earn" onclick="earnPoints()">
+        <div id="tap-to-earn" onclick="earnPoints()" style="background: url('cr7_poster6.jpg'); width: 100px; height: 100px; border-radius: 50%; background-size: cover; cursor: pointer;">
             <div>Tap to Earn</div>
         </div>
     </main>
@@ -52,9 +52,10 @@
     <!-- Airdrop Page -->
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points to CR7SIU Tokens. Current Conversion: 100 points = 1 CR7SIU token.</p>
+        <p>Convert your CR7SIU points to CR7SIU Tokens. Current Conversion: 5000 points = 1 CR7SIU token.</p>
+        <p>Current Points: <span id="airdrop-points-display">0</span> CR7SIU Points</p>
+        <p>Current Tokens: <span id="airdrop-tokens-display">0</span></p>
         <button onclick="convertToTokens()">Convert Points</button>
-        <button onclick="buyPoints()">Buy More Points</button>
     </main>
 
     <!-- Rewards Page -->

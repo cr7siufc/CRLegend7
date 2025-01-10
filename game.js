@@ -51,7 +51,7 @@ function showPage(page) {
 
 // Handle points earning when the user taps
 function earnPoints() {
-    currentPoints += 5;
+    currentPoints += 5; // Points gained per tap
     localStorage.setItem("points", currentPoints);
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     updateLevel();
@@ -73,9 +73,9 @@ function buyPoints() {
 
 // Function to convert points to CR7SIU tokens
 function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 100);
+    const tokens = Math.floor(currentPoints / 5000); // Adjusted: 5000 CR7SIU points per token
     if (tokens > 0) {
-        currentPoints -= tokens * 100;
+        currentPoints -= tokens * 5000; // Remove the points spent
         currentTokens += tokens;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("tokens", currentTokens);
@@ -165,7 +165,7 @@ function displayImprovements() {
     container.innerHTML = ""; // Clear previous contents
     improvements.forEach((improvement, index) => {
         const level = attributes[improvement] || 1;
-        const cost = 500 + 200 * (level - 1);
+        const cost = 500 + 250 * (level - 1); // Cost formula
         const card = document.createElement("div");
         card.classList.add("attribute-card");
         card.innerHTML = `
@@ -191,7 +191,7 @@ function upgradeSkill(attribute, index, cost) {
 
         // Bonus cashback for every 10th level
         if (attributes[attribute] % 10 === 0) {
-            currentPoints += 2500;
+            currentPoints += 2500; // Cashback points
             localStorage.setItem("points", currentPoints);
             alert("Level milestone achieved! Cashback of 2500 points awarded.");
             document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
