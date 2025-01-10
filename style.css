@@ -13,9 +13,11 @@ body {
 header {
     text-align: center;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.9); /* HD effect */
     color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 nav ul {
@@ -23,30 +25,39 @@ nav ul {
     padding: 0;
     display: flex;
     justify-content: center;
+    gap: 30px; /* Increased spacing for HD look */
+    margin: 20px 0;
 }
 
 nav li {
-    margin: 0 15px;
+    margin: 0;
 }
 
 nav button {
-    background-color: #444444;
+    background-color: #333333; /* Darker shade for better contrast */
     color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    border: 2px solid #ffcc00; /* Highlighted border for HD look */
+    padding: 12px 25px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-weight: bold;
 }
 
 nav button:hover {
     background-color: #ffcc00;
-    transform: translateY(-2px);
+    color: #333333;
+    transform: translateY(-3px);
 }
 
 main {
     text-align: center;
-    padding: 20px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Vertical alignment */
+    justify-content: center;
+    min-height: 80vh; /* Ensures vertical center alignment */
 }
 
 .hidden {
@@ -56,30 +67,31 @@ main {
 #progress-info {
     text-align: center;
     margin: 15px 0;
-    font-size: 1.1em;
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
 /* Home Page */
 #tap-to-earn {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster.jpg");
+    background-image: url("images/cr7_poster6.jpg"); /* Updated image */
     background-size: cover;
     background-position: center;
-    border: 4px solid #ffffff;
-    margin: 20px auto;
+    border: 6px solid #ffffff;
+    margin: 30px auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.9); /* HD shadow effect */
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 #tap-to-earn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 1);
+    transform: scale(1.15); /* Zooms in slightly on hover */
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 1);
 }
 
 /* Tap-to-Earn Button Text */
@@ -89,9 +101,9 @@ main {
 
 /* Vision Note */
 #vision-note {
-    font-size: 1.1em;
-    margin-top: 15px;
-    color: white;
+    font-size: 1.3em;
+    margin-top: 20px;
+    color: #ffcc00; /* Highlighted color */
     text-align: justify;
     max-width: 90%;
     margin: 20px auto;
@@ -101,56 +113,61 @@ main {
 /* Improvements Page */
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusted for HD */
+    gap: 15px;
     max-width: 90%;
     margin: 0 auto;
 }
 
 .attribute-card {
-    background-color: rgba(50, 50, 50, 0.9);
-    padding: 15px;
-    border-radius: 8px;
+    background-color: rgba(50, 50, 50, 0.95); /* Darker opacity for HD look */
+    padding: 20px;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 1);
     color: white;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1.1em;
 }
 
 .attribute-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 1);
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 1);
 }
 
 .attribute-card button {
-    background-color: #444444;
+    background-color: #333333;
     color: white;
-    border: none;
-    padding: 8px 12px;
+    border: 2px solid #ffcc00;
+    padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-weight: bold;
 }
 
 .attribute-card button:hover {
     background-color: #ffcc00;
+    color: #333333;
 }
 
 /* Rewards Page */
 #tasks-container button {
-    background-color: #444444;
+    background-color: #333333;
     color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    border: 2px solid #ffcc00;
+    padding: 12px 18px;
+    border-radius: 8px;
     cursor: pointer;
     transition: transform 0.3s ease, background-color 0.3s ease;
-    margin: 5px auto;
+    margin: 10px auto;
+    font-weight: bold;
 }
 
 #tasks-container button:hover {
     background-color: #ffcc00;
-    transform: scale(1.05);
+    color: #333333;
+    transform: scale(1.1);
 }
 
 #task-validation-message {
@@ -161,40 +178,38 @@ main {
 
 /* Username Setup */
 #username-setup {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8); /* Slightly darker overlay */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 1);
     width: 90%;
-    max-width: 400px;
+    max-width: 450px;
     text-align: center;
 }
 
 #username-setup input {
-    padding: 10px;
-    margin-bottom: 10px;
-    width: 80%;
-    border-radius: 5px;
-    border: 1px solid #ffffff;
+    padding: 12px;
+    margin-bottom: 15px;
+    width: 85%;
+    border-radius: 8px;
+    border: 2px solid #ffffff;
+    font-size: 1em;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     nav ul {
-        flex-direction: column;
-    }
-
-    nav li {
-        margin: 10px 0;
+        flex-direction: row; /* Horizontal buttons on smaller screens */
+        gap: 15px; /* Reduced gap */
     }
 
     #tap-to-earn {
-        width: 150px;
-        height: 150px;
+        width: 200px;
+        height: 200px;
     }
 
     .attribute-card {
