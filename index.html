@@ -103,7 +103,6 @@
     <script src="game.js"></script>
 
     <script>
-        // Initialize user's attribute progress
         const attributes = {
             stamina: 500,
             strength: 500,
@@ -115,11 +114,6 @@
             speed: 500,
             control: 500,
             fitness: 500
-        };
-
-        // Retrieve previous data if it exists
-        window.onload = function() {
-            loadAttributes();
         };
 
         // Load stored attributes from localStorage
@@ -157,6 +151,14 @@
                 localStorage.setItem('userPoints', userPoints);
                 loadAttributes();
                 updatePointsDisplay();
+
+                // Reward with 5000 CR7SIU points every time an attribute is upgraded to the next level
+                if (attributes[attribute] % 200 === 0) {
+                    userPoints += 5000;
+                    localStorage.setItem('userPoints', userPoints);
+                    updatePointsDisplay();
+                    alert('You have received a bonus of 5000 CR7SIU Points!');
+                }
             } else {
                 alert("Insufficient CR7SIU Points for this upgrade.");
             }
@@ -167,8 +169,7 @@
             let userPoints = localStorage.getItem('userPoints');
             document.getElementById('score-display').innerText = `${userPoints} CR7SIU Points`;
         }
-
-        // Add tap functionality for earning points (to be defined further)
+        
         function earnPoints() {
             let userPoints = localStorage.getItem('userPoints') || 0;
             userPoints = parseInt(userPoints) + 10; // Example increment
@@ -181,6 +182,10 @@
             pages.forEach(page => page.classList.add('hidden')); // Hide all pages
             document.getElementById(pageId).classList.remove('hidden'); // Show the selected page
         }
+
+        window.onload = function() {
+            loadAttributes();
+        };
     </script>
 </body>
 </html>
