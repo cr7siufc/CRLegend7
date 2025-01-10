@@ -14,7 +14,7 @@
                 <li><button onclick="showPage('home')">Home</button></li>
                 <li><button onclick="showPage('improvements')">Improvements</button></li>
                 <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards & Offers</button></li>
+                <li><button onclick="showPage('rewards')">Rewards</button></li>
             </ul>
         </nav>
     </header>
@@ -44,8 +44,21 @@
     </main>
 
     <main id="rewards" class="hidden">
-        <h1>Rewards & Offers</h1>
-        <p>Check for available rewards and offers!</p>
+        <h1>Rewards</h1>
+        <section id="ads">
+            <h2>Ads</h2>
+            <p>Check out these advertisements to support the game!</p>
+        </section>
+        <section id="tasks">
+            <h2>Task</h2>
+            <p>Complete the following tasks to earn 1000 CR7SIU points each:</p>
+            <ul>
+                <li><a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" onclick="markTaskCompleted('youtube')">Subscribe to our YouTube Channel</a></li>
+                <li><a href="https://x.com/cr7siucoin" target="_blank" onclick="markTaskCompleted('x')">Join our X Account</a></li>
+                <li><a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" onclick="markTaskCompleted('facebook')">Like and Join our Facebook Page</a></li>
+            </ul>
+            <div id="task-message"></div>
+        </section>
     </main>
 
     <!-- New Username Setup Dialog -->

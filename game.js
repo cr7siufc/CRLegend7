@@ -2,8 +2,8 @@
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
+let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || {};
 
-// Show the username setup if it's the user's first session
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
     document.getElementById("username-input").focus();
@@ -67,6 +67,31 @@ function convertToTokens() {
         alert(`You converted ${tokens} CR7SIU tokens!`);
     } else {
         alert("You don't have enough points to convert.");
+    }
+}
+
+// Task Completion Tracker
+function markTaskCompleted(task) {
+    if (!completedTasks[task]) {
+        completedTasks[task] = true;
+        localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+        document.getElementById("task-message").textContent = `You have completed the task for ${task}. You earned 1000 CR7SIU Points!`;
+        currentPoints += 1000;
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    } else {
+        document.getElementById("task-message").textContent = "Task already completed. No additional reward.";
+    }
+}
+
+// Validate completed tasks before giving points (Task conditions)
+function validateTask(task) {
+    if (completedTasks[task]) {
+        currentPoints += 1000;
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    } else {
+        document.getElementById("task-message").textContent = "Task not completed. Retry.";
     }
 }
 
