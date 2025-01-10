@@ -114,8 +114,10 @@
             alert("You earned points!");
         }
 
-        // Initialize the page
-        checkUsername();
+        // Initialize the page and check for existing username
+        window.onload = function() {
+            checkUsername();
+        };
     </script>
 
     <script src="game.js"></script>
