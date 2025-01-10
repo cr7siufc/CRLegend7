@@ -228,6 +228,13 @@
 
         window.onload = function() {
             loadAttributes();
+            if (!localStorage.getItem('playerUsername')) {
+                let username = prompt("Please enter your username");
+                localStorage.setItem('playerUsername', username);
+                document.getElementById("player-username").textContent = username;
+            } else {
+                document.getElementById("player-username").textContent = localStorage.getItem('playerUsername');
+            }
         };
     </script>
 </body>
