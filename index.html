@@ -8,69 +8,38 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to CR7SIU Crypto</h1>
-        <nav>
-            <ul>
-                <li><button onclick="showPage('home')">Home</button></li>
-                <li><button onclick="showPage('improvements')">Improvements</button></li>
-                <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards</button></li>
-            </ul>
-        </nav>
+        <h1>CR7SIU Fan Game</h1>
     </header>
 
-    <main id="home">
-        <h2>Player Dashboard</h2>
-        <p>Level: <span id="player-level">1</span></p>
-        <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
+    <main>
+        <div id="score-info">
+            <div id="left-info">
+                <p><strong>Player Level:</strong> 5</p>
+                <p><strong>Total Score:</strong> 2300</p>
+            </div>
+            <div id="right-info">
+                <p><strong>CR7SIU Points:</strong> 200</p>
+                <p><strong>CR7SIU Tokens:</strong> 2</p>
+            </div>
+        </div>
+
+        <!-- Tap-to-Earn Section -->
         <div id="tap-to-earn" onclick="earnPoints()">
-            <img src="cr7_poster6.jpg" alt="Tap to Earn" />
+            <!-- The CR7SIU image background will be set from CSS -->
         </div>
+
+        <!-- Improvements Button, Airdrop, etc. -->
+
     </main>
 
-    <main id="improvements" class="hidden">
-        <h1>Improvements</h1>
-        <p>Upgrade your football skills to earn more points!</p>
-        <div id="attributes-container">
-            <!-- Attributes will be dynamically inserted here -->
-        </div>
-    </main>
-
-    <main id="airdrop" class="hidden">
-        <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points to CR7SIU Tokens</p>
-        <button onclick="convertToTokens()">Convert Points</button>
-        <h2>Buy More Points (Feature Coming Soon)</h2>
-        <button onclick="buyPoints()">Buy More Points</button>
-    </main>
-
-    <main id="rewards" class="hidden">
-        <h1>Rewards</h1>
-        <section id="ads">
-            <h2>Ads</h2>
-            <p>Check out these advertisements to support the game!</p>
-        </section>
-        <section id="tasks">
-            <h2>Task</h2>
-            <p>Complete the following tasks to earn 1000 CR7SIU points each:</p>
-            <ul>
-                <li><a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" onclick="markTaskCompleted('youtube')">Subscribe to our YouTube Channel</a></li>
-                <li><a href="https://x.com/cr7siucoin" target="_blank" onclick="markTaskCompleted('x')">Join our X Account</a></li>
-                <li><a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" onclick="markTaskCompleted('facebook')">Like and Join our Facebook Page</a></li>
-            </ul>
-            <div id="task-message"></div>
-            <button onclick="validateTask('youtube')">Claim Rewards for YouTube Task</button>
-            <button onclick="validateTask('x')">Claim Rewards for X Task</button>
-            <button onclick="validateTask('facebook')">Claim Rewards for Facebook Task</button>
-        </section>
-    </main>
-
-    <!-- New Username Setup Dialog -->
-    <div id="username-setup" class="hidden">
-        <h2>Welcome! Please enter your username to start:</h2>
-        <input type="text" id="username-input" placeholder="Enter Username">
-        <button onclick="setUsername()">Set Username</button>
-    </div>
+    <nav>
+        <ul>
+            <li><button onclick="goHome()">Home</button></li>
+            <li><button onclick="goToImprovements()">Improvements</button></li>
+            <li><button onclick="goToAirdrop()">Airdrop</button></li>
+            <li><button onclick="goToRewards()">Rewards</button></li>
+        </ul>
+    </nav>
 
     <script src="game.js"></script>
 </body>

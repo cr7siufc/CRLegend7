@@ -1,134 +1,40 @@
-// Store username and points in localStorage
-let username = localStorage.getItem("username");
-let currentPoints = parseInt(localStorage.getItem("points")) || 0;
-let playerLevel = parseInt(localStorage.getItem("level")) || 1;
-let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || {};
+// Example of handling taps and actions for the tap-to-earn game
 
-if (!username) {
-    document.getElementById("username-setup").classList.remove("hidden");
-    document.getElementById("username-input").focus();
-} else {
-    loadSession();
-}
+let totalPoints = 2300;
+let cr7siuPoints = 200;
+let cr7siuTokens = 2;
 
-// Set username
-function setUsername() {
-    const input = document.getElementById("username-input").value.trim();
-    if (input !== "") {
-        localStorage.setItem("username", input);
-        username = input;
-        loadSession();
-    } else {
-        alert("Please enter a valid username.");
-    }
-}
-
-// Load session data
-function loadSession() {
-    document.getElementById("username-setup").classList.add("hidden");
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("player-level").textContent = playerLevel;
-    showPage('home');
-}
-
-// Show page based on button click
-function showPage(page) {
-    const pages = document.querySelectorAll("main");
-    pages.forEach(p => p.classList.add("hidden"));
-    document.getElementById(page).classList.remove("hidden");
-}
-
-// Handle points earning when the user taps
 function earnPoints() {
-    currentPoints += 5;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    updateLevel();
+    totalPoints += 10;
+    cr7siuPoints += 1;
+    cr7siuTokens = Math.floor(cr7siuPoints / 100);
+    updateScoreDisplay();
 }
 
-// Update player level based on points
-function updateLevel() {
-    playerLevel = Math.floor(currentPoints / 100000) + 1;
-    document.getElementById("player-level").textContent = playerLevel;
-    localStorage.setItem("level", playerLevel);
+function updateScoreDisplay() {
+    // Updating on-screen values for points and tokens
+    document.querySelector('#left-info').innerHTML = `
+        <p><strong>Player Level:</strong> 5</p>
+        <p><strong>Total Score:</strong> ${totalPoints}</p>
+    `;
+    document.querySelector('#right-info').innerHTML = `
+        <p><strong>CR7SIU Points:</strong> ${cr7siuPoints}</p>
+        <p><strong>CR7SIU Tokens:</strong> ${cr7siuTokens}</p>
+    `;
 }
 
-// Buy more points logic (to show feature not yet available)
-function buyPoints() {
-    alert("Feature coming soon");
+function goHome() {
+    alert("Navigating to Home.");
 }
 
-// Function to convert points to CR7SIU tokens
-function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 2500);
-    if (tokens > 0) {
-        alert(`You converted ${tokens} CR7SIU tokens!`);
-    } else {
-        alert("You don't have enough points to convert.");
-    }
+function goToImprovements() {
+    alert("Navigating to Improvements.");
 }
 
-// Task Completion Tracker and Validation Function
-function markTaskCompleted(task) {
-    if (!completedTasks[task]) {
-        completedTasks[task] = false;
-        localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
-        alert(`Complete the task for ${task} to earn 1000 CR7SIU points!`);
-    } else {
-        document.getElementById("task-message").textContent = "Task already completed. No additional reward.";
-    }
+function goToAirdrop() {
+    alert("Navigating to Airdrop.");
 }
 
-// Validate completed tasks before giving points (Task conditions)
-function validateTask(task) {
-    if (completedTasks[task] === false) {
-        completedTasks[task] = true;  // Mark as completed
-        currentPoints += 1000;
-        localStorage.setItem("points", currentPoints);
-        localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
-        document.getElementById("task-message").textContent = `You have completed the task for ${task}. You earned 1000 CR7SIU Points!`;
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    } else {
-        document.getElementById("task-message").textContent = "Task not completed. Retry.";
-    }
+function goToRewards() {
+    alert("Navigating to Rewards.");
 }
-
-// Initialize Improvements Page with 20 skills for upgrading
-function displayImprovements() {
-    const improvements = [
-        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 
-        'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 
-        'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 
-        'Ball Handling', 'Acceleration'
-    ];
-
-    const container = document.getElementById("attributes-container");
-    improvements.forEach((improvement, index) => {
-        const cost = 500 + 200 * index;
-        const card = document.createElement("div");
-        card.classList.add("attribute-card");
-        card.innerHTML = `
-            <h3>${improvement}</h3>
-            <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}" class="attribute-level">1</span></p>
-            <button onclick="upgradeSkill(${cost}, ${index})">Upgrade</button>
-        `;
-        container.appendChild(card);
-    });
-}
-
-// Handle skill upgrades
-function upgradeSkill(cost, index) {
-    if (currentPoints >= cost) {
-        currentPoints -= cost;
-        document.getElementById(`attribute-level-${index}`).textContent = parseInt(document.getElementById(`attribute-level-${index}`).textContent) + 1;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert("Upgrade successful!");
-    } else {
-        alert("Not enough points!");
-    }
-}
-
-// Initialize improvements page
-displayImprovements();
