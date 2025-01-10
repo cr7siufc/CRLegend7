@@ -3,33 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CR7SIU - Cristiano Ronaldo Fan Token</title>
+    <title>CR7SIU Fan Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>CR7SIU Fan Game</h1>
-            <div id="player-level" class="level">Player Level: 1</div>
-            <div id="total-score" class="score">Total Score: 0</div>
-            <div id="cr7siu-points" class="cr7-points">CR7SIU Points: 0</div>
-            <div id="cr7siu-tokens" class="cr7-tokens">CR7SIU Tokens: 0</div>
-        </header>
-        <div class="game-area">
-            <button id="tap-button" class="tap-button">
-                <img src="ronaldo-image.jpg" alt="Cristiano Ronaldo" />
-                Tap to Earn
-            </button>
+    <header>
+        <h1>Welcome to the CR7SIU Fan Game</h1>
+        <nav>
+            <ul>
+                <li><button onclick="showPage('home')">Home</button></li>
+                <li><button onclick="showPage('improvements')">Improvements</button></li>
+                <li><button onclick="showPage('airdrop')">Airdrop</button></li>
+                <li><button onclick="showPage('rewards')">Rewards & Offers</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="home">
+        <h2>Player Dashboard</h2>
+        <p>Level: <span id="player-level">1</span></p>
+        <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
+        <p>CR7SIU Tokens: <span id="tokens-display">0</span></p>
+        <div id="tap-to-earn" onclick="earnPoints()">
+            <div>Tap to Earn</div>
         </div>
-        <div class="footer">
-            <a href="#" class="footer-button">Home</a>
-            <a href="#" class="footer-button">Improvements</a>
-            <a href="#" class="footer-button">Airdrop</a>
-            <a href="#" class="footer-button">Rewards</a>
+        <button onclick="buyPoints()">Buy More Points</button>
+    </main>
+
+    <main id="improvements" class="hidden">
+        <h1>Improvements</h1>
+        <p>Upgrade your football skills to earn more points!</p>
+        <div id="attributes-container">
+            <!-- Attributes will be dynamically inserted here -->
         </div>
-        <div class="user-instructions">
-            <p>User Instructions: Tap the Ronaldo button to earn points and upgrade football attributes in the Improvements section. Collect CR7SIU tokens and participate in the airdrop!</p>
-        </div>
+    </main>
+
+    <main id="airdrop" class="hidden">
+        <h1>Airdrop</h1>
+        <p>Convert your CR7SIU points to CR7SIU Tokens</p>
+        <button onclick="convertToTokens()">Convert Points</button>
+    </main>
+
+    <main id="rewards" class="hidden">
+        <h1>Rewards & Offers</h1>
+        <p>Check for available rewards and offers!</p>
+    </main>
+
+    <!-- New Username Setup Dialog -->
+    <div id="username-setup" class="hidden">
+        <h2>Welcome! Please enter your username to start:</h2>
+        <input type="text" id="username-input" placeholder="Enter Username">
+        <button onclick="setUsername()">Set Username</button>
     </div>
 
     <script src="game.js"></script>
