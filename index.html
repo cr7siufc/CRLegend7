@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -81,6 +81,19 @@
         <input type="text" id="username-input" placeholder="Enter Username">
         <button onclick="setUsername()">Set Username</button>
     </div>
+
+    <footer>
+        <div id="player-info">
+            <span id="player-level-align">Player Level: <span id="player-level">1</span></span>
+            <span id="score-align">Score: <span id="score-display">0 CR7SIU Points</span></span>
+        </div>
+        <div id="bottom-menu">
+            <button onclick="showPage('home')">Home</button>
+            <button onclick="showPage('improvements')">Improvements</button>
+            <button onclick="showPage('airdrop')">Airdrop</button>
+            <button onclick="showPage('rewards')">Rewards</button>
+        </div>
+    </footer>
 
     <script src="game.js"></script>
 </body>

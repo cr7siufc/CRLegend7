@@ -191,3 +191,16 @@ footer button:hover {
 footer button:focus {
     outline: none;
 }
+
+/* Alignment of Player Level and CR7SIU Tokens */
+#player-level-align, #score-align {
+    display: inline-block;
+}
+
+#player-level-align {
+    text-align: left;
+}
+
+#score-align {
+    text-align: right;
+}
