@@ -4,7 +4,16 @@ let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || {};
 let referralLink = localStorage.getItem("referralLink") || generateReferralLink(); // Referral link generator
-let improvementsData = JSON.parse(localStorage.getItem("improvements")) || {}; // Stores improvements levels
+let improvementsData = JSON.parse(localStorage.getItem("improvements")) || Array(20).fill(1); // Ensure all skills are initialized to level 1
+
+// Initialize Improvements for users without data
+function initializeImprovementsData() {
+    // If improvementsData doesn't exist, initialize with level 1 for all 20 attributes
+    if (!localStorage.getItem("improvements")) {
+        const defaultImprovementsData = Array(20).fill(1); // Default: all attributes start at level 1
+        localStorage.setItem("improvements", JSON.stringify(defaultImprovementsData));
+    }
+}
 
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
@@ -33,6 +42,9 @@ function generateReferralLink() {
 
 // Load session data
 function loadSession() {
+    // Initialize improvements if they don't exist
+    initializeImprovementsData();
+
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("player-level").textContent = playerLevel;
@@ -171,3 +183,4 @@ function handleReferral(referrerUsername) {
 
 // Initialize improvements page
 displayImprovements();
+
