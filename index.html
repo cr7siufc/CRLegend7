@@ -18,10 +18,42 @@
             justify-content: center;
             align-items: center;
         }
+
         #tap-to-earn p {
             color: orange;
             font-size: 24px;
             font-weight: bold;
+        }
+
+        #player-info {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #player-level-align {
+            text-align: left;
+        }
+
+        #score-align {
+            text-align: right;
+        }
+
+        #bottom-menu {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        #bottom-menu p {
+            width: 48%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .attribute-card {
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -40,7 +72,7 @@
 
     <main id="home">
         <h2>Player Dashboard</h2>
-        <div id="player-info" class="left-right">
+        <div id="player-info">
             <div id="player-level-align">
                 <p>Player Level: <span id="player-level">1</span></p>
                 <p>Username: <span id="player-username">Player</span></p>

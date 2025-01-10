@@ -139,7 +139,7 @@ function displayImprovements() {
         const currentLevel = improvementsData[index] || 1;
         const card = document.createElement("div");
         card.classList.add("attribute-card");
-        card.innerHTML = `        
+        card.innerHTML = `
             <h3>${improvement}</h3>
             <p>Upgrade Cost: ${cost} points</p>
             <p>Level: <span id="attribute-level-${index}" class="attribute-level">${currentLevel}</span></p>
@@ -153,7 +153,7 @@ function displayImprovements() {
 function upgradeSkill(cost, index, improvement) {
     if (currentPoints >= cost) {
         currentPoints -= cost;
-        improvementsData[index] = (improvementsData[index] || 0) + 1;
+        improvementsData[index] = (improvementsData[index] || 1) + 1;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("improvements", JSON.stringify(improvementsData));
         document.getElementById(`attribute-level-${index}`).textContent = improvementsData[index];
