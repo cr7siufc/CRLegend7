@@ -30,7 +30,6 @@
     <!-- Home Page -->
     <main id="home" class="hidden">
         <h2>Player Dashboard</h2>
-
         <div class="home-info">
             <div class="info-left">
                 <p><strong>Username:</strong> <span id="username"></span></p>
@@ -58,7 +57,6 @@
     <!-- Improvements Page -->
     <main id="improvements" class="hidden">
         <h2>Football Skill Improvements</h2>
-
         <div id="attributes-container">
             <div class="attribute-card">
                 <h3>Stamina</h3>
@@ -103,7 +101,6 @@
         // Check if username already exists in local storage and display relevant content
         function checkUsername() {
             const username = localStorage.getItem('username');
-            console.log("Stored username:", username); // Debugging line
             if (username) {
                 // If there's already a saved username, show the home page and hide the setup
                 document.getElementById('username-setup').style.display = 'none';
