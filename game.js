@@ -1,9 +1,14 @@
-// Store username, points, tokens, and attribute progress in localStorage
+// Store username, points, tokens, attribute progress, and task completion in localStorage
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
+let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || {
+    youtube: false,
+    xAccount: false,
+    facebook: false
+};
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -32,7 +37,8 @@ function loadSession() {
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
-    displayImprovements(); // Ensure attributes are displayed with correct levels
+    displayImprovements();
+    displayTasks(); // Display tasks for rewards validation
     showPage('home');
 }
 
@@ -67,9 +73,9 @@ function buyPoints() {
 
 // Function to convert points to CR7SIU tokens
 function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 100); // Conversion rate: 100 points = 1 token
+    const tokens = Math.floor(currentPoints / 100);
     if (tokens > 0) {
-        currentPoints -= tokens * 100; // Deduct points after conversion
+        currentPoints -= tokens * 100;
         currentTokens += tokens;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("tokens", currentTokens);
@@ -78,6 +84,58 @@ function convertToTokens() {
         alert(`You converted ${tokens} CR7SIU tokens!`);
     } else {
         alert("You don't have enough points to convert.");
+    }
+}
+
+// Display tasks for rewards validation
+function displayTasks() {
+    const tasksContainer = document.getElementById("tasks-container");
+    tasksContainer.innerHTML = `
+        <div class="task">
+            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank">Subscribe to our YouTube Channel</a>
+            <button onclick="completeTask('youtube')">Mark as Done</button>
+        </div>
+        <div class="task">
+            <a href="https://x.com/cr7siucoin" target="_blank">Join our X Account</a>
+            <button onclick="completeTask('xAccount')">Mark as Done</button>
+        </div>
+        <div class="task">
+            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank">Like and Join our Facebook Page</a>
+            <button onclick="completeTask('facebook')">Mark as Done</button>
+        </div>
+    `;
+    updateTaskButtons();
+}
+
+// Mark a task as completed
+function completeTask(task) {
+    tasksCompleted[task] = true;
+    localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+    alert(`Task "${task}" marked as completed!`);
+    updateTaskButtons();
+}
+
+// Update task buttons based on completion status
+function updateTaskButtons() {
+    document.querySelectorAll(".task button").forEach((button, index) => {
+        const taskKeys = Object.keys(tasksCompleted);
+        if (tasksCompleted[taskKeys[index]]) {
+            button.disabled = true;
+            button.textContent = "Completed";
+            button.classList.add("completed");
+        }
+    });
+}
+
+// Claim Rewards
+function claimRewards() {
+    if (tasksCompleted.youtube && tasksCompleted.xAccount && tasksCompleted.facebook) {
+        currentPoints += 1000; // Add reward points
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        alert("Congratulations! You earned 1000 CR7SIU Points for completing all tasks.");
+    } else {
+        alert("Task not completed. Retry.");
     }
 }
 
@@ -112,7 +170,7 @@ function upgradeSkill(attribute, index, cost) {
     const level = attributes[attribute] || 1;
     if (currentPoints >= cost) {
         currentPoints -= cost;
-        attributes[attribute] = level + 1; // Increase attribute level
+        attributes[attribute] = level + 1;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("attributes", JSON.stringify(attributes));
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
@@ -132,5 +190,6 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// Initialize improvements page
+// Initialize the app
 displayImprovements();
+displayTasks();
