@@ -54,14 +54,12 @@ main {
     display: none;
 }
 
-/* Tap-to-Earn Button with Image */
+/* Tap-to-Earn Button (Black Background) */
 #tap-to-earn {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster6.jpg"); /* Updated Tap-to-Earn image */
-    background-size: cover;
-    background-position: center;
+    background-color: #000000; /* Black background */
     border: 2px solid #ffffff;
     margin: 20px auto;
     display: flex;
