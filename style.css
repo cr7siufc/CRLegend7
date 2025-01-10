@@ -13,7 +13,7 @@ body {
 header {
     text-align: center;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.9); /* HD effect */
+    background-color: rgba(0, 0, 0, 0.9);
     color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
     text-transform: uppercase;
@@ -25,7 +25,7 @@ nav ul {
     padding: 0;
     display: flex;
     justify-content: center;
-    gap: 30px; /* Increased spacing for HD look */
+    gap: 30px;
     margin: 20px 0;
 }
 
@@ -34,9 +34,9 @@ nav li {
 }
 
 nav button {
-    background-color: #333333; /* Darker shade for better contrast */
+    background-color: #333333;
     color: #ffffff;
-    border: 2px solid #ffcc00; /* Highlighted border for HD look */
+    border: 2px solid #ffcc00;
     padding: 12px 25px;
     border-radius: 8px;
     cursor: pointer;
@@ -55,43 +55,68 @@ main {
     padding: 40px 20px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Vertical alignment */
+    align-items: center;
     justify-content: center;
-    min-height: 80vh; /* Ensures vertical center alignment */
-}
-
-.hidden {
-    display: none;
-}
-
-#progress-info {
-    text-align: center;
-    margin: 15px 0;
-    font-size: 1.2em;
-    font-weight: bold;
+    min-height: 80vh;
 }
 
 /* Home Page */
+.home-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 80%; /* Adjust layout width */
+    margin: 0 auto 30px auto; /* Vertical alignment spacing */
+    font-size: 1.1em;
+}
+
+.info-left {
+    text-align: left;
+}
+
+.info-right {
+    text-align: right;
+}
+
 #tap-to-earn {
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster6.jpg"); /* Updated image */
+    background-image: url("images/cr7_poster6.jpg");
     background-size: cover;
     background-position: center;
     border: 6px solid #ffffff;
-    margin: 30px auto;
+    margin: 20px auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.9); /* HD shadow effect */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.9);
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 #tap-to-earn:hover {
-    transform: scale(1.15); /* Zooms in slightly on hover */
+    transform: scale(1.15);
     box-shadow: 0 12px 18px rgba(0, 0, 0, 1);
+}
+
+#click-to-earn-text {
+    font-size: 1.2em;
+    color: #ffcc00;
+    font-weight: bold;
+    margin-top: 10px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+/* Vision Note */
+#vision-note {
+    font-size: 1.3em;
+    margin-top: 20px;
+    color: #ffcc00;
+    text-align: justify;
+    max-width: 90%;
+    margin: 20px auto;
+    font-style: italic;
 }
 
 /* Tap-to-Earn Button Text */
@@ -99,28 +124,17 @@ main {
     display: none; /* Hidden because button functionality is visual */
 }
 
-/* Vision Note */
-#vision-note {
-    font-size: 1.3em;
-    margin-top: 20px;
-    color: #ffcc00; /* Highlighted color */
-    text-align: justify;
-    max-width: 90%;
-    margin: 20px auto;
-    font-style: italic;
-}
-
 /* Improvements Page */
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusted for HD */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     max-width: 90%;
     margin: 0 auto;
 }
 
 .attribute-card {
-    background-color: rgba(50, 50, 50, 0.95); /* Darker opacity for HD look */
+    background-color: rgba(50, 50, 50, 0.95);
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -151,34 +165,9 @@ main {
     color: #333333;
 }
 
-/* Rewards Page */
-#tasks-container button {
-    background-color: #333333;
-    color: white;
-    border: 2px solid #ffcc00;
-    padding: 12px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-    margin: 10px auto;
-    font-weight: bold;
-}
-
-#tasks-container button:hover {
-    background-color: #ffcc00;
-    color: #333333;
-    transform: scale(1.1);
-}
-
-#task-validation-message {
-    font-style: italic;
-    font-weight: bold;
-    margin: 10px auto;
-}
-
 /* Username Setup */
 #username-setup {
-    background-color: rgba(0, 0, 0, 0.8); /* Slightly darker overlay */
+    background-color: rgba(0, 0, 0, 0.8);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -203,8 +192,8 @@ main {
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     nav ul {
-        flex-direction: row; /* Horizontal buttons on smaller screens */
-        gap: 15px; /* Reduced gap */
+        flex-direction: row;
+        gap: 15px;
     }
 
     #tap-to-earn {
@@ -214,5 +203,11 @@ main {
 
     .attribute-card {
         width: 100%;
+    }
+
+    .home-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 }

@@ -21,26 +21,23 @@
 
     <!-- User Progress Bar on All Pages -->
     <div id="progress-info">
-        <span id="username-display">Username: </span> |
+        <span id="username-display">Username: User123</span> |
         <span id="player-level-display">Level: 1</span> |
         <span id="score-display">CR7SIU Points: 0</span> |
         <span id="tokens-display">CR7SIU Tokens: 0</span>
     </div>
 
+    <!-- Home Page -->
     <main id="home">
         <h2>Player Dashboard</h2>
         
-        <div id="username-display-container">
-            <div id="username-container">
-                <p><strong>Username:</strong> <span id="username"></span></p>
-            </div>
-            <div id="player-level-container">
-                <p><strong>Player Level:</strong> <span id="player-level">1</span></p>
-            </div>
-            <div id="cr7siu-points-container">
+        <div class="home-info">
+            <div class="info-left">
+                <p><strong>Username:</strong> <span id="username">User123</span></p>
                 <p><strong>CR7SIU Points:</strong> <span id="cr7siu-points">0</span></p>
             </div>
-            <div id="cr7siu-tokens-container">
+            <div class="info-right">
+                <p><strong>Player Level:</strong> <span id="player-level">1</span></p>
                 <p><strong>CR7SIU Tokens:</strong> <span id="cr7siu-tokens">0</span></p>
             </div>
         </div>
@@ -48,6 +45,7 @@
         <div id="tap-to-earn" onclick="earnPoints()">
             <button id="tap-button">Tap to Earn</button>
         </div>
+        <p id="click-to-earn-text">Click here to Earn</p>
 
         <div id="vision-note">
             <p>
@@ -57,6 +55,7 @@
         </div>
     </main>
 
+    <!-- Improvements Page -->
     <main id="improvements" class="hidden">
         <h1>Improvements</h1>
         <p>Upgrade your football skills to earn more points and cashback!</p>
@@ -65,6 +64,7 @@
         </div>
     </main>
 
+    <!-- Airdrop Page -->
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
         <p>Convert your CR7SIU points into CR7SIU Tokens:</p>
@@ -73,6 +73,7 @@
         <button onclick="buyPoints()">Buy More Points</button>
     </main>
 
+    <!-- Rewards Page -->
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
         <p>Complete tasks to earn 1000 CR7SIU points:</p>
@@ -88,6 +89,7 @@
         </div>
     </main>
 
+    <!-- Username Setup Page -->
     <div id="username-setup" class="hidden">
         <h2>Welcome! Enter your unique username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
