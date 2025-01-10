@@ -139,8 +139,8 @@
         // Function to handle page transitions
         function showPage(page) {
             let pages = document.querySelectorAll('main');
-            pages.forEach(p => p.style.display = 'none'); // Hide all pages
-            document.getElementById(page).style.display = 'block'; // Show the selected page
+            pages.forEach(p => p.classList.add('hidden')); // Hide all pages
+            document.getElementById(page).classList.remove('hidden'); // Show the selected page
         }
 
         // Placeholder function for earning points (for example purposes)

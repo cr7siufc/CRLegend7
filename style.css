@@ -58,6 +58,7 @@ main {
     align-items: center;
     justify-content: center;
     min-height: 80vh;
+    display: none; /* Make pages hidden initially */
 }
 
 /* Home Page */
@@ -210,4 +211,9 @@ main {
         align-items: center;
         text-align: center;
     }
+}
+
+/* Showing pages based on selection */
+#home:target, #improvements:target, #airdrop:target, #rewards:target {
+    display: block !important;
 }
