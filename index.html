@@ -3,211 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CR7SIU Crypto</title>
+    <title>CR7SIU - Cristiano Ronaldo Fan Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Welcome to CR7SIU Crypto</h1>
+        <h1>CR7SIU - Cristiano Ronaldo Fan Game</h1>
         <nav>
             <ul>
-                <li><button onclick="showPage('home')">Home</button></li>
-                <li><button onclick="showPage('improvements')">Improvements</button></li>
-                <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards</button></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#username-setup">Start Game</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- User Progress Bar on All Pages -->
-    <div id="progress-info">
-        <span id="username-display">Username: </span> |
-        <span id="player-level-display">Level: 1</span> |
-        <span id="score-display">CR7SIU Points: 0</span> |
-        <span id="tokens-display">CR7SIU Tokens: 0</span>
-    </div>
-
-    <!-- Home Page -->
-    <main id="home" class="hidden">
-        <h2>Player Dashboard</h2>
+    <main id="home">
         <div class="home-info">
             <div class="info-left">
-                <p><strong>Username:</strong> <span id="username"></span></p>
-                <p><strong>CR7SIU Points:</strong> <span id="cr7siu-points">0</span></p>
+                <p>Welcome to the CR7SIU fan game! Earn CR7SIU coins by tapping on Ronaldo's image.</p>
             </div>
             <div class="info-right">
-                <p><strong>Player Level:</strong> <span id="player-level">1</span></p>
-                <p><strong>CR7SIU Tokens:</strong> <span id="cr7siu-tokens">0</span></p>
+                <p>Points: <span id="points">0</span></p>
             </div>
         </div>
 
         <div id="tap-to-earn" onclick="earnPoints()">
-            <button id="tap-button">Tap to Earn</button>
+            <div id="click-to-earn-text">Tap to Earn Points!</div>
         </div>
-        <p id="click-to-earn-text">Click here to Earn</p>
-
         <div id="vision-note">
-            <p>
-                Vision: CR7SIU Meme Coin is a cryptocurrency designed to celebrate the legacy of Cristiano Ronaldo while fostering engagement among football fans, crypto enthusiasts, and gamers. 
-                By connecting fans with exclusive content, NFTs, and token-based utilities, CR7SIU creates a unique and profitable digital ecosystem.
-            </p>
+            <p>By tapping, you help unlock exclusive Ronaldo-related rewards and collectibles. Let's see how far you can go!</p>
         </div>
     </main>
 
-    <!-- Improvements Page -->
-    <main id="improvements" class="hidden">
-        <h2>Football Skill Improvements</h2>
-        <p id="user-instructions">
-            Instructions: Each attribute can be upgraded using CR7SIU points. The upgrade cost starts at 500 points for the first rank and increases by 200 points with each level. Once you reach a multiple of 10 levels, you will receive a cashback of 2500 points to your CR7SIU points.
-        </p>
-        <div id="attributes-container">
-            <!-- Dynamically generating attributes -->
-            <div class="attribute-card">
-                <h3>Stamina</h3>
-                <p>Increase player endurance for longer performance.</p>
-                <p>Upgrade Cost: <span id="stamina-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('stamina')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Strength</h3>
-                <p>Enhance player’s strength to perform better in tackles.</p>
-                <p>Upgrade Cost: <span id="strength-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('strength')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Dribbling</h3>
-                <p>Improve your dribbling skills to bypass defenders.</p>
-                <p>Upgrade Cost: <span id="dribbling-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('dribbling')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Header</h3>
-                <p>Increase header ability for better aerial performance.</p>
-                <p>Upgrade Cost: <span id="header-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('header')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Shooting Power</h3>
-                <p>Increase shooting power for more accurate long shots.</p>
-                <p>Upgrade Cost: <span id="shooting-power-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('shooting-power')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Passing</h3>
-                <p>Improve accuracy and speed of passing.</p>
-                <p>Upgrade Cost: <span id="passing-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('passing')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Speed</h3>
-                <p>Increase player’s pace for faster movements on the field.</p>
-                <p>Upgrade Cost: <span id="speed-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('speed')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Ball Control</h3>
-                <p>Enhance your ball control in tight spaces.</p>
-                <p>Upgrade Cost: <span id="ball-control-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('ball-control')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Vision</h3>
-                <p>Improve ability to spot passing opportunities.</p>
-                <p>Upgrade Cost: <span id="vision-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('vision')">Upgrade</button>
-            </div>
-            <div class="attribute-card">
-                <h3>Technique</h3>
-                <p>Enhance the player's technical skills for more precise control.</p>
-                <p>Upgrade Cost: <span id="technique-cost">500</span> Points</p>
-                <button onclick="upgradeSkill('technique')">Upgrade</button>
-            </div>
-            <!-- Add remaining attributes similarly -->
-        </div>
-    </main>
-
-    <!-- Airdrop Page -->
-    <main id="airdrop" class="hidden">
-        <h2>Airdrop</h2>
-        <p>Airdrop is currently under maintenance. Stay tuned for upcoming promotions!</p>
-    </main>
-
-    <!-- Rewards Page -->
-    <main id="rewards" class="hidden">
-        <h2>Rewards</h2>
-        <p>Coming soon! You'll be able to exchange CR7SIU points for exclusive rewards!</p>
-    </main>
-
-    <!-- Username Setup Page (Only visible if no username is set) -->
     <div id="username-setup">
-        <h2>Welcome! Enter your unique username to start:</h2>
-        <input type="text" id="username-input" placeholder="Enter Username">
-        <button onclick="setUsername()">Set Username</button>
-        <p id="error-message" style="color:red; display:none;">Please enter a valid username</p>
+        <h3>Enter Your Name to Begin</h3>
+        <input type="text" id="username" placeholder="Enter Username" required>
+        <button onclick="startGame()">Start Game</button>
     </div>
-
-    <script>
-        // Check if username already exists in local storage and display relevant content
-        function checkUsername() {
-            const username = localStorage.getItem('username');
-            if (username) {
-                // If there's already a saved username, show the home page and hide the setup
-                document.getElementById('username-setup').style.display = 'none';
-                document.getElementById('home').style.display = 'block';
-                // Restore the stored username and update the UI
-                document.getElementById('username').textContent = username;
-                document.getElementById('username-display').textContent = `Username: ${username}`;
-            } else {
-                // If no username is stored, show the setup screen
-                document.getElementById('username-setup').style.display = 'block';
-                document.getElementById('home').style.display = 'none';
-            }
-        }
-
-        // Function to set the username
-        function setUsername() {
-            const username = document.getElementById('username-input').value.trim();
-
-            // Validate if username is non-empty and contains only spaces
-            if (username === "") {
-                document.getElementById('error-message').style.display = "block"; // Show error message
-                return;
-            }
-
-            // Save the valid username in localStorage
-            localStorage.setItem('username', username);
-            // Update the username in the UI
-            document.getElementById('username').textContent = username;
-            document.getElementById('username-display').textContent = `Username: ${username}`;
-            // Hide the username setup and show the home page
-            document.getElementById('username-setup').style.display = 'none';
-            document.getElementById('home').style.display = 'block';
-            document.getElementById('error-message').style.display = "none"; // Hide error message
-        }
-
-        // Function to handle page transitions
-        function showPage(page) {
-            let pages = document.querySelectorAll('main');
-            pages.forEach(p => p.classList.add('hidden')); // Hide all pages
-            document.getElementById(page).classList.remove('hidden'); // Show the selected page
-        }
-
-        // Placeholder function for earning points (for example purposes)
-        function earnPoints() {
-            alert("You earned points!");
-        }
-
-        // Function for upgrading skills (attributes) in the improvements page
-        function upgradeSkill(skill) {
-            alert(`Upgraded ${skill}!`);
-            // Logic for upgrading each skill goes here, updating points and player level accordingly
-        }
-
-        // Initialize the page and check for existing username
-        window.onload = function() {
-            checkUsername();
-        };
-    </script>
 
     <script src="game.js"></script>
 </body>
