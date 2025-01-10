@@ -138,6 +138,14 @@ function upgradeSkill(cost, index) {
             document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
             alert("You have received cashback of 2500 CR7SIU Points!");
         }
+
+        // Bonus after every 5 levels upgrade
+        if (parseInt(document.getElementById(`attribute-level-${index}`).textContent) % 5 === 0) {
+            currentPoints += 5000;
+            localStorage.setItem("points", currentPoints);
+            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+            alert("You have earned a bonus of 5000 CR7SIU Points!");
+        }
     } else {
         alert("Not enough points!");
     }

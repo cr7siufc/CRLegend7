@@ -54,6 +54,14 @@ main {
     display: none;
 }
 
+/* Aligning Player Info */
+#player-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    font-size: 16px;
+}
+
 /* Tap-to-Earn Button (Black Background) */
 #tap-to-earn {
     width: 200px;
@@ -152,4 +160,34 @@ main {
 
 #referral-section button:hover {
     background-color: #888888;
+}
+
+/* Page Navigation Buttons */
+footer {
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #444444;
+    padding: 10px;
+}
+
+footer button {
+    flex: 1;
+    background-color: #444444;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+footer button:hover {
+    background-color: #888888;
+}
+
+footer button:focus {
+    outline: none;
 }
