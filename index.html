@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CR7SIU Fan Game</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #tap-to-earn {
+            text-align: center;
+            background: url('cr7_poster6.jpg') no-repeat center;
+            background-size: cover;
+            width: 200px;
+            height: 200px;
+            margin-top: 1in;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #tap-to-earn p {
+            color: orange;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -33,7 +52,7 @@
         </div>
         <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
         <div id="tap-to-earn" onclick="earnPoints()">
-            <img src="cr7_poster6.jpg" alt="Tap to Earn" />
+            <p>Tap to Earn</p>
         </div>
     </main>
 
@@ -132,7 +151,7 @@
             card.classList.add('attribute-card');
             card.innerHTML = `
                 <h3>${attribute.charAt(0).toUpperCase() + attribute.slice(1)}</h3>
-                <p id="${attribute}-level">Level: ${attributes[attribute] / 200}</p>
+                <p id="${attribute}-level">Level: ${Math.floor(attributes[attribute] / 200) + 1}</p>
                 <button id="upgrade-${attribute}" onclick="upgradeAttribute('${attribute}')">Upgrade</button>
             `;
             container.appendChild(card);

@@ -139,7 +139,7 @@ function displayImprovements() {
         const currentLevel = improvementsData[index] || 1;
         const card = document.createElement("div");
         card.classList.add("attribute-card");
-        card.innerHTML = `
+        card.innerHTML = `        
             <h3>${improvement}</h3>
             <p>Upgrade Cost: ${cost} points</p>
             <p>Level: <span id="attribute-level-${index}" class="attribute-level">${currentLevel}</span></p>
