@@ -87,7 +87,7 @@ function convertToTokens() {
     }
 }
 
-// Display football skill improvements
+// Display football skill improvements with adjusted costs and levels
 function displayImprovements() {
     const improvements = [
         'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing',
@@ -123,6 +123,13 @@ function upgradeSkill(cost, index) {
         localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `CR7SIU Points: ${currentPoints}`;
         alert(`Upgrade successful! You received ${cashback} points as cashback.`);
+        
+        // Cashback applied at every 10th upgrade level
+        if (parseInt(levelSpan.textContent) % 10 === 0) {
+            alert(`You have reached a 10th level for ${improvement}, enjoy a cashback of 2500 points!`);
+            currentPoints += 2500; // Additional cashback on every 10th level upgrade
+            localStorage.setItem("points", currentPoints);
+        }
     } else {
         alert("Not enough points!");
     }

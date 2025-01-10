@@ -166,6 +166,23 @@ main {
     color: #333333;
 }
 
+.attribute-card .attribute-level {
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+.attribute-card p {
+    font-size: 1em;
+}
+
+/* Cashback Message */
+.cashback-message {
+    margin-top: 10px;
+    color: #ffcc00;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
 /* Username Setup */
 #username-setup {
     background-color: rgba(0, 0, 0, 0.8);

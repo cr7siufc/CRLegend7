@@ -57,24 +57,72 @@
     <!-- Improvements Page -->
     <main id="improvements" class="hidden">
         <h2>Football Skill Improvements</h2>
+        <p id="user-instructions">
+            Instructions: Each attribute can be upgraded using CR7SIU points. The upgrade cost starts at 500 points for the first rank and increases by 200 points with each level. Once you reach a multiple of 10 levels, you will receive a cashback of 2500 points to your CR7SIU points.
+        </p>
         <div id="attributes-container">
-            <!-- Dynamically generating attributes using a JS function can make adding more easier in the future -->
+            <!-- Dynamically generating attributes -->
             <div class="attribute-card">
                 <h3>Stamina</h3>
                 <p>Increase player endurance for longer performance.</p>
+                <p>Upgrade Cost: <span id="stamina-cost">500</span> Points</p>
                 <button onclick="upgradeSkill('stamina')">Upgrade</button>
             </div>
             <div class="attribute-card">
                 <h3>Strength</h3>
                 <p>Enhance player’s strength to perform better in tackles.</p>
+                <p>Upgrade Cost: <span id="strength-cost">500</span> Points</p>
                 <button onclick="upgradeSkill('strength')">Upgrade</button>
             </div>
             <div class="attribute-card">
                 <h3>Dribbling</h3>
                 <p>Improve your dribbling skills to bypass defenders.</p>
+                <p>Upgrade Cost: <span id="dribbling-cost">500</span> Points</p>
                 <button onclick="upgradeSkill('dribbling')">Upgrade</button>
             </div>
-            <!-- Add more attributes here -->
+            <div class="attribute-card">
+                <h3>Header</h3>
+                <p>Increase header ability for better aerial performance.</p>
+                <p>Upgrade Cost: <span id="header-cost">500</span> Points</p>
+                <button onclick="upgradeSkill('header')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Shooting Power</h3>
+                <p>Increase shooting power for more accurate long shots.</p>
+                <p>Upgrade Cost: <span id="shooting-power-cost">500</span> Points</p>
+                <button onclick="upgradeSkill('shooting-power')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Passing</h3>
+                <p>Improve accuracy and speed of passing.</p>
+                <p>Upgrade Cost: <span id="passing-cost">500</span> Points</p>
+                <button onclick="upgradeSkill('passing')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Speed</h3>
+                <p>Increase player’s pace for faster movements on the field.</p>
+                <p>Upgrade Cost: <span id="speed-cost">500</span> Points</p>
+                <button onclick="upgradeSkill('speed')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Ball Control</h3>
+                <p>Enhance your ball control in tight spaces.</p>
+                <p>Upgrade Cost: <span id="ball-control-cost">500</span> Points</p>
+                <button onclick="upgradeSkill('ball-control')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Vision</h3>
+                <p>Improve ability to spot passing opportunities.</p>
+                <p>Upgrade Cost: <span id="vision-cost">500</span> Points</p>
+                <button onclick="upgradeSkill('vision')">Upgrade</button>
+            </div>
+            <div class="attribute-card">
+                <h3>Technique</h3>
+                <p>Enhance the player's technical skills for more precise control.</p>
+                <p>Upgrade Cost: <span id="technique-cost">500</span> Points</p>
+                <button onclick="upgradeSkill('technique')">Upgrade</button>
+            </div>
+            <!-- Add remaining attributes similarly -->
         </div>
     </main>
 
