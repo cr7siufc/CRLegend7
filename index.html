@@ -9,23 +9,32 @@
 <body>
     <header>
         <h1>Welcome to the CR7SIU Fan Game</h1>
-        <nav>
-            <ul>
-                <li><button onclick="showPage('home')">Home</button></li>
-                <li><button onclick="showPage('improvements')">Improvements</button></li>
-                <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-                <li><button onclick="showPage('rewards')">Rewards</button></li>
-            </ul>
-        </nav>
+        <div style="display: flex; justify-content: space-between; padding: 0 15px;">
+            <div>
+                <p>Player Level: <span id="player-level">1</span></p>
+                <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p>
+            </div>
+            <div>
+                <p>CR7SIU Points: <span id="cr7siu-points">0</span></p>
+                <p>CR7SIU Tokens: <span id="tokens-display">0</span></p>
+            </div>
+        </div>
     </header>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li style="flex: 1;"><button onclick="showPage('home')">Home</button></li>
+            <li style="flex: 1;"><button onclick="showPage('improvements')">Improvements</button></li>
+            <li style="flex: 1;"><button onclick="showPage('airdrop')">Airdrop</button></li>
+            <li style="flex: 1;"><button onclick="showPage('rewards')">Rewards</button></li>
+        </ul>
+    </nav>
 
     <!-- Home Page -->
     <main id="home">
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
-        <p>Level: <span id="player-level">1</span></p>
-        <p>Score: <span id="score-display">0 CR7SIU Points</span></p>
-        <p>CR7SIU Tokens: <span id="tokens-display">0</span></p>
         <div id="tap-to-earn" onclick="earnPoints()">
             <div>Tap to Earn</div>
         </div>
@@ -53,16 +62,26 @@
         <h1>Rewards</h1>
         <div id="ads-section">
             <h2>Ads</h2>
-            <!-- Add ad content here if required -->
+            <p>Watch ads to earn extra rewards!</p>
         </div>
         <div id="task-section">
-            <h2>Task</h2>
+            <h2>Tasks</h2>
             <p>Complete the tasks below to earn 1000 CR7SIU points:</p>
-            <button onclick="completeTask('youtube')">Subscribe to our Youtube Channel</button>
-            <button onclick="completeTask('xAccount')">Join our X Account</button>
-            <button onclick="completeTask('facebook')">Like and join our Facebook Page</button>
-            <div id="task-feedback"></div>
+            <div class="task">
+                <a href="#" target="_blank">Subscribe to our Youtube Channel</a>
+                <button onclick="completeTask('youtube')">Validate</button>
+            </div>
+            <div class="task">
+                <a href="#" target="_blank">Join our X Account</a>
+                <button onclick="completeTask('xAccount')">Validate</button>
+            </div>
+            <div class="task">
+                <a href="#" target="_blank">Like and Join our Facebook Page</a>
+                <button onclick="completeTask('facebook')">Validate</button>
+            </div>
+            <p id="task-feedback"></p>
         </div>
+        <button id="claim-rewards-btn" onclick="claimRewards()">Claim Rewards</button>
     </main>
 
     <!-- New Username Setup Dialog -->
@@ -73,72 +92,5 @@
     </div>
 
     <script src="game.js"></script>
-    <script>
-        // Additional JavaScript for the new changes
-
-        // Show Page Function
-        function showPage(page) {
-            document.querySelectorAll('main').forEach((main) => main.classList.add('hidden'));
-            document.getElementById(page).classList.remove('hidden');
-            updateDisplayedValues();
-        }
-
-        // Set Username
-        function setUsername() {
-            var username = document.getElementById('username-input').value;
-            localStorage.setItem('username', username);  // Store in localStorage
-            document.getElementById('username-display').textContent = username;
-            document.getElementById('username-setup').classList.add('hidden');
-            showPage('home');
-        }
-
-        // Update User Stats on All Pages
-        function updateDisplayedValues() {
-            var username = localStorage.getItem('username');
-            document.getElementById('username-display').textContent = username || 'Not Set';
-            // Update the Points and Tokens across the pages
-            var score = localStorage.getItem('score') || 0;
-            var tokens = Math.floor(score / 100); // Example token calculation
-            document.getElementById('score-display').textContent = `${score} CR7SIU Points`;
-            document.getElementById('tokens-display').textContent = tokens;
-        }
-
-        // Convert CR7SIU Points to Tokens
-        function convertToTokens() {
-            var score = parseInt(localStorage.getItem('score') || '0');
-            if (score >= 100) {
-                var tokens = Math.floor(score / 100);
-                localStorage.setItem('tokens', tokens);
-                localStorage.setItem('score', score - (tokens * 100));  // Deduct the points used for conversion
-                updateDisplayedValues();
-            }
-        }
-
-        // Buy More Points (for demonstration purposes)
-        function buyPoints() {
-            alert("Buy points feature coming soon!");
-        }
-
-        // Validate Task Completion
-        function completeTask(task) {
-            var completed = false;
-
-            if (task === 'youtube') {
-                completed = window.confirm("Did you subscribe to our Youtube Channel?");
-            } else if (task === 'xAccount') {
-                completed = window.confirm("Did you join our X Account?");
-            } else if (task === 'facebook') {
-                completed = window.confirm("Did you like and join our Facebook Page?");
-            }
-
-            if (completed) {
-                localStorage.setItem('score', parseInt(localStorage.getItem('score') || '0') + 1000);
-                updateDisplayedValues();
-                document.getElementById('task-feedback').textContent = "Task Completed! You've earned 1000 CR7SIU points.";
-            } else {
-                document.getElementById('task-feedback').textContent = "Task not completed. Retry.";
-            }
-        }
-    </script>
 </body>
 </html>
