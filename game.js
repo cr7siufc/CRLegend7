@@ -53,11 +53,9 @@ function updateLevel() {
     localStorage.setItem("level", playerLevel);
 }
 
-// Buy more points logic (for the button)
+// Buy more points logic (to show feature not yet available)
 function buyPoints() {
-    currentPoints += 1000;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    alert("Feature coming soon");
 }
 
 // Function to convert points to CR7SIU tokens
