@@ -70,15 +70,12 @@ function convertToTokens() {
     }
 }
 
-// Task Completion Tracker
+// Task Completion Tracker and Validation Function
 function markTaskCompleted(task) {
     if (!completedTasks[task]) {
-        completedTasks[task] = true;
+        completedTasks[task] = false;
         localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
-        document.getElementById("task-message").textContent = `You have completed the task for ${task}. You earned 1000 CR7SIU Points!`;
-        currentPoints += 1000;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        alert(`Complete the task for ${task} to earn 1000 CR7SIU points!`);
     } else {
         document.getElementById("task-message").textContent = "Task already completed. No additional reward.";
     }
@@ -86,16 +83,19 @@ function markTaskCompleted(task) {
 
 // Validate completed tasks before giving points (Task conditions)
 function validateTask(task) {
-    if (completedTasks[task]) {
+    if (completedTasks[task] === false) {
+        completedTasks[task] = true;  // Mark as completed
         currentPoints += 1000;
         localStorage.setItem("points", currentPoints);
+        localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+        document.getElementById("task-message").textContent = `You have completed the task for ${task}. You earned 1000 CR7SIU Points!`;
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     } else {
         document.getElementById("task-message").textContent = "Task not completed. Retry.";
     }
 }
 
-// Set up 20 improvements and upgrade functionality
+// Initialize Improvements Page with 20 skills for upgrading
 function displayImprovements() {
     const improvements = [
         'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 
