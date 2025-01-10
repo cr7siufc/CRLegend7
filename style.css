@@ -59,7 +59,9 @@ main {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-color: #000000; /* Black background */
+    background-image: url("images/cr7_poster6.jpg"); /* Updated image */
+    background-size: cover;
+    background-position: center;
     border: 2px solid #ffffff;
     margin: 20px auto;
     display: flex;
