@@ -18,18 +18,25 @@ header {
 }
 
 nav {
-    text-align: center;
-    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 10px;
 }
 
 nav ul {
     list-style: none;
     padding: 0;
+    display: flex;
+    gap: 10px;
+    margin: 0 auto;
+    flex: 1;
+    justify-content: center;
 }
 
 nav li {
-    display: inline;
-    margin: 0 10px;
+    margin: 0;
 }
 
 nav button {
@@ -56,8 +63,8 @@ main {
 
 /* Tap-to-Earn Button with Text */
 #tap-to-earn {
-    width: 200px;
-    height: 200px;
+    width: 400px; /* Doubled Width */
+    height: 400px; /* Doubled Height */
     border-radius: 50%;
     background-image: url("images/cr7_poster6.jpg"); /* Tap to Earn Button Image */
     background-size: cover;
@@ -89,8 +96,8 @@ main {
 
 #attributes-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
     max-width: 90%;
     margin: 0 auto;
 }
@@ -193,4 +200,36 @@ main {
 
 #claim-rewards-btn:hover {
     background-color: #218838;
+}
+
+/* Footer Navigation Styles */
+footer {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 10px 0;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.5);
+}
+
+footer button {
+    flex: 1;
+    border: none;
+    background-color: #444444;
+    color: #ffffff;
+    text-align: center;
+    padding: 15px 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+footer button:last-child {
+    border-right: none;
+}
+
+footer button:hover {
+    background-color: #888888;
 }
