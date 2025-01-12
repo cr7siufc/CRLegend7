@@ -188,33 +188,40 @@ main {
 #social-share {
     margin-top: 20px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+    justify-content: center; /* Centers the entire section horizontally */
+    align-items: center;    /* Centers items vertically */
+    flex-wrap: wrap;        /* Ensures the buttons wrap if they overflow */
+    gap: 10px;              /* Adds consistent spacing between buttons */
+    padding: 10px;          /* Adds some padding around the section */
 }
 
 #social-share .share-button {
     background-color: #444444;
     color: #ffffff;
-    padding: 10px 15px;
-    margin: 5px;
+    padding: 10px 20px;     /* Increased padding for better button size */
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
     display: flex;
     align-items: center;
+    justify-content: center; /* Centers text and icon inside buttons */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6); /* Adds a subtle shadow */
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #social-share .share-button:hover {
     background-color: #888888;
+    transform: translateY(-3px); /* Adds a hover effect with slight lift */
 }
 
 #social-share .share-button i {
     margin-right: 8px;
+    font-size: 18px;        /* Ensures icon size is consistent */
 }
 
 #social-share a {
     text-decoration: none;
+    color: inherit;         /* Ensures the text color matches the button */
 }
 
 /* Username Setup Dialog */
