@@ -10,15 +10,11 @@ let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || {
     facebook: false
 };
 
-// Referral link variable
-let referralLink = localStorage.getItem("referralLink");
-
 // Show the username setup if it's the user's first session
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
     document.getElementById("username-input").focus();
 } else {
-    checkAndGenerateReferralLink();
     loadSession();
 }
 
@@ -28,26 +24,10 @@ function setUsername() {
     if (input !== "") {
         localStorage.setItem("username", input);
         username = input;
-        checkAndGenerateReferralLink();
         loadSession();
     } else {
         alert("Please enter a valid username.");
     }
-}
-
-// Check if referral link exists, if not, generate one
-function checkAndGenerateReferralLink() {
-    if (!referralLink) {
-        generateReferralLink();
-    }
-    document.getElementById("referral-link").value = referralLink; // Display referral link
-}
-
-// Generate a unique referral link for the user
-function generateReferralLink() {
-    let userId = Math.random().toString(36).substr(2, 9); // Create a unique user ID
-    referralLink = `https://yourapp.com?referral=${userId}`;
-    localStorage.setItem("referralLink", referralLink); // Store the referral link in localStorage
 }
 
 // Load session data
@@ -223,10 +203,10 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// Share the unique referral link to social media
+// Generate and share unique referral link
 function shareReferralLink() {
-    const referralLink = localStorage.getItem("referralLink");
-    const socialMedia = prompt("Which social media platform would you like to share your link on?\nOptions: Facebook, Twitter, WhatsApp, etc.");
+    const referralLink = `https://yourapp.com?referral=${username}`;
+    const socialMedia = prompt("Which social media platform would you like to share your link on?\nOptions: Facebook, X, WhatsApp, Telegram, Instagram");
 
     if (socialMedia) {
         const encodedLink = encodeURIComponent(referralLink);
@@ -234,14 +214,20 @@ function shareReferralLink() {
 
         if (socialMedia.toLowerCase() === "facebook") {
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "twitter") {
-            shareUrl = `https://twitter.com/intent/tweet?url=${encodedLink}`;
+        } else if (socialMedia.toLowerCase() === "x") {
+            shareUrl = `https://x.com/intent/tweet?url=${encodedLink}`;
         } else if (socialMedia.toLowerCase() === "whatsapp") {
             shareUrl = `https://wa.me/?text=${encodedLink}`;
+        } else if (socialMedia.toLowerCase() === "telegram") {
+            shareUrl = `https://t.me/share/url?url=${encodedLink}`;
+        } else if (socialMedia.toLowerCase() === "instagram") {
+            shareUrl = `https://www.instagram.com/?url=${encodedLink}`;
         }
 
         if (shareUrl) {
             window.open(shareUrl, "_blank");
+        } else {
+            alert("Invalid social media platform.");
         }
     }
 }
