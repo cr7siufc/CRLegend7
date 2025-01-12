@@ -17,28 +17,56 @@ header, nav, #tasks-container, .task, .attribute-card, .referral-card, #referral
 }
 
 header { color: #fff; background-color: rgba(0, 0, 0, 0.8); }
-nav { background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: space-between; }
-nav ul { list-style: none; display: flex; margin: 0; }
-nav li { flex: 1; }
+nav { 
+    background-color: rgba(0, 0, 0, 0.9); 
+    display: flex; 
+    justify-content: center; /* Center the navigation items */
+    align-items: center;
+}
+nav ul { 
+    list-style: none; 
+    display: flex; 
+    margin: 0; 
+    padding: 0;
+}
+nav li { 
+    margin: 0 15px; /* Space between items */
+}
 nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
-    background-color: #444; color: #fff; border: none; padding: 10px; border-radius: 5px;
+    background-color: #444; 
+    color: #fff; 
+    border: none; 
+    padding: 15px 20px; /* Increased padding for larger buttons */
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 18px; /* Increased font size for buttons */
 }
 
 nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
     background-color: #888;
 }
 
-.main { text-align: center; }
+.main { 
+    text-align: center; 
+}
 
 /* Button and Images */
 #tap-to-earn {
-    width: 200px; height: 200px; border-radius: 50%; background: url("images/cr7_poster6.jpg") center center no-repeat;
-    background-size: cover; margin: 20px auto; display: block; border: 2px solid #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8); cursor: pointer;
+    width: 200px; 
+    height: 200px; 
+    border-radius: 50%; 
+    background: url("images/cr7_poster6.jpg") center center no-repeat;
+    background-size: cover; 
+    margin: 20px auto; 
+    display: block; 
+    border: 2px solid #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8); 
+    cursor: pointer;
 }
 
-#tap-to-earn:hover { box-shadow: 0px 6px 10px rgba(0, 0, 0, 1); }
+#tap-to-earn:hover { 
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 1); 
+}
 
 /* Text */
 #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
@@ -48,32 +76,70 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 }
 
 #referral-earning input, #username-setup input {
-    width: 80%; padding: 10px; margin: 10px; border-radius: 5px; border: 1px solid #fff; background-color: #333;
+    width: 80%; 
+    padding: 10px; 
+    margin: 10px; 
+    border-radius: 5px; 
+    border: 1px solid #fff; 
+    background-color: #333;
 }
 
 /* Tasks & Rewards */
-#tasks-container, .task, .referral-card, #social-share { max-width: 80%; margin: 20px auto; }
-.task { justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.task a { text-decoration: none; color: #f2f2f2; }
+#tasks-container, .task, .referral-card, #social-share { 
+    max-width: 80%; 
+    margin: 20px auto; 
+}
+.task { 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 15px; 
+}
+.task a { 
+    text-decoration: none; 
+    color: #f2f2f2; 
+}
 
 /* Spinner Wheel */
-#wheel { border-radius: 50%; border: 5px solid #fff; width: 200px; height: 200px; margin: 20px auto; position: relative; }
+#wheel { 
+    border-radius: 50%; 
+    border: 5px solid #fff; 
+    width: 200px; 
+    height: 200px; 
+    margin: 20px auto; 
+    position: relative; 
+}
 
 /* Social Share */
 #social-share {
-    display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    flex-wrap: wrap; 
+    gap: 10px;
 }
 
 #social-share .share-button {
-    background-color: #444; color: #fff; padding: 10px 20px; border-radius: 5px; cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6); transition: background-color 0.3s ease, transform 0.2s ease;
+    background-color: #444; 
+    color: #fff; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6); 
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#social-share .share-button:hover { background-color: #888; transform: translateY(-3px); }
-#social-share .share-button i { margin-right: 8px; }
+#social-share .share-button:hover { 
+    background-color: #888; 
+    transform: translateY(-3px); 
+}
+#social-share .share-button i { 
+    margin-right: 8px; 
+}
 
 /* Hide Elements */
-.hidden { display: none; }
+.hidden { 
+    display: none; 
+}
 
 /* Improvements Section - 2 Attributes per Row */
 #attributes-container {
