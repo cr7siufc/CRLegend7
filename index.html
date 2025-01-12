@@ -23,7 +23,7 @@
 
     <!-- Navigation Bar -->
     <nav>
-        <ul>
+        <ul style="display: flex; justify-content: space-evenly; margin-top: 20px;">
             <li><button onclick="showPage('home')">Home</button></li>
             <li><button onclick="showPage('improvements')">Improvements</button></li>
             <li><button onclick="showPage('airdrop')">Airdrop</button></li>
@@ -36,7 +36,7 @@
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
         <div style="text-align: center;">
-            <div id="tap-to-earn" onclick="earnPoints()"></div>
+            <div id="tap-to-earn" onclick="earnPoints()" style="background-image: url('cr7_poster6.jpg'); border-radius: 50%; width: 150px; height: 150px; background-size: cover; background-position: center;"></div>
             <div id="tap-to-earn-text">Tap to Earn</div>
         </div>
     </main>
@@ -57,28 +57,6 @@
         <p>Total CR7SIU Points: <span id="airdrop-points-display">0</span> CR7SIU Points</p>
         <p>Total CR7SIU Tokens: <span id="airdrop-tokens-display">0</span></p>
         <button onclick="convertToTokens()">Convert Points</button>
-
-        <!-- Referral Earning Section -->
-        <div id="referral-earning">
-            <h2>Referral Earning</h2>
-            <p>Share your unique referral link to earn 10,000 CR7SIU Points for every successful joining!</p>
-            <div>
-                <input type="text" id="referral-link" readonly value="Generating referral link..." />
-                <button onclick="copyReferralLink()">Copy Link</button>
-            </div>
-            <p>Referrals Earned: <span id="referral-count">0</span></p>
-            
-            <!-- Social Media Share Buttons -->
-            <button onclick="toggleShareOptions()">Share Referral Link</button>
-            <div id="social-share" class="hidden">
-                <p>Select Social Media Platform to Share:</p>
-                <button onclick="shareLink('facebook')">Facebook</button>
-                <button onclick="shareLink('twitter')">X (formerly Twitter)</button>
-                <button onclick="shareLink('whatsapp')">WhatsApp</button>
-                <button onclick="shareLink('telegram')">Telegram</button>
-                <button onclick="shareLink('instagram')">Instagram</button>
-            </div>
-        </div>
     </main>
 
     <!-- Rewards Page -->
@@ -163,8 +141,7 @@ Earn 10,000 CR7SIU Points for each successful referral!
 3️⃣ Earn points for signups! 
 
 Start referring & boost your points now! 🔥
-👉 ${getReferralLink()}
-#CR7SIU #ReferralProgram #Crypto #FanToken`;
+👉 ${getReferralLink()}`;
 
             let shareUrl;
             switch (platform) {
