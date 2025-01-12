@@ -11,7 +11,7 @@ body {
 header {
     color: #fff; 
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 32px; /* Reduced the font size for "CR7SIU Fan Game" by 4 points */
+    font-size: 24px; /* Reduced the font size for "CR7SIU Fan Game" to 24px */
     text-align: center;
     padding: 20px;
 }
