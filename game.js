@@ -37,8 +37,7 @@ function loadSession() {
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
-    displayImprovements(); // For "Improvements" tab
-    displayReferralEarnings(); // Add the function to show the referral earnings in the "Airdrop" tab
+    displayImprovements();
     displayTasks(); // Display tasks for rewards validation
     showPage('home');
 }
@@ -204,25 +203,6 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// Move the Referral Earnings logic to the Airdrop Tab
-function displayReferralEarnings() {
-    const referralSection = document.getElementById("referral-earning");
-    referralSection.innerHTML = `
-        <h3>Referral Earnings</h3>
-        <p>Earn CR7SIU Points by inviting others to join!</p>
-        <button onclick="earnReferralPoints()">Claim Referral Points</button>
-    `;
-}
-
-// Claim referral earnings and award points
-function earnReferralPoints() {
-    currentPoints += 1000; // Award 1000 referral points
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    alert("You earned 1000 referral points!");
-}
-
 // Initialize the app
 displayImprovements();
-displayReferralEarnings(); // This will now be shown under "Airdrop"
 displayTasks();
