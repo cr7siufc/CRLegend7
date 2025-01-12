@@ -93,23 +93,30 @@
             <button onclick="completeAdTask()" id="ad-claim-button" disabled>Claim Ad Reward</button>
         </div>
 
-        <!-- Claim Rewards Section -->
-        <div id="claim-rewards">
-            <h2>Claim Rewards</h2>
-            <div class="task">
-                <a href="#" target="_blank" id="task-youtube" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
-                <button id="validate-youtube" onclick="completeTask('youtube')" disabled>Validate</button>
-            </div>
-            <div class="task">
-                <a href="#" target="_blank" id="task-x" onclick="enableTaskButton('x')">Join our X Account</a>
-                <button id="validate-x" onclick="completeTask('x')" disabled>Validate</button>
-            </div>
-            <div class="task">
-                <a href="#" target="_blank" id="task-facebook" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
-                <button id="validate-facebook" onclick="completeTask('facebook')" disabled>Validate</button>
-            </div>
-            <button id="claim-rewards-btn" onclick="claimRewards()" disabled>Claim Rewards</button>
-            <p id="task-feedback"></p>
+        <!-- Daily Check-In Offer -->
+        <div id="daily-checkin">
+            <h2>Daily Check-In</h2>
+            <button onclick="completeCheckInTask()" id="check-in-button" disabled>Claim Daily Check-In Reward</button>
+        </div>
+
+        <!-- Poke Referral -->
+        <div id="poke-referral">
+            <h2>Poke Referral</h2>
+            <button onclick="completeReferralTask()" id="referral-button" disabled>Claim Referral Reward</button>
+        </div>
+
+        <!-- Spin the Wheel Feature -->
+        <div id="spin-the-wheel">
+            <h2>Spin the Wheel</h2>
+            <button onclick="spinWheel()">Spin to Win!</button>
+            <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
+            <div id="wheel"></div>
+        </div>
+
+        <!-- Upgrade Any Three Attributes -->
+        <div id="upgrade-attributes">
+            <h2>Upgrade Any Three Attributes</h2>
+            <button onclick="upgradeAttributes()" id="upgrade-attributes-button" disabled>Claim Upgrade Reward</button>
         </div>
     </main>
 
@@ -190,6 +197,31 @@ Start referring & boost your points now! 🔥
         function completeAdTask() {
             document.getElementById('ad-claim-button').disabled = false;
             alert("You have watched the ad. Click 'Claim Ad Reward' to claim your reward.");
+        }
+
+        // Complete Daily Check-In Task
+        function completeCheckInTask() {
+            document.getElementById('check-in-button').disabled = false;
+            alert("You have completed your daily check-in! Claim your 10,000 CR7SIU points.");
+        }
+
+        // Complete Referral Task
+        function completeReferralTask() {
+            document.getElementById('referral-button').disabled = false;
+            alert("You have completed the Poke Referral! Claim your 10,000 CR7SIU points.");
+        }
+
+        // Spin the Wheel Feature
+        function spinWheel() {
+            let wheelRewards = [2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000];
+            let reward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
+            alert("You won " + reward + " CR7SIU points!");
+        }
+
+        // Upgrade Any Three Attributes
+        function upgradeAttributes() {
+            document.getElementById('upgrade-attributes-button').disabled = false;
+            alert("You have upgraded 3 attributes! Claim your 10,000 CR7SIU points.");
         }
 
         // Enable task button based on task completion
