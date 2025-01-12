@@ -72,11 +72,11 @@
             <button onclick="toggleShareOptions()">Share Referral Link</button>
             <div id="social-share" class="hidden">
                 <p>Select Social Media Platform to Share:</p>
-                <button onclick="window.open('https://facebook.com/sharer/sharer.php?u=' + encodeURIComponent(getReferralLink()), '_blank')">Facebook</button>
-                <button onclick="window.open('https://x.com/intent/tweet?url=' + encodeURIComponent(getReferralLink()), '_blank')">X (formerly Twitter)</button>
-                <button onclick="window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(getReferralLink()), '_blank')">WhatsApp</button>
-                <button onclick="window.open('https://telegram.me/share/url?url=' + encodeURIComponent(getReferralLink()), '_blank')">Telegram</button>
-                <button onclick="window.open('https://www.instagram.com/?url=' + encodeURIComponent(getReferralLink()), '_blank')">Instagram</button>
+                <button onclick="shareLink('facebook')">Facebook</button>
+                <button onclick="shareLink('x')">X (formerly Twitter)</button>
+                <button onclick="shareLink('whatsapp')">WhatsApp</button>
+                <button onclick="shareLink('telegram')">Telegram</button>
+                <button onclick="shareLink('instagram')">Instagram</button>
             </div>
         </div>
     </main>
@@ -144,6 +144,42 @@
         function toggleShareOptions() {
             let shareDiv = document.getElementById('social-share');
             shareDiv.classList.toggle('hidden');
+        }
+
+        function shareLink(platform) {
+            let referralText = `🚨 CR7SIU Referral Program! 🚨
+
+Earn 10,000 CR7SIU Points for each successful referral!
+1️⃣ Get your link
+2️⃣ Share on social media
+3️⃣ Earn points for signups!
+
+Start referring & boost your points now! 🔥
+👉 ${getReferralLink()}
+#CR7SIU #ReferralProgram #Crypto #FanToken`;
+
+            let shareUrl;
+            switch (platform) {
+                case 'facebook':
+                    shareUrl = `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'x':
+                    shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'telegram':
+                    shareUrl = `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'instagram':
+                    shareUrl = `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`;
+                    break;
+                default:
+                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralText)}`;
+                    break;
+            }
+            window.open(shareUrl, '_blank');
         }
 
         // Call this function to generate referral link on page load or at some appropriate time
