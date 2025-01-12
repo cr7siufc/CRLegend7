@@ -1,4 +1,4 @@
-// Store username, points, tokens, attribute progress, and task completion in localStorage
+// Store username, points, tokens, attribute progress, task completion, spin status, and referral data in localStorage
 let username = localStorage.getItem("username");
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
@@ -9,7 +9,9 @@ let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || {
     xAccount: false,
     facebook: false
 };
-let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || []; // For storing referrals
+let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
+let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0; // Store the last spin time
+let spinClaimed = localStorage.getItem("spinClaimed") === "true"; // Check if spin was already claimed today
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -40,6 +42,7 @@ function loadSession() {
     document.getElementById("player-level").textContent = playerLevel;
     displayImprovements();
     displayTasks(); // Display tasks for rewards validation
+    updateSpinButton(); // Update the spin button based on claim status
     showPage('home');
 }
 
@@ -276,10 +279,27 @@ function spinWheel() {
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
         alert(`You earned ${reward} CR7SIU Points from Spin to Win!`);
         spinButton.disabled = false;
+        spinClaimed = true;
+        localStorage.setItem("spinClaimed", true); // Mark spin as claimed
     }, 3000); // Wait for animation to finish before showing reward
 }
 
 function determineSpinReward() {
-    const rewards = [100, 200, 500, 1000, 2500];
+    const rewards = [2500, 3500, 5500, 6500, 7500]; // Increased values for better rewards
     return rewards[Math.floor(Math.random() * rewards.length)];
+}
+
+// Update the spin button based on daily claim status
+function updateSpinButton() {
+    const spinButton = document.getElementById("spin-button");
+    const currentTime = Date.now();
+    
+    // Check if the user has already claimed the reward today
+    if (spinClaimed || currentTime - lastSpinTime < 86400000) {
+        spinButton.disabled = true;
+        const nextClaimTime = new Date(lastSpinTime + 86400000);
+        document.getElementById("spin-claim-time").textContent = `You can spin again on ${nextClaimTime.toLocaleString()}`;
+    } else {
+        spinButton.disabled = false;
+    }
 }
