@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,8 +15,8 @@
                 <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p>
             </div>
             <div style="text-align: right;">
-                <p>CR7SIU Points: <span id="cr7siu-points">0</span></p>
-                <p>CR7SIU Tokens: <span id="tokens-display">0</span></p>
+                <p>Total CR7SIU Points: <span id="cr7siu-points">0</span></p>
+                <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
             </div>
         </div>
     </header>
@@ -54,8 +54,8 @@
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
         <p>Convert your CR7SIU points to CR7SIU Tokens. Current Conversion: 5000 points = 1 CR7SIU token.</p>
-        <p>Current Points: <span id="airdrop-points-display">0</span> CR7SIU Points</p>
-        <p>Current Tokens: <span id="airdrop-tokens-display">0</span></p>
+        <p>Total CR7SIU Points: <span id="airdrop-points-display">0</span> CR7SIU Points</p>
+        <p>Total CR7SIU Tokens: <span id="airdrop-tokens-display">0</span></p>
         <button onclick="convertToTokens()">Convert Points</button>
 
         <!-- Referral Earning Section -->
@@ -73,7 +73,7 @@
             <div id="social-share" class="hidden">
                 <p>Select Social Media Platform to Share:</p>
                 <button onclick="shareLink('facebook')">Facebook</button>
-                <button onclick="shareLink('x')">X (formerly Twitter)</button>
+                <button onclick="shareLink('twitter')">X (formerly Twitter)</button>
                 <button onclick="shareLink('whatsapp')">WhatsApp</button>
                 <button onclick="shareLink('telegram')">Telegram</button>
                 <button onclick="shareLink('instagram')">Instagram</button>
@@ -152,7 +152,7 @@
 Earn 10,000 CR7SIU Points for each successful referral!
 1️⃣ Get your link
 2️⃣ Share on social media
-3️⃣ Earn points for signups! 
+3️⃣ Earn points for signups!
 
 Start referring & boost your points now! 🔥
 👉 ${getReferralLink()}
@@ -163,8 +163,8 @@ Start referring & boost your points now! 🔥
                 case 'facebook':
                     shareUrl = `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`;
                     break;
-                case 'x':
-                    shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(referralText)}`;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`;
                     break;
                 case 'whatsapp':
                     shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`;
