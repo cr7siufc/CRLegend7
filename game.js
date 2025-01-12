@@ -206,7 +206,7 @@ function upgradeSkill(attribute, index, cost) {
 
 // Move the Referral Earnings logic to the Airdrop Tab
 function displayReferralEarnings() {
-    const referralSection = document.getElementById("referral-earnings-container");
+    const referralSection = document.getElementById("referral-earning");
     referralSection.innerHTML = `
         <h3>Referral Earnings</h3>
         <p>Earn CR7SIU Points by inviting others to join!</p>
