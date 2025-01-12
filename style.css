@@ -74,3 +74,29 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Hide Elements */
 .hidden { display: none; }
+
+/* Improvements Section - 2 Attributes per Row */
+#attributes-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    gap: 20px; /* Space between attributes */
+    margin: 20px 0;
+}
+
+.attribute {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: rgba(60, 60, 60, 0.8);
+    border-radius: 8px;
+    text-align: center;
+    color: #fff;
+}
+
+.attribute h3 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.attribute p {
+    font-size: 14px;
+}

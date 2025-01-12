@@ -85,6 +85,7 @@ function displayTasks() {
         <div class="task">
             <a href="https://www.${task}.com" target="_blank" onclick="enableTaskButton('${task}')">Complete ${task} task</a>
             <button id="validate-${task}" onclick="completeTask('${task}')" ${tasksCompleted[task] ? 'disabled' : ''}>Mark as Done</button>
+            ${tasksCompleted[task] ? '<span class="completed-task">Completed</span>' : ''}
         </div>
     `).join('');
     updateTaskButtons();
@@ -210,6 +211,7 @@ function spinWheel() {
         alert(`You earned ${reward} CR7SIU Points!`);
         spinClaimed = true;
         localStorage.setItem("spinClaimed", "true");
+        localStorage.setItem("lastSpinTime", Date.now());
         updateSpinButton();
     }, 3000);
 }
