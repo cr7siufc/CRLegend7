@@ -16,22 +16,31 @@ header, nav, #tasks-container, .task, .attribute-card, .referral-card, #referral
     text-align: center;
 }
 
-header { color: #fff; background-color: rgba(0, 0, 0, 0.8); }
+header { 
+    color: #fff; 
+    background-color: rgba(0, 0, 0, 0.8); 
+    font-size: 36px; /* Increased font size by 8px */
+    text-align: center;
+}
+
 nav { 
     background-color: rgba(0, 0, 0, 0.9); 
     display: flex; 
     justify-content: center; /* Center the navigation items */
     align-items: center;
 }
+
 nav ul { 
     list-style: none; 
     display: flex; 
     margin: 0; 
     padding: 0;
 }
+
 nav li { 
     margin: 0 15px; /* Space between items */
 }
+
 nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
     background-color: #444; 
     color: #fff; 
@@ -50,12 +59,25 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-align: center; 
 }
 
+/* Logo */
+#logo {
+    width: 200px; 
+    margin: 20px auto;
+}
+
+/* Player Dashboard & Username */
+#player-dashboard, #username-setup {
+    display: flex;
+    justify-content: center; /* Center the elements */
+    align-items: center;
+}
+
 /* Button and Images */
 #tap-to-earn {
     width: 200px; 
     height: 200px; 
     border-radius: 50%; 
-    background: url("images/cr7_poster6.jpg") center center no-repeat;
+    background: url("images/cr7_poster2.jpg") center center no-repeat; /* Updated image */
     background-size: cover; 
     margin: 20px auto; 
     display: block; 
@@ -151,6 +173,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     background-color: #888; 
     transform: translateY(-3px); 
 }
+
 #social-share .share-button i { 
     margin-right: 8px; 
 }
