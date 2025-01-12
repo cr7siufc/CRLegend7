@@ -1,355 +1,76 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-image: url("images/cr7_poster9.jpg"); /* Background Image */
+    background: url("images/cr7_poster9.jpg") no-repeat center center fixed;
     background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
     margin: 0;
     padding: 0;
     color: #f2f2f2;
 }
 
-header {
-    text-align: center;
+header, nav, #tasks-container, .task, .attribute-card, .referral-card, #referral-earning {
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #ffffff;
-}
-
-header div {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 15px;
-}
-
-header div > div {
-    text-align: left;
-    font-size: 14px;
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 0;
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-nav li {
-    flex: 1;
-}
-
-nav button {
-    background-color: #444444;
-    color: #ffffff;
-    border: none;
-    padding: 15px 0;
-    width: 100%;
-    cursor: pointer;
-}
-
-nav button:hover {
-    background-color: #888888;
-}
-
-main {
-    text-align: center;
-    padding: 20px;
-}
-
-.hidden {
-    display: none;
-}
-
-/* Tap-to-Earn Button and Text */
-#tap-to-earn {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background-image: url("images/cr7_poster6.jpg");
-    background-size: cover;
-    background-position: center;
-    border: 2px solid #ffffff;
-    margin: 20px auto 10px;
-    display: block;
+    border-radius: 8px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
+    background-color: rgba(50, 50, 50, 0.9);
+    text-align: center;
+}
+
+header { color: #fff; background-color: rgba(0, 0, 0, 0.8); }
+nav { background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: space-between; }
+nav ul { list-style: none; display: flex; margin: 0; }
+nav li { flex: 1; }
+nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
+    background-color: #444; color: #fff; border: none; padding: 10px; border-radius: 5px;
     cursor: pointer;
 }
 
-#tap-to-earn:hover {
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 1);
+nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
+    background-color: #888;
 }
 
-#tap-to-earn-text {
-    margin-top: 10px;
-    color: #ffffff;
+.main { text-align: center; }
+
+/* Button and Images */
+#tap-to-earn {
+    width: 200px; height: 200px; border-radius: 50%; background: url("images/cr7_poster6.jpg") center center no-repeat;
+    background-size: cover; margin: 20px auto; display: block; border: 2px solid #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8); cursor: pointer;
+}
+
+#tap-to-earn:hover { box-shadow: 0px 6px 10px rgba(0, 0, 0, 1); }
+
+/* Text */
+#tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
+    color: #fff;
     font-size: 18px;
     font-weight: bold;
-    text-align: center;
-    display: block;
 }
 
-/* Improvements Page Styles */
-#improvements {
-    text-align: center;
-    padding: 20px;
+#referral-earning input, #username-setup input {
+    width: 80%; padding: 10px; margin: 10px; border-radius: 5px; border: 1px solid #fff; background-color: #333;
 }
 
-#attributes-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    max-width: 90%;
-    margin: 0 auto;
-}
+/* Tasks & Rewards */
+#tasks-container, .task, .referral-card, #social-share { max-width: 80%; margin: 20px auto; }
+.task { justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.task a { text-decoration: none; color: #f2f2f2; }
 
-.attribute-card {
-    background-color: rgba(50, 50, 50, 0.9);
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    color: #ffffff;
-}
+/* Spinner Wheel */
+#wheel { border-radius: 50%; border: 5px solid #fff; width: 200px; height: 200px; margin: 20px auto; position: relative; }
 
-.attribute-card button {
-    margin-top: 10px;
-    background-color: #444444;
-    color: #ffffff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.attribute-card button:hover {
-    background-color: #888888;
-}
-
-/* Referral Earning Section Styles */
-#referral-earning {
-    background-color: rgba(50, 50, 50, 0.8);
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-}
-
-#referral-earning h2 {
-    font-size: 24px;
-    color: #f2f2f2;
-    margin-bottom: 10px;
-}
-
-#referral-earning p {
-    color: #f2f2f2;
-    font-size: 16px;
-}
-
-#referral-earning input {
-    padding: 10px;
-    width: 80%;
-    border-radius: 5px;
-    border: 1px solid #ffffff;
-    margin-top: 10px;
-    background-color: #333333;
-    color: #f2f2f2;
-}
-
-#referral-earning button {
-    background-color: #444444;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-#referral-earning button:hover {
-    background-color: #888888;
-}
-
-#referral-earning p span {
-    font-weight: bold;
-    color: #28a745;
-}
-
-/* Social Media Share Section */
+/* Social Share */
 #social-share {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center; /* Centers the entire section horizontally */
-    align-items: center;    /* Centers items vertically */
-    flex-wrap: wrap;        /* Ensures the buttons wrap if they overflow */
-    gap: 10px;              /* Adds consistent spacing between buttons */
-    padding: 10px;          /* Adds some padding around the section */
+    display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px;
 }
 
 #social-share .share-button {
-    background-color: #444444;
-    color: #ffffff;
-    padding: 10px 20px;     /* Increased padding for better button size */
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Centers text and icon inside buttons */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6); /* Adds a subtle shadow */
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    background-color: #444; color: #fff; padding: 10px 20px; border-radius: 5px; cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6); transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#social-share .share-button:hover {
-    background-color: #888888;
-    transform: translateY(-3px); /* Adds a hover effect with slight lift */
-}
+#social-share .share-button:hover { background-color: #888; transform: translateY(-3px); }
+#social-share .share-button i { margin-right: 8px; }
 
-#social-share .share-button i {
-    margin-right: 8px;
-    font-size: 18px;        /* Ensures icon size is consistent */
-}
-
-#social-share a {
-    text-decoration: none;
-    color: inherit;         /* Ensures the text color matches the button */
-}
-
-/* Username Setup Dialog */
-#username-setup {
-    text-align: center;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    border-radius: 10px;
-}
-
-#username-setup input {
-    padding: 10px;
-    margin: 10px;
-    width: 80%;
-    border-radius: 5px;
-    border: 1px solid #ffffff;
-}
-
-/* Tasks and Rewards Styles */
-#tasks-container {
-    text-align: left;
-    max-width: 80%;
-    margin: 20px auto;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-}
-
-.task {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.task a {
-    color: #f2f2f2;
-    text-decoration: none;
-}
-
-.task button {
-    background-color: #444444;
-    color: #ffffff;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.task button.completed {
-    background-color: #888888;
-    cursor: not-allowed;
-}
-
-.task button:hover:not(.completed) {
-    background-color: #666666;
-}
-
-/* Rewards Claim Button */
-#claim-rewards-btn {
-    background-color: #28a745;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-#claim-rewards-btn:hover {
-    background-color: #218838;
-}
-
-/* Referral Users Section */
-#referral-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.referral-card {
-    background-color: rgba(50, 50, 50, 0.9);
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #ffffff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-}
-
-.referral-card button {
-    background-color: #444444;
-    color: #ffffff;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.referral-card button:hover {
-    background-color: #888888;
-}
-
-/* Spinner Wheel */
-#wheel {
-    border-radius: 50%;
-    border: 5px solid #fff;
-    width: 200px;
-    height: 200px;
-    margin: 20px auto;
-    position: relative;
-}
-
-#spin-button {
-    background-color: #444444;
-    color: #ffffff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-#spin-button:hover {
-    background-color: #888888;
-}
+/* Hide Elements */
+.hidden { display: none; }

@@ -8,20 +8,19 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to the CR7SIU Fan Game</h1>
+        <h1>CR7SIU Fan Game</h1>
         <div style="display: flex; justify-content: space-between; padding: 0 15px;">
-            <div style="text-align: left;">
+            <div>
                 <p>Player Level: <span id="player-level">1</span></p>
                 <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p>
             </div>
-            <div style="text-align: right;">
+            <div>
                 <p>Total CR7SIU Points: <span id="cr7siu-points">0</span></p>
                 <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
             </div>
         </div>
     </header>
 
-    <!-- Navigation Bar -->
     <nav>
         <ul>
             <li><button onclick="showPage('home')">Home</button></li>
@@ -31,47 +30,33 @@
         </ul>
     </nav>
 
-    <!-- Home Page -->
     <main id="home">
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
         <div style="text-align: center;">
             <div id="tap-to-earn" onclick="earnPoints()"></div>
-            <div id="tap-to-earn-text">Tap to Earn</div>
+            <div>Tap to Earn</div>
         </div>
     </main>
 
-    <!-- Improvements Page -->
     <main id="improvements" class="hidden">
         <h1>Improvements</h1>
         <p>Upgrade your football skills to earn more points!</p>
-        <div id="attributes-container">
-            <!-- Attributes will be dynamically inserted here -->
-        </div>
+        <div id="attributes-container"></div>
     </main>
 
-    <!-- Airdrop Page -->
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
-        <p>Convert your CR7SIU points to CR7SIU Tokens. Current Conversion: 5000 points = 1 CR7SIU token.</p>
-        <p>Total CR7SIU Points: <span id="airdrop-points-display">0</span> CR7SIU Points</p>
-        <p>Total CR7SIU Tokens: <span id="airdrop-tokens-display">0</span></p>
+        <p>Convert points to CR7SIU Tokens (5000 points = 1 Token).</p>
         <button onclick="convertToTokens()">Convert Points</button>
-
-        <!-- Referral Earning Section -->
         <div id="referral-earning">
             <h2>Referral Earning</h2>
-            <p>Share your unique referral link to earn 10,000 CR7SIU Points for every successful joining!</p>
-            <div>
-                <input type="text" id="referral-link" readonly value="Generating referral link..." />
-                <button onclick="copyReferralLink()">Copy Link</button>
-            </div>
+            <p>Earn 10,000 CR7SIU Points for each successful referral!</p>
+            <input type="text" id="referral-link" readonly value="Generating referral link..." />
+            <button onclick="copyReferralLink()">Copy Link</button>
             <p>Referrals Earned: <span id="referral-count">0</span></p>
-            
-            <!-- Social Media Share Buttons -->
             <button onclick="toggleShareOptions()">Share Referral Link</button>
             <div id="social-share" class="hidden">
-                <p>Select Social Media Platform to Share:</p>
                 <button onclick="shareLink('facebook')">Facebook</button>
                 <button onclick="shareLink('twitter')">X (formerly Twitter)</button>
                 <button onclick="shareLink('whatsapp')">WhatsApp</button>
@@ -81,50 +66,25 @@
         </div>
     </main>
 
-    <!-- Rewards Page -->
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
-
-        <!-- Earn from Ads Section -->
-        <div id="ads-section" style="margin-bottom: 10px;">
+        <div id="ads-section">
             <h2>Earn from Ads</h2>
-            <p>Watch this video ad to earn CR7SIU Points:</p>
             <a href="https://youtu.be/byZi0lcy-jw?si=mgizMFfa7SjYugq7" target="_blank">Click to Watch Ad</a>
             <button onclick="completeAdTask()" id="ad-claim-button" disabled>Claim Ad Reward</button>
         </div>
-
-        <!-- Daily Check-In Offer -->
-        <div id="daily-checkin" style="margin-bottom: 10px;">
+        <div id="daily-checkin">
             <h2>Daily Check-In</h2>
             <button onclick="completeCheckInTask()" id="check-in-button" disabled>Claim Daily Check-In Reward</button>
         </div>
-
-        <!-- Poke Referral -->
-        <div id="poke-referral" style="margin-bottom: 10px;">
-            <h2>Poke Referral</h2>
-            <button onclick="completeReferralTask()" id="referral-button" disabled>Claim Referral Reward</button>
-        </div>
-
-        <!-- Spin the Wheel Feature -->
-        <div id="spin-the-wheel" style="margin-bottom: 10px;">
+        <div id="spin-the-wheel">
             <h2>Spin the Wheel</h2>
             <button onclick="spinWheel()">Spin to Win!</button>
             <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
-            <div id="wheel"></div>
         </div>
-
-        <!-- Upgrade Any Three Attributes -->
-        <div id="upgrade-attributes" style="margin-bottom: 10px;">
-            <h2>Upgrade Any Three Attributes</h2>
-            <button onclick="upgradeAttributes()" id="upgrade-attributes-button" disabled>Claim Upgrade Reward</button>
-        </div>
-
-        <!-- Validate All Offers -->
-        <div id="validate-all-offers" style="margin-top: 20px; text-align: center;">
+        <div id="validate-all-offers">
             <button onclick="validateAllTasks()">Validate All Tasks</button>
         </div>
-
-        <!-- Links Section (Left Aligned) -->
         <div style="text-align: left; margin-top: 20px;">
             <h3>Subscribe and Join:</h3>
             <ul>
@@ -136,7 +96,6 @@
         </div>
     </main>
 
-    <!-- New Username Setup Dialog -->
     <div id="username-setup" class="hidden">
         <h2>Welcome! Please enter your username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username">
@@ -144,15 +103,13 @@
     </div>
 
     <script src="game.js"></script>
-
     <script>
-        let referralLink = ""; // Will store the referral link
+        let referralLink = "";
 
-        // Function to generate the referral link
         function generateReferralLink() {
-            let userId = Math.random().toString(36).substr(2, 9);  // Generate a unique user ID
-            referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;  // Pointing to the game URL
-            document.getElementById('referral-link').value = referralLink; // Display the link
+            let userId = Math.random().toString(36).substr(2, 9);
+            referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;
+            document.getElementById('referral-link').value = referralLink;
         }
 
         function copyReferralLink() {
@@ -166,60 +123,36 @@
         }
 
         function toggleShareOptions() {
-            let shareDiv = document.getElementById('social-share');
-            shareDiv.classList.toggle('hidden');
+            document.getElementById('social-share').classList.toggle('hidden');
         }
 
         function shareLink(platform) {
             let referralText = `🚨 CR7SIU Referral Program! 🚨
-
 Earn 10,000 CR7SIU Points for each successful referral!
-1️⃣ Get your link
-2️⃣ Share on social media
-3️⃣ Earn points for signups! 
-
-Start referring & boost your points now! 🔥
 👉 ${getReferralLink()}
 #CR7SIU #ReferralProgram #Crypto #FanToken`;
 
-            let shareUrl;
-            switch (platform) {
-                case 'facebook':
-                    shareUrl = `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`;
-                    break;
-                case 'twitter':
-                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`;
-                    break;
-                case 'whatsapp':
-                    shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`;
-                    break;
-                case 'telegram':
-                    shareUrl = `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`;
-                    break;
-                case 'instagram':
-                    shareUrl = `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`;
-                    break;
-                default:
-                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralText)}`;
-                    break;
-            }
-            window.open(shareUrl, '_blank');
+            let shareUrls = {
+                facebook: `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`,
+                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`,
+                whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`,
+                telegram: `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`,
+                instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`
+            };
+
+            window.open(shareUrls[platform] || `https://t.me/share/url?url=${encodeURIComponent(referralText)}`, '_blank');
         }
 
-        // Call this function to generate referral link on page load or at some appropriate time
         generateReferralLink();
 
-        // Spin the Wheel Feature
         function spinWheel() {
             let wheelRewards = [2500, 3500, 5500, 6500, 7500];
-            let reward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
-            alert("You won " + reward + " CR7SIU points!");
+            alert("You won " + wheelRewards[Math.floor(Math.random() * wheelRewards.length)] + " CR7SIU points!");
         }
 
-        // Validate All Tasks
         function validateAllTasks() {
             alert("All tasks validated successfully!");
-            document.getElementById('validate-all-offers').style.display = 'none';  // Hide the validate button
+            document.getElementById('validate-all-offers').style.display = 'none';
         }
     </script>
 </body>

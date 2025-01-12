@@ -1,19 +1,15 @@
-// Store username, points, tokens, attribute progress, task completion, spin status, and referral data in localStorage
-let username = localStorage.getItem("username");
+// Store username, points, tokens, and other data in localStorage
+let username = localStorage.getItem("username") || '';
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
-let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || {
-    youtube: false,
-    xAccount: false,
-    facebook: false
-};
+let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
 let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
-let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0; // Store the last spin time
-let spinClaimed = localStorage.getItem("spinClaimed") === "true"; // Check if spin was already claimed today
+let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
+let spinClaimed = localStorage.getItem("spinClaimed") === "true";
 
-// Show the username setup if it's the user's first session
+// Show username setup if it's the user's first session
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
     document.getElementById("username-input").focus();
@@ -21,10 +17,9 @@ if (!username) {
     loadSession();
 }
 
-// Set username
 function setUsername() {
     const input = document.getElementById("username-input").value.trim();
-    if (input !== "") {
+    if (input) {
         localStorage.setItem("username", input);
         username = input;
         loadSession();
@@ -33,7 +28,6 @@ function setUsername() {
     }
 }
 
-// Load session data
 function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("username-display").textContent = username;
@@ -41,45 +35,39 @@ function loadSession() {
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
     displayImprovements();
-    displayTasks(); // Display tasks for rewards validation
-    updateSpinButton(); // Update the spin button based on claim status
+    displayTasks();
+    updateSpinButton();
     showPage('home');
 }
 
-// Show page based on button click
 function showPage(page) {
-    const pages = document.querySelectorAll("main");
-    pages.forEach(p => p.classList.add("hidden"));
+    document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
     document.getElementById(page).classList.remove("hidden");
 }
 
-// Handle points earning when the user taps
 function earnPoints() {
-    currentPoints += 5; // Points gained per tap
+    currentPoints += 5;
     localStorage.setItem("points", currentPoints);
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     updateLevel();
 }
 
-// Update player level based on points
 function updateLevel() {
     playerLevel = Math.floor(currentPoints / 100000) + 1;
     document.getElementById("player-level").textContent = playerLevel;
     localStorage.setItem("level", playerLevel);
 }
 
-// Buy more points logic (for the button)
 function buyPoints() {
     currentPoints += 1000;
     localStorage.setItem("points", currentPoints);
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
 }
 
-// Function to convert points to CR7SIU tokens
 function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 5000); // Adjusted: 5000 CR7SIU points per token
+    const tokens = Math.floor(currentPoints / 5000);
     if (tokens > 0) {
-        currentPoints -= tokens * 5000; // Remove the points spent
+        currentPoints -= tokens * 5000;
         currentTokens += tokens;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("tokens", currentTokens);
@@ -87,36 +75,25 @@ function convertToTokens() {
         document.getElementById("tokens-display").textContent = currentTokens;
         alert(`You converted ${tokens} CR7SIU tokens!`);
     } else {
-        alert("You don't have enough points to convert.");
+        alert("Not enough points.");
     }
 }
 
-// Display tasks for rewards validation
 function displayTasks() {
     const tasksContainer = document.getElementById("task-section");
-    tasksContainer.innerHTML = `
+    tasksContainer.innerHTML = Object.keys(tasksCompleted).map(task => `
         <div class="task">
-            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
-            <button id="validate-youtube" onclick="completeTask('youtube')" disabled>Mark as Done</button>
+            <a href="https://www.${task}.com" target="_blank" onclick="enableTaskButton('${task}')">Complete ${task} task</a>
+            <button id="validate-${task}" onclick="completeTask('${task}')" ${tasksCompleted[task] ? 'disabled' : ''}>Mark as Done</button>
         </div>
-        <div class="task">
-            <a href="https://x.com/cr7siucoin" target="_blank" onclick="enableTaskButton('xAccount')">Join our X Account</a>
-            <button id="validate-xAccount" onclick="completeTask('xAccount')" disabled>Mark as Done</button>
-        </div>
-        <div class="task">
-            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
-            <button id="validate-facebook" onclick="completeTask('facebook')" disabled>Mark as Done</button>
-        </div>
-    `;
+    `).join('');
     updateTaskButtons();
 }
 
-// Enable task validation button
 function enableTaskButton(task) {
     document.getElementById(`validate-${task}`).disabled = false;
 }
 
-// Mark a task as completed
 function completeTask(task) {
     tasksCompleted[task] = true;
     localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
@@ -124,65 +101,51 @@ function completeTask(task) {
     updateTaskButtons();
 }
 
-// Update task buttons based on completion status
 function updateTaskButtons() {
-    for (const task in tasksCompleted) {
+    Object.keys(tasksCompleted).forEach(task => {
         const button = document.getElementById(`validate-${task}`);
         if (tasksCompleted[task]) {
             button.disabled = true;
             button.textContent = "Completed";
             button.classList.add("completed");
         }
-    }
-    // Enable claim button if all tasks are complete
-    const allTasksCompleted = Object.values(tasksCompleted).every(Boolean);
-    document.getElementById("claim-rewards-btn").disabled = !allTasksCompleted;
+    });
+    document.getElementById("claim-rewards-btn").disabled = !Object.values(tasksCompleted).every(Boolean);
 }
 
-// Claim Rewards
 function claimRewards() {
     if (Object.values(tasksCompleted).every(Boolean)) {
         if (!localStorage.getItem("rewardsClaimed")) {
-            currentPoints += 5000; // Add reward points
+            currentPoints += 5000;
             localStorage.setItem("points", currentPoints);
             document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-            alert("Congratulations! You earned 5000 CR7SIU Points for completing all tasks.");
-            localStorage.setItem("rewardsClaimed", true); // Mark rewards as claimed
+            alert("Congratulations! You earned 5000 CR7SIU Points.");
+            localStorage.setItem("rewardsClaimed", true);
         } else {
-            alert("You have already claimed your rewards.");
+            alert("Rewards already claimed.");
         }
     } else {
         alert("Complete all tasks before claiming rewards.");
     }
 }
 
-// Display improvements and handle upgrade progress
 function displayImprovements() {
-    const improvements = [
-        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing',
-        'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity',
-        'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power',
-        'Ball Handling', 'Acceleration'
-    ];
-
+    const improvements = ['Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 'Ball Handling', 'Acceleration'];
     const container = document.getElementById("attributes-container");
-    container.innerHTML = ""; // Clear previous contents
-    improvements.forEach((improvement, index) => {
+    container.innerHTML = improvements.map((improvement, index) => {
         const level = attributes[improvement] || 1;
-        const cost = 500 + 250 * (level - 1); // Cost formula
-        const card = document.createElement("div");
-        card.classList.add("attribute-card");
-        card.innerHTML = `
-            <h3>${improvement}</h3>
-            <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}">${level}</span></p>
-            <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
+        const cost = 500 + 250 * (level - 1);
+        return `
+            <div class="attribute-card">
+                <h3>${improvement}</h3>
+                <p>Upgrade Cost: ${cost} points</p>
+                <p>Level: <span id="attribute-level-${index}">${level}</span></p>
+                <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
+            </div>
         `;
-        container.appendChild(card);
-    });
+    }).join('');
 }
 
-// Handle skill upgrades
 function upgradeSkill(attribute, index, cost) {
     const level = attributes[attribute] || 1;
     if (currentPoints >= cost) {
@@ -192,113 +155,71 @@ function upgradeSkill(attribute, index, cost) {
         localStorage.setItem("attributes", JSON.stringify(attributes));
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
         document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
-
-        // Bonus cashback for every 10th level
         if (attributes[attribute] % 10 === 0) {
-            currentPoints += 2500; // Cashback points
+            currentPoints += 2500;
             localStorage.setItem("points", currentPoints);
             alert("Level milestone achieved! Cashback of 2500 points awarded.");
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
         }
-
         alert("Upgrade successful!");
     } else {
         alert("Not enough points!");
     }
 }
 
-// Generate and share unique referral link
 function shareReferralLink() {
     const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
-    const socialMedia = prompt("Which social media platform would you like to share your link on?\nOptions: Facebook, X, WhatsApp, Telegram, Instagram");
-
-    if (socialMedia) {
-        const encodedLink = encodeURIComponent(referralLink);
-        let shareUrl;
-
-        if (socialMedia.toLowerCase() === "facebook") {
-            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "x") {
-            shareUrl = `https://x.com/intent/tweet?url=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "whatsapp") {
-            shareUrl = `https://wa.me/?text=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "telegram") {
-            shareUrl = `https://t.me/share/url?url=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "instagram") {
-            shareUrl = `https://www.instagram.com/?url=${encodedLink}`;
-        }
-
-        if (shareUrl) {
-            window.open(shareUrl, "_blank");
-        } else {
-            alert("Invalid social media platform.");
-        }
-    }
+    const socialMedia = prompt("Which platform to share on? Facebook, X, WhatsApp, Telegram, Instagram").toLowerCase();
+    const platforms = {
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`,
+        x: `https://x.com/intent/tweet?url=${encodeURIComponent(referralLink)}`,
+        whatsapp: `https://wa.me/?text=${encodeURIComponent(referralLink)}`,
+        telegram: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}`,
+        instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralLink)}`
+    };
+    if (platforms[socialMedia]) window.open(platforms[socialMedia], "_blank");
+    else alert("Invalid platform.");
 }
 
-// Referral earnings text update
-document.getElementById("referral-text").textContent = "Share your unique referral link to earn 10,000 CR7SIU Points for every successful joining!";
-
-// Poke Referrals
 function displayReferrals() {
     const container = document.getElementById("referral-container");
-    container.innerHTML = ""; // Clear the container before listing the users
-    referralUsers.forEach(user => {
-        const card = document.createElement("div");
-        card.classList.add("referral-card");
-        card.innerHTML = `
+    container.innerHTML = referralUsers.map(user => `
+        <div class="referral-card">
             <h3>${user}</h3>
             <button onclick="pokeUser('${user}')">Poke</button>
-        `;
-        container.appendChild(card);
-    });
+        </div>
+    `).join('');
 }
 
 function pokeUser(user) {
-    alert(`You poked ${user}! Reward has been shared.`);
-    currentPoints += 100; // Example reward for poking a user
+    alert(`You poked ${user}!`);
+    currentPoints += 100;
     localStorage.setItem("points", currentPoints);
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
 }
 
-// Spin to Win
 function spinWheel() {
-    const wheel = document.getElementById("wheel");
+    const rewards = [2500, 3500, 5500, 6500, 7500];
     const spinButton = document.getElementById("spin-button");
-
     spinButton.disabled = true;
-    // Spinner wheel logic (simplified example, you can adjust for actual game)
-    const degree = Math.floor(Math.random() * 360);
-    wheel.style.transform = `rotate(${degree}deg)`; // Rotate wheel
-
-    // Calculate the reward
+    document.getElementById("wheel").style.transform = `rotate(${Math.floor(Math.random() * 360)}deg)`;
     setTimeout(() => {
-        const reward = determineSpinReward();
+        const reward = rewards[Math.floor(Math.random() * rewards.length)];
         currentPoints += reward;
         localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert(`You earned ${reward} CR7SIU Points from Spin to Win!`);
-        spinButton.disabled = false;
+        alert(`You earned ${reward} CR7SIU Points!`);
         spinClaimed = true;
-        localStorage.setItem("spinClaimed", true); // Mark spin as claimed
-    }, 3000); // Wait for animation to finish before showing reward
+        localStorage.setItem("spinClaimed", "true");
+        updateSpinButton();
+    }, 3000);
 }
 
-function determineSpinReward() {
-    const rewards = [2500, 3500, 5500, 6500, 7500]; // Increased values for better rewards
-    return rewards[Math.floor(Math.random() * rewards.length)];
-}
-
-// Update the spin button based on daily claim status
 function updateSpinButton() {
     const spinButton = document.getElementById("spin-button");
     const currentTime = Date.now();
-    
-    // Check if the user has already claimed the reward today
     if (spinClaimed || currentTime - lastSpinTime < 86400000) {
         spinButton.disabled = true;
-        const nextClaimTime = new Date(lastSpinTime + 86400000);
-        document.getElementById("spin-claim-time").textContent = `You can spin again on ${nextClaimTime.toLocaleString()}`;
+        document.getElementById("spin-claim-time").textContent = `Next spin available on ${new Date(lastSpinTime + 86400000).toLocaleString()}`;
     } else {
         spinButton.disabled = false;
     }
