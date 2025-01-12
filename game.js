@@ -203,8 +203,9 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// Generate and share unique referral link
+// Generate and share unique referral link (Updated)
 function shareReferralLink() {
+    // Use the unique referral link based on the username
     const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
     const socialMedia = prompt("Which social media platform would you like to share your link on?\nOptions: Facebook, X, WhatsApp, Telegram, Instagram");
 
