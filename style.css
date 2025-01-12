@@ -16,11 +16,10 @@ header, nav, #tasks-container, .task, .attribute-card, .referral-card, #referral
     text-align: center;
 }
 
-header { 
+header {
     color: #fff; 
-    background-color: rgba(0, 0, 0, 0.8); 
-    font-size: 36px; /* Increased font size by 8px */
-    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    font-size: 36px; /* Increased the font size for "CR7SIU Fan Game" */
 }
 
 nav { 
@@ -57,19 +56,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 .main { 
     text-align: center; 
-}
-
-/* Logo */
-#logo {
-    width: 200px; 
-    margin: 20px auto;
-}
-
-/* Player Dashboard & Username */
-#player-dashboard, #username-setup {
-    display: flex;
-    justify-content: center; /* Center the elements */
-    align-items: center;
 }
 
 /* Button and Images */
@@ -109,6 +95,15 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     }
 }
 
+/* Logo Below Header */
+#cr7-logo {
+    width: 150px;
+    height: 150px;
+    background: url("images/cr7_poster6.jpg") center center no-repeat; /* Added logo below header */
+    background-size: cover;
+    margin: 20px auto;
+}
+
 /* Text */
 #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
     color: #fff;
@@ -130,11 +125,13 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     max-width: 80%; 
     margin: 20px auto; 
 }
+
 .task { 
     justify-content: space-between; 
     align-items: center; 
     margin-bottom: 15px; 
 }
+
 .task a { 
     text-decoration: none; 
     color: #f2f2f2; 
@@ -173,7 +170,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     background-color: #888; 
     transform: translateY(-3px); 
 }
-
 #social-share .share-button i { 
     margin-right: 8px; 
 }
@@ -207,4 +203,9 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 .attribute p {
     font-size: 14px;
+}
+
+/* Align "Player Dashboard" to Center under Home Tab */
+#player-dashboard {
+    text-align: center; /* Centering the "Player Dashboard" */
 }
