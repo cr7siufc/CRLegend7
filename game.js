@@ -91,8 +91,8 @@ function convertToTokens() {
 // Display tasks for rewards validation
 function displayTasks() {
     const tasksContainer = document.getElementById("task-section");
-    tasksContainer.innerHTML = 
-        `<div class="task">
+    tasksContainer.innerHTML = `
+        <div class="task">
             <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
             <button id="validate-youtube" onclick="completeTask('youtube')" disabled>Mark as Done</button>
         </div>
@@ -103,7 +103,8 @@ function displayTasks() {
         <div class="task">
             <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
             <button id="validate-facebook" onclick="completeTask('facebook')" disabled>Mark as Done</button>
-        </div>`;
+        </div>
+    `;
     updateTaskButtons();
 }
 
@@ -168,11 +169,12 @@ function displayImprovements() {
         const cost = 500 + 250 * (level - 1); // Cost formula
         const card = document.createElement("div");
         card.classList.add("attribute-card");
-        card.innerHTML = 
-            `<h3>${improvement}</h3>
+        card.innerHTML = `
+            <h3>${improvement}</h3>
             <p>Upgrade Cost: ${cost} points</p>
             <p>Level: <span id="attribute-level-${index}">${level}</span></p>
-            <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>`;
+            <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
+        `;
         container.appendChild(card);
     });
 }
@@ -241,9 +243,10 @@ function displayReferrals() {
     referralUsers.forEach(user => {
         const card = document.createElement("div");
         card.classList.add("referral-card");
-        card.innerHTML = 
-            `<h3>${user}</h3>
-            <button onclick="pokeUser('${user}')">Poke</button>`;
+        card.innerHTML = `
+            <h3>${user}</h3>
+            <button onclick="pokeUser('${user}')">Poke</button>
+        `;
         container.appendChild(card);
     });
 }
