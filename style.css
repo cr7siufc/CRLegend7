@@ -188,7 +188,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 .attribute {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 2px solid #fff; /* Added border to attributes */
     background-color: rgba(60, 60, 60, 0.8);
     border-radius: 8px;
     text-align: center;
