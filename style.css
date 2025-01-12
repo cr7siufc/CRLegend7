@@ -38,6 +38,7 @@ nav {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    gap: 10px; /* Added spacing between buttons */
 }
 
 nav ul {
@@ -46,10 +47,11 @@ nav ul {
     margin: 0;
     padding: 0;
     flex-wrap: wrap;
+    gap: 10px; /* Added spacing between items */
 }
 
 nav li {
-    margin: 10px;
+    margin: 0;
 }
 
 nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
@@ -61,7 +63,7 @@ nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-b
     cursor: pointer;
     font-size: 16px;
     width: 100%;
-    max-width: 200px;
+    max-width: 150px; /* Adjusted width for better spacing */
 }
 
 nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
@@ -163,7 +165,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 #attributes-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr); /* Two attributes per row */
     gap: 15px;
     margin: 20px 0;
     text-align: center;
@@ -202,13 +204,21 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
         height: 120px;
     }
 
+    /* Navigation aligned side by side */
     nav ul {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
     }
 
     nav li {
-        margin: 5px 0;
+        margin: 0;
+    }
+
+    nav button {
+        font-size: 14px;
+        padding: 10px 14px;
+        max-width: 120px;
     }
 
     #tap-to-earn {
@@ -221,12 +231,8 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
         height: 120px;
     }
 
+    /* Two attributes per row on mobile */
     #attributes-container {
-        grid-template-columns: 1fr;
-    }
-
-    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
-        font-size: 14px;
-        padding: 10px 14px;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
