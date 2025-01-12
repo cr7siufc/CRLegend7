@@ -6,15 +6,15 @@
     <title>CR7SIU Fan Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="background-image: url('images/cr7_poster9.jpg');">
+<body>
     <header>
         <h1>Welcome to the CR7SIU Fan Game</h1>
         <div style="display: flex; justify-content: space-between; padding: 0 15px;">
-            <div>
+            <div style="text-align: left;">
                 <p>Player Level: <span id="player-level">1</span></p>
                 <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p>
             </div>
-            <div>
+            <div style="text-align: right;">
                 <p>CR7SIU Points: <span id="cr7siu-points">0</span></p>
                 <p>CR7SIU Tokens: <span id="tokens-display">0</span></p>
             </div>
@@ -24,10 +24,10 @@
     <!-- Navigation Bar -->
     <nav>
         <ul>
-            <li style="flex: 1;"><button onclick="showPage('home')">Home</button></li>
-            <li style="flex: 1;"><button onclick="showPage('improvements')">Improvements</button></li>
-            <li style="flex: 1;"><button onclick="showPage('airdrop')">Airdrop</button></li>
-            <li style="flex: 1;"><button onclick="showPage('rewards')">Rewards</button></li>
+            <li><button onclick="showPage('home')">Home</button></li>
+            <li><button onclick="showPage('improvements')">Improvements</button></li>
+            <li><button onclick="showPage('airdrop')">Airdrop</button></li>
+            <li><button onclick="showPage('rewards')">Rewards</button></li>
         </ul>
     </nav>
 
@@ -35,7 +35,7 @@
     <main id="home">
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
-        <div id="tap-to-earn" onclick="earnPoints()" style="background: url('images/cr7_poster6.jpg'); width: 100px; height: 100px; border-radius: 50%; background-size: cover; cursor: pointer;">
+        <div id="tap-to-earn" onclick="earnPoints()">
             <div>Tap to Earn</div>
         </div>
     </main>
