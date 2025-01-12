@@ -4,12 +4,6 @@ let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
-let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || {
-    youtube: false,
-    xAccount: false,
-    facebook: false
-};
-let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || []; // For storing referrals
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -39,7 +33,6 @@ function loadSession() {
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
     displayImprovements();
-    displayTasks(); // Display tasks for rewards validation
     showPage('home');
 }
 
@@ -85,71 +78,6 @@ function convertToTokens() {
         alert(`You converted ${tokens} CR7SIU tokens!`);
     } else {
         alert("You don't have enough points to convert.");
-    }
-}
-
-// Display tasks for rewards validation
-function displayTasks() {
-    const tasksContainer = document.getElementById("task-section");
-    tasksContainer.innerHTML = `
-        <div class="task">
-            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
-            <button id="validate-youtube" onclick="completeTask('youtube')" disabled>Mark as Done</button>
-        </div>
-        <div class="task">
-            <a href="https://x.com/cr7siucoin" target="_blank" onclick="enableTaskButton('xAccount')">Join our X Account</a>
-            <button id="validate-xAccount" onclick="completeTask('xAccount')" disabled>Mark as Done</button>
-        </div>
-        <div class="task">
-            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
-            <button id="validate-facebook" onclick="completeTask('facebook')" disabled>Mark as Done</button>
-        </div>
-    `;
-    updateTaskButtons();
-}
-
-// Enable task validation button
-function enableTaskButton(task) {
-    document.getElementById(`validate-${task}`).disabled = false;
-}
-
-// Mark a task as completed
-function completeTask(task) {
-    tasksCompleted[task] = true;
-    localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
-    alert(`Task "${task}" marked as completed!`);
-    updateTaskButtons();
-}
-
-// Update task buttons based on completion status
-function updateTaskButtons() {
-    for (const task in tasksCompleted) {
-        const button = document.getElementById(`validate-${task}`);
-        if (tasksCompleted[task]) {
-            button.disabled = true;
-            button.textContent = "Completed";
-            button.classList.add("completed");
-        }
-    }
-    // Enable claim button if all tasks are complete
-    const allTasksCompleted = Object.values(tasksCompleted).every(Boolean);
-    document.getElementById("claim-rewards-btn").disabled = !allTasksCompleted;
-}
-
-// Claim Rewards
-function claimRewards() {
-    if (Object.values(tasksCompleted).every(Boolean)) {
-        if (!localStorage.getItem("rewardsClaimed")) {
-            currentPoints += 5000; // Add reward points
-            localStorage.setItem("points", currentPoints);
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-            alert("Congratulations! You earned 5000 CR7SIU Points for completing all tasks.");
-            localStorage.setItem("rewardsClaimed", true); // Mark rewards as claimed
-        } else {
-            alert("You have already claimed your rewards.");
-        }
-    } else {
-        alert("Complete all tasks before claiming rewards.");
     }
 }
 
@@ -231,55 +159,4 @@ function shareReferralLink() {
             alert("Invalid social media platform.");
         }
     }
-}
-
-// Referral earnings text update
-document.getElementById("referral-text").textContent = "Share your unique referral link to earn 10,000 CR7SIU Points for every successful joining!";
-
-// Poke Referrals
-function displayReferrals() {
-    const container = document.getElementById("referral-container");
-    container.innerHTML = ""; // Clear the container before listing the users
-    referralUsers.forEach(user => {
-        const card = document.createElement("div");
-        card.classList.add("referral-card");
-        card.innerHTML = `
-            <h3>${user}</h3>
-            <button onclick="pokeUser('${user}')">Poke</button>
-        `;
-        container.appendChild(card);
-    });
-}
-
-function pokeUser(user) {
-    alert(`You poked ${user}! Reward has been shared.`);
-    currentPoints += 100; // Example reward for poking a user
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-}
-
-// Spin to Win
-function spinWheel() {
-    const wheel = document.getElementById("wheel");
-    const spinButton = document.getElementById("spin-button");
-
-    spinButton.disabled = true;
-    // Spinner wheel logic (simplified example, you can adjust for actual game)
-    const degree = Math.floor(Math.random() * 360);
-    wheel.style.transform = `rotate(${degree}deg)`; // Rotate wheel
-
-    // Calculate the reward
-    setTimeout(() => {
-        const reward = determineSpinReward();
-        currentPoints += reward;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert(`You earned ${reward} CR7SIU Points from Spin to Win!`);
-        spinButton.disabled = false;
-    }, 3000); // Wait for animation to finish before showing reward
-}
-
-function determineSpinReward() {
-    const rewards = [100, 200, 500, 1000, 2500];
-    return rewards[Math.floor(Math.random() * rewards.length)];
 }
