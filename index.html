@@ -3,17 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CR7SIU Rewards</title>
+    <title>CR7SIU Fan Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>CR7SIU Rewards</h1>
-        <p>Claim your rewards once every 24 hours. Validation is required for certain rewards.</p>
+        <h1>Welcome to the CR7SIU Fan Game</h1>
+        <div style="display: flex; justify-content: space-between; padding: 0 15px;">
+            <div style="text-align: left;">
+                <p>Player Level: <span id="player-level">1</span></p>
+                <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p>
+            </div>
+            <div style="text-align: right;">
+                <p>Total CR7SIU Points: <span id="cr7siu-points">0</span></p>
+                <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
+            </div>
+        </div>
     </header>
 
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><button onclick="showPage('home')">Home</button></li>
+            <li><button onclick="showPage('improvements')">Improvements</button></li>
+            <li><button onclick="showPage('airdrop')">Airdrop</button></li>
+            <li><button onclick="showPage('rewards')">Rewards</button></li>
+        </ul>
+    </nav>
+
+    <!-- Home Page -->
+    <main id="home">
+        <h2>Player Dashboard</h2>
+        <p>Username: <span id="username-display">Not Set</span></p>
+        <div style="text-align: center;">
+            <div id="tap-to-earn" onclick="earnPoints()"></div>
+            <div id="tap-to-earn-text">Tap to Earn</div>
+        </div>
+    </main>
+
+    <!-- Improvements Page -->
+    <main id="improvements" class="hidden">
+        <h1>Improvements</h1>
+        <p>Upgrade your football skills to earn more points!</p>
+        <div id="attributes-container">
+            <!-- Attributes will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <!-- Airdrop Page -->
+    <main id="airdrop" class="hidden">
+        <h1>Airdrop</h1>
+        <p>Convert your CR7SIU points to CR7SIU Tokens. Current Conversion: 5000 points = 1 CR7SIU token.</p>
+        <p>Total CR7SIU Points: <span id="airdrop-points-display">0</span> CR7SIU Points</p>
+        <p>Total CR7SIU Tokens: <span id="airdrop-tokens-display">0</span></p>
+        <button onclick="convertToTokens()">Convert Points</button>
+    </main>
+
     <!-- Rewards Page -->
-    <main id="rewards">
+    <main id="rewards" class="hidden">
+        <h1>Rewards</h1>
+        <p>All users can claim the rewards only once every 24 hours. Rewards reset daily at 00:00 Hours IST.</p>
         <div class="reward">
             <h2>1. Daily Check-In</h2>
             <p>Claim 5000 CR7SIU points by checking in daily!</p>
@@ -22,12 +71,12 @@
         <div class="reward">
             <h2>2. Upgrade Any Three Attributes</h2>
             <p>Earn 15,000 CR7SIU points for upgrading any three attributes.</p>
-            <button id="upgrade-attributes-btn" onclick="claimReward('upgrade-attributes')" disabled>Claim Reward</button>
+            <button onclick="claimReward('upgrade-attributes')">Claim Reward</button>
         </div>
         <div class="reward">
             <h2>3. Poke a Referral</h2>
             <p>If you have at least one referral, claim 10,000 CR7SIU points daily.</p>
-            <button id="poke-referral-btn" onclick="claimReward('poke-referral')" disabled>Claim Reward</button>
+            <button onclick="claimReward('poke-referral')">Claim Reward</button>
         </div>
         <div class="reward">
             <h2>4. Spin the Wheel</h2>
@@ -37,29 +86,30 @@
         <div class="reward">
             <h2>5. Watch a Video</h2>
             <p>Watch this video to earn 5000 CR7SIU points:</p>
-            <a href="https://youtu.be/byZi0lcy-jw?si=0PPiFRs5eZkHyeeP" target="_blank" onclick="validateReward('watch-video')">Watch Video</a>
-            <button id="watch-video-btn" onclick="claimReward('watch-video')" disabled>Claim Reward</button>
+            <a href="https://youtu.be/byZi0lcy-jw?si=0PPiFRs5eZkHyeeP" target="_blank">Watch Video</a>
+            <button onclick="claimReward('watch-video')">Claim Reward</button>
         </div>
         <div class="reward">
             <h2>6. Subscribe to our YouTube Channel</h2>
             <p>Subscribe to our YouTube Channel to earn 5000 CR7SIU points:</p>
-            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" onclick="validateReward('subscribe-youtube')">Subscribe Now</a>
-            <button id="subscribe-youtube-btn" onclick="claimReward('subscribe-youtube')" disabled>Claim Reward</button>
+            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank">Subscribe Now</a>
+            <button onclick="claimReward('subscribe-youtube')">Claim Reward</button>
         </div>
         <div class="reward">
             <h2>7. Join our X Account</h2>
             <p>Follow us on X and earn 5000 CR7SIU points:</p>
-            <a href="https://x.com/cr7siucoin" target="_blank" onclick="validateReward('join-x')">Join Now</a>
-            <button id="join-x-btn" onclick="claimReward('join-x')" disabled>Claim Reward</button>
+            <a href="https://x.com/cr7siucoin" target="_blank">Join Now</a>
+            <button onclick="claimReward('join-x')">Claim Reward</button>
         </div>
         <div class="reward">
             <h2>8. Like and Join our Facebook Page</h2>
             <p>Like and join our Facebook Page to earn 5000 CR7SIU points:</p>
-            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" onclick="validateReward('like-facebook')">Join Now</a>
-            <button id="like-facebook-btn" onclick="claimReward('like-facebook')" disabled>Claim Reward</button>
+            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank">Join Now</a>
+            <button onclick="claimReward('like-facebook')">Claim Reward</button>
         </div>
     </main>
 
+    <script src="game.js"></script>
     <script>
         function claimReward(rewardType) {
             const lastClaimTimeKey = `lastClaim-${rewardType}`;
@@ -78,45 +128,6 @@
                 alert(`Please wait ${hoursLeft} more hour(s) to claim this reward again.`);
             }
         }
-
-        function validateReward(rewardType) {
-            const validationKey = `validated-${rewardType}`;
-            localStorage.setItem(validationKey, true);
-
-            // Enable the corresponding button
-            const buttonId = `${rewardType}-btn`;
-            const button = document.getElementById(buttonId);
-            if (button) {
-                button.disabled = false;
-            }
-            alert(`Validation successful! You can now claim the ${rewardType.replace('-', ' ')} reward.`);
-        }
-
-        // Check validation states on page load
-        window.onload = function () {
-            const rewardTypes = [
-                'upgrade-attributes',
-                'poke-referral',
-                'watch-video',
-                'subscribe-youtube',
-                'join-x',
-                'like-facebook'
-            ];
-
-            rewardTypes.forEach(rewardType => {
-                const validationKey = `validated-${rewardType}`;
-                const isValidated = localStorage.getItem(validationKey);
-
-                // Enable the button if validated
-                if (isValidated) {
-                    const buttonId = `${rewardType}-btn`;
-                    const button = document.getElementById(buttonId);
-                    if (button) {
-                        button.disabled = false;
-                    }
-                }
-            });
-        };
 
         function spinWheel() {
             const rewards = [2000, 5000, 10000, 15000, 20000];
