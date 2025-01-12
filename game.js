@@ -203,6 +203,28 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// Initialize the app
-displayImprovements();
-displayTasks();
+// Generate and share unique referral link
+function shareReferralLink() {
+    const referralLink = `https://yourapp.com?referral=${username}`;
+    const socialMedia = prompt("Which social media platform would you like to share your link on?\nOptions: Facebook, Twitter, WhatsApp, etc.");
+
+    if (socialMedia) {
+        const encodedLink = encodeURIComponent(referralLink);
+        let shareUrl;
+
+        if (socialMedia.toLowerCase() === "facebook") {
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedLink}`;
+        } else if (socialMedia.toLowerCase() === "twitter") {
+            shareUrl = `https://twitter.com/intent/tweet?url=${encodedLink}`;
+        } else if (socialMedia.toLowerCase() === "whatsapp") {
+            shareUrl = `https://wa.me/?text=${encodedLink}`;
+        }
+
+        if (shareUrl) {
+            window.open(shareUrl, "_blank");
+        }
+    }
+}
+
+// Referral earnings text update
+document.getElementById("referral-text").textContent = "Share your unique referral link to earn 10,000 CR7SIU Points for every successful joining!";
