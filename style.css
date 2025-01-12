@@ -60,8 +60,8 @@ main {
 
 /* Tap-to-Earn Button with Text */
 #tap-to-earn {
-    width: 400px; /* Double the size */
-    height: 400px; /* Double the size */
+    width: 800px; /* Double the size */
+    height: 800px; /* Double the size */
     border-radius: 50%;
     background-image: url("images/cr7_poster6.jpg"); /* Tap to Earn Button Image */
     background-size: cover;
