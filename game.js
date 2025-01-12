@@ -10,11 +10,15 @@ let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || {
     facebook: false
 };
 
+// Referral link variable
+let referralLink = localStorage.getItem("referralLink");
+
 // Show the username setup if it's the user's first session
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
     document.getElementById("username-input").focus();
 } else {
+    checkAndGenerateReferralLink();
     loadSession();
 }
 
@@ -24,10 +28,26 @@ function setUsername() {
     if (input !== "") {
         localStorage.setItem("username", input);
         username = input;
+        checkAndGenerateReferralLink();
         loadSession();
     } else {
         alert("Please enter a valid username.");
     }
+}
+
+// Check if referral link exists, if not, generate one
+function checkAndGenerateReferralLink() {
+    if (!referralLink) {
+        generateReferralLink();
+    }
+    document.getElementById("referral-link").value = referralLink; // Display referral link
+}
+
+// Generate a unique referral link for the user
+function generateReferralLink() {
+    let userId = Math.random().toString(36).substr(2, 9); // Create a unique user ID
+    referralLink = `https://yourapp.com?referral=${userId}`;
+    localStorage.setItem("referralLink", referralLink); // Store the referral link in localStorage
 }
 
 // Load session data
@@ -203,9 +223,9 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// Generate and share unique referral link
+// Share the unique referral link to social media
 function shareReferralLink() {
-    const referralLink = `https://yourapp.com?referral=${username}`;
+    const referralLink = localStorage.getItem("referralLink");
     const socialMedia = prompt("Which social media platform would you like to share your link on?\nOptions: Facebook, Twitter, WhatsApp, etc.");
 
     if (socialMedia) {
