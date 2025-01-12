@@ -184,6 +184,38 @@ main {
     color: #28a745;
 }
 
+/* Social Media Share Section */
+#social-share {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#social-share .share-button {
+    background-color: #444444;
+    color: #ffffff;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+#social-share .share-button:hover {
+    background-color: #888888;
+}
+
+#social-share .share-button i {
+    margin-right: 8px;
+}
+
+#social-share a {
+    text-decoration: none;
+}
+
 /* Username Setup Dialog */
 #username-setup {
     text-align: center;
