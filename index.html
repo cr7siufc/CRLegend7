@@ -84,27 +84,28 @@
     <!-- Rewards Page -->
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
-        
-        <!-- Ads Section -->
+
+        <!-- Earn from Ads Section -->
         <div id="ads-section">
-            <h2>Ads</h2>
-            <button onclick="launchAd()">Watch Ad</button>
-            <button id="ad-claim-button" onclick="claimAdReward()" disabled>Claim Ad Reward</button>
+            <h2>Earn from Ads</h2>
+            <p>Watch this video ad to earn CR7SIU Points:</p>
+            <a href="https://youtu.be/byZi0lcy-jw?si=mgizMFfa7SjYugq7" target="_blank">Click to Watch Ad</a>
+            <button onclick="completeAdTask()" id="ad-claim-button" disabled>Claim Ad Reward</button>
         </div>
-        
-        <!-- Tasks Section -->
-        <div id="task-section">
-            <h2>Tasks</h2>
+
+        <!-- Claim Rewards Section -->
+        <div id="claim-rewards">
+            <h2>Claim Rewards</h2>
             <div class="task">
-                <a id="task-youtube" href="#" target="_blank" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
+                <a href="#" target="_blank" id="task-youtube" onclick="enableTaskButton('youtube')">Subscribe to our YouTube Channel</a>
                 <button id="validate-youtube" onclick="completeTask('youtube')" disabled>Validate</button>
             </div>
             <div class="task">
-                <a id="task-x" href="#" target="_blank" onclick="enableTaskButton('x')">Join our X Account</a>
+                <a href="#" target="_blank" id="task-x" onclick="enableTaskButton('x')">Join our X Account</a>
                 <button id="validate-x" onclick="completeTask('x')" disabled>Validate</button>
             </div>
             <div class="task">
-                <a id="task-facebook" href="#" target="_blank" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
+                <a href="#" target="_blank" id="task-facebook" onclick="enableTaskButton('facebook')">Like and Join our Facebook Page</a>
                 <button id="validate-facebook" onclick="completeTask('facebook')" disabled>Validate</button>
             </div>
             <button id="claim-rewards-btn" onclick="claimRewards()" disabled>Claim Rewards</button>
@@ -152,7 +153,7 @@
 Earn 10,000 CR7SIU Points for each successful referral!
 1️⃣ Get your link
 2️⃣ Share on social media
-3️⃣ Earn points for signups!
+3️⃣ Earn points for signups! 
 
 Start referring & boost your points now! 🔥
 👉 ${getReferralLink()}
@@ -184,6 +185,34 @@ Start referring & boost your points now! 🔥
 
         // Call this function to generate referral link on page load or at some appropriate time
         generateReferralLink();
+
+        // Complete Ad Task
+        function completeAdTask() {
+            document.getElementById('ad-claim-button').disabled = false;
+            alert("You have watched the ad. Click 'Claim Ad Reward' to claim your reward.");
+        }
+
+        // Enable task button based on task completion
+        function enableTaskButton(task) {
+            document.getElementById(`validate-${task}`).disabled = false;
+        }
+
+        // Mark task as completed and enable reward button
+        function completeTask(task) {
+            document.getElementById(`validate-${task}`).disabled = true;
+            document.getElementById('claim-rewards-btn').disabled = false;
+        }
+
+        // Claim rewards after validation
+        function claimRewards() {
+            let tasksCompleted = [];
+            if (!document.getElementById('validate-youtube').disabled) tasksCompleted.push("YouTube Subscribe");
+            if (!document.getElementById('validate-x').disabled) tasksCompleted.push("X Account Join");
+            if (!document.getElementById('validate-facebook').disabled) tasksCompleted.push("Facebook Like");
+
+            alert("Rewards Claimed: " + tasksCompleted.join(", "));
+            document.getElementById('claim-rewards-btn').disabled = true;
+        }
     </script>
 </body>
 </html>
