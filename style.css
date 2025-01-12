@@ -195,21 +195,21 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-align: center; /* Center attribute items */
 }
 
-.attribute {
+.attribute-card {
     padding: 10px;
-    border: 2px solid #fff; /* Added border to attributes */
-    background-color: rgba(60, 60, 60, 0.8);
+    border: 2px solid #0073e6; /* Blue border */
+    background-color: rgba(60, 60, 60, 0.8); /* Dark background for contrast */
     border-radius: 8px;
     text-align: center;
     color: #fff;
 }
 
-.attribute h3 {
+.attribute-card h3 {
     font-size: 16px;
     font-weight: bold;
 }
 
-.attribute p {
+.attribute-card p {
     font-size: 14px;
 }
 
