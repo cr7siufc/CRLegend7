@@ -57,83 +57,193 @@
         <p>Total CR7SIU Points: <span id="airdrop-points-display">0</span> CR7SIU Points</p>
         <p>Total CR7SIU Tokens: <span id="airdrop-tokens-display">0</span></p>
         <button onclick="convertToTokens()">Convert Points</button>
+
+        <!-- Referral Earning Section -->
+        <div id="referral-earning">
+            <h2>Referral Earning</h2>
+            <p>Share your unique referral link to earn 10,000 CR7SIU Points for every successful joining!</p>
+            <div>
+                <input type="text" id="referral-link" readonly value="Generating referral link..." />
+                <button onclick="copyReferralLink()">Copy Link</button>
+            </div>
+            <p>Referrals Earned: <span id="referral-count">0</span></p>
+            
+            <!-- Social Media Share Buttons -->
+            <button onclick="toggleShareOptions()">Share Referral Link</button>
+            <div id="social-share" class="hidden">
+                <p>Select Social Media Platform to Share:</p>
+                <button onclick="shareLink('facebook')">Facebook</button>
+                <button onclick="shareLink('twitter')">X (formerly Twitter)</button>
+                <button onclick="shareLink('whatsapp')">WhatsApp</button>
+                <button onclick="shareLink('telegram')">Telegram</button>
+                <button onclick="shareLink('instagram')">Instagram</button>
+            </div>
+        </div>
     </main>
 
     <!-- Rewards Page -->
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
-        <p>All users can claim the rewards only once every 24 hours. Rewards reset daily at 00:00 Hours IST.</p>
-        <div class="reward">
-            <h2>1. Daily Check-In</h2>
-            <p>Claim 5000 CR7SIU points by checking in daily!</p>
-            <button onclick="claimReward('daily-checkin')">Claim Reward</button>
+
+        <!-- Earn from Ads Section -->
+        <div id="ads-section" style="margin-bottom: 10px;">
+            <h2>Earn from Ads</h2>
+            <p>Watch this video ad to earn CR7SIU Points:</p>
+            <a href="https://youtu.be/byZi0lcy-jw?si=mgizMFfa7SjYugq7" target="_blank">Click to Watch Ad</a>
+            <button onclick="completeAdTask()" id="ad-claim-button" disabled>Claim Ad Reward</button>
         </div>
-        <div class="reward">
-            <h2>2. Upgrade Any Three Attributes</h2>
-            <p>Earn 15,000 CR7SIU points for upgrading any three attributes.</p>
-            <button onclick="claimReward('upgrade-attributes')">Claim Reward</button>
+
+        <!-- Daily Check-In Offer -->
+        <div id="daily-checkin" style="margin-bottom: 10px;">
+            <h2>Daily Check-In</h2>
+            <button onclick="completeCheckInTask()" id="check-in-button" disabled>Claim Daily Check-In Reward</button>
         </div>
-        <div class="reward">
-            <h2>3. Poke a Referral</h2>
-            <p>If you have at least one referral, claim 10,000 CR7SIU points daily.</p>
-            <button onclick="claimReward('poke-referral')">Claim Reward</button>
+
+        <!-- Poke Referral -->
+        <div id="poke-referral" style="margin-bottom: 10px;">
+            <h2>Poke Referral</h2>
+            <button onclick="completeReferralTask()" id="referral-button" disabled>Claim Referral Reward</button>
         </div>
-        <div class="reward">
-            <h2>4. Spin the Wheel</h2>
-            <p>Spin the wheel daily for a chance to win CR7SIU points!</p>
-            <button onclick="spinWheel()">Spin Now</button>
+
+        <!-- Spin the Wheel Feature -->
+        <div id="spin-the-wheel" style="margin-bottom: 10px;">
+            <h2>Spin the Wheel</h2>
+            <button onclick="spinWheel()">Spin to Win!</button>
+            <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
+            <div id="wheel"></div>
         </div>
-        <div class="reward">
-            <h2>5. Watch a Video</h2>
-            <p>Watch this video to earn 5000 CR7SIU points:</p>
-            <a href="https://youtu.be/byZi0lcy-jw?si=0PPiFRs5eZkHyeeP" target="_blank">Watch Video</a>
-            <button onclick="claimReward('watch-video')">Claim Reward</button>
-        </div>
-        <div class="reward">
-            <h2>6. Subscribe to our YouTube Channel</h2>
-            <p>Subscribe to our YouTube Channel to earn 5000 CR7SIU points:</p>
-            <a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank">Subscribe Now</a>
-            <button onclick="claimReward('subscribe-youtube')">Claim Reward</button>
-        </div>
-        <div class="reward">
-            <h2>7. Join our X Account</h2>
-            <p>Follow us on X and earn 5000 CR7SIU points:</p>
-            <a href="https://x.com/cr7siucoin" target="_blank">Join Now</a>
-            <button onclick="claimReward('join-x')">Claim Reward</button>
-        </div>
-        <div class="reward">
-            <h2>8. Like and Join our Facebook Page</h2>
-            <p>Like and join our Facebook Page to earn 5000 CR7SIU points:</p>
-            <a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank">Join Now</a>
-            <button onclick="claimReward('like-facebook')">Claim Reward</button>
+
+        <!-- Upgrade Any Three Attributes -->
+        <div id="upgrade-attributes" style="margin-bottom: 10px;">
+            <h2>Upgrade Any Three Attributes</h2>
+            <button onclick="upgradeAttributes()" id="upgrade-attributes-button" disabled>Claim Upgrade Reward</button>
         </div>
     </main>
 
+    <!-- New Username Setup Dialog -->
+    <div id="username-setup" class="hidden">
+        <h2>Welcome! Please enter your username to start:</h2>
+        <input type="text" id="username-input" placeholder="Enter Username">
+        <button onclick="setUsername()">Set Username</button>
+    </div>
+
     <script src="game.js"></script>
+
     <script>
-        function claimReward(rewardType) {
-            const lastClaimTimeKey = `lastClaim-${rewardType}`;
-            const lastClaimTime = localStorage.getItem(lastClaimTimeKey);
-            const currentTime = new Date().getTime();
+        let referralLink = ""; // Will store the referral link
 
-            // 24 hours in milliseconds
-            const claimCooldown = 24 * 60 * 60 * 1000;
-
-            if (!lastClaimTime || currentTime - lastClaimTime > claimCooldown) {
-                localStorage.setItem(lastClaimTimeKey, currentTime);
-                alert(`You claimed the ${rewardType.replace('-', ' ')} reward!`);
-            } else {
-                const remainingTime = claimCooldown - (currentTime - lastClaimTime);
-                const hoursLeft = Math.ceil(remainingTime / (60 * 60 * 1000));
-                alert(`Please wait ${hoursLeft} more hour(s) to claim this reward again.`);
-            }
+        // Function to generate the referral link
+        function generateReferralLink() {
+            let userId = Math.random().toString(36).substr(2, 9);  // Generate a unique user ID
+            referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;  // Pointing to the game URL
+            document.getElementById('referral-link').value = referralLink; // Display the link
         }
 
+        function copyReferralLink() {
+            let referralInput = document.getElementById('referral-link');
+            referralInput.select();
+            document.execCommand('copy');
+        }
+
+        function getReferralLink() {
+            return referralLink;
+        }
+
+        function toggleShareOptions() {
+            let shareDiv = document.getElementById('social-share');
+            shareDiv.classList.toggle('hidden');
+        }
+
+        function shareLink(platform) {
+            let referralText = `🚨 CR7SIU Referral Program! 🚨
+
+Earn 10,000 CR7SIU Points for each successful referral!
+1️⃣ Get your link
+2️⃣ Share on social media
+3️⃣ Earn points for signups! 
+
+Start referring & boost your points now! 🔥
+👉 ${getReferralLink()}
+#CR7SIU #ReferralProgram #Crypto #FanToken`;
+
+            let shareUrl;
+            switch (platform) {
+                case 'facebook':
+                    shareUrl = `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'telegram':
+                    shareUrl = `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`;
+                    break;
+                case 'instagram':
+                    shareUrl = `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`;
+                    break;
+                default:
+                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralText)}`;
+                    break;
+            }
+            window.open(shareUrl, '_blank');
+        }
+
+        // Call this function to generate referral link on page load or at some appropriate time
+        generateReferralLink();
+
+        // Complete Ad Task
+        function completeAdTask() {
+            document.getElementById('ad-claim-button').disabled = false;
+            alert("You have watched the ad. Click 'Claim Ad Reward' to claim your reward.");
+        }
+
+        // Complete Daily Check-In Task
+        function completeCheckInTask() {
+            document.getElementById('check-in-button').disabled = false;
+            alert("You have completed your daily check-in! Claim your 10,000 CR7SIU points.");
+        }
+
+        // Complete Referral Task
+        function completeReferralTask() {
+            document.getElementById('referral-button').disabled = false;
+            alert("You have completed the Poke Referral! Claim your 10,000 CR7SIU points.");
+        }
+
+        // Spin the Wheel Feature
         function spinWheel() {
-            const rewards = [2000, 5000, 10000, 15000, 20000];
-            const reward = rewards[Math.floor(Math.random() * rewards.length)];
-            claimReward('spin-wheel');
-            alert(`You spun the wheel and won ${reward} CR7SIU points!`);
+            let wheelRewards = [2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000];
+            let reward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
+            alert("You won " + reward + " CR7SIU points!");
+        }
+
+        // Upgrade Any Three Attributes
+        function upgradeAttributes() {
+            document.getElementById('upgrade-attributes-button').disabled = false;
+            alert("You have upgraded 3 attributes! Claim your 10,000 CR7SIU points.");
+        }
+
+        // Enable task button based on task completion
+        function enableTaskButton(task) {
+            document.getElementById(`validate-${task}`).disabled = false;
+        }
+
+        // Mark task as completed and enable reward button
+        function completeTask(task) {
+            document.getElementById(`validate-${task}`).disabled = true;
+            document.getElementById('claim-rewards-btn').disabled = false;
+        }
+
+        // Claim rewards after validation
+        function claimRewards() {
+            let tasksCompleted = [];
+            if (!document.getElementById('validate-youtube').disabled) tasksCompleted.push("YouTube Subscribe");
+            if (!document.getElementById('validate-x').disabled) tasksCompleted.push("X Account Join");
+            if (!document.getElementById('validate-facebook').disabled) tasksCompleted.push("Facebook Like");
+
+            alert("Rewards Claimed: " + tasksCompleted.join(", "));
+            document.getElementById('claim-rewards-btn').disabled = true;
         }
     </script>
 </body>
