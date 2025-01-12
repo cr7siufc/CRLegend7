@@ -16,6 +16,24 @@ header {
     padding: 20px;
 }
 
+/* New CR7SIU Text below header */
+#cr7siu-note {
+    font-size: 10px; /* Font size for the note */
+    color: #fff;
+    margin-top: 10px;
+    padding: 0 20px;
+    font-weight: normal;
+}
+
+/* Logo Below Header */
+#cr7-logo {
+    width: 150px;
+    height: 150px;
+    background: url("images/cr7_poster6.jpg") center center no-repeat; /* Added logo below header */
+    background-size: cover;
+    margin: 20px auto;
+}
+
 nav { 
     background-color: rgba(0, 0, 0, 0.9);
     display: flex;
@@ -88,15 +106,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     100% {
         transform: translateY(0);
     }
-}
-
-/* Logo Below Header */
-#cr7-logo {
-    width: 150px;
-    height: 150px;
-    background: url("images/cr7_poster6.jpg") center center no-repeat; /* Added logo below header */
-    background-size: cover;
-    margin: 20px auto;
 }
 
 /* Text */
