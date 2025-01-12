@@ -123,6 +123,56 @@ main {
     background-color: #888888;
 }
 
+/* Referral Earning Section Styles */
+#referral-earning {
+    background-color: rgba(50, 50, 50, 0.8);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
+}
+
+#referral-earning h2 {
+    font-size: 24px;
+    color: #f2f2f2;
+    margin-bottom: 10px;
+}
+
+#referral-earning p {
+    color: #f2f2f2;
+    font-size: 16px;
+}
+
+#referral-earning input {
+    padding: 10px;
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid #ffffff;
+    margin-top: 10px;
+    background-color: #333333;
+    color: #f2f2f2;
+}
+
+#referral-earning button {
+    background-color: #444444;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#referral-earning button:hover {
+    background-color: #888888;
+}
+
+#referral-earning p span {
+    font-weight: bold;
+    color: #28a745;
+}
+
 /* Username Setup Dialog */
 #username-setup {
     text-align: center;
