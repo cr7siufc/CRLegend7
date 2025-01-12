@@ -17,6 +17,17 @@ header {
     color: #ffffff;
 }
 
+header div {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+}
+
+header div > div {
+    text-align: left;
+    font-size: 14px;
+}
+
 nav {
     display: flex;
     justify-content: space-between;
@@ -63,7 +74,7 @@ main {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background-image: url("images/cr7_poster2.jpg");
+    background-image: url("images/cr7_poster6.jpg");
     background-size: cover;
     background-position: center;
     border: 2px solid #ffffff;
