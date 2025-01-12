@@ -22,12 +22,12 @@
     </header>
 
     <nav>
-        <ul>
-            <li><button onclick="showPage('home')">Home</button></li>
-            <li><button onclick="showPage('improvements')">Improvements</button></li>
-            <li><button onclick="showPage('airdrop')">Airdrop</button></li>
-            <li><button onclick="showPage('rewards')">Rewards</button></li>
-        </ul>
+        <div class="tabs">
+            <button onclick="showPage('home')">Home</button>
+            <button onclick="showPage('improvements')">Improvements</button>
+            <button onclick="showPage('airdrop')">Airdrop</button>
+            <button onclick="showPage('rewards')">Rewards</button>
+        </div>
     </nav>
 
     <main id="home">
@@ -42,7 +42,58 @@
     <main id="improvements" class="hidden">
         <h1>Improvements</h1>
         <p>Upgrade your football skills to earn more points!</p>
-        <div id="attributes-container"></div>
+
+        <!-- Attribute Section 1 -->
+        <div class="attribute-section">
+            <h2>Physical Attributes</h2>
+            <div class="attribute-row">
+                <div class="attribute-card">Stamina</div>
+                <div class="attribute-card">Strength</div>
+            </div>
+            <div class="attribute-row">
+                <div class="attribute-card">Speed</div>
+                <div class="attribute-card">Heading</div>
+            </div>
+        </div>
+
+        <!-- Attribute Section 2 -->
+        <div class="attribute-section">
+            <h2>Technical Skills</h2>
+            <div class="attribute-row">
+                <div class="attribute-card">Dribbling</div>
+                <div class="attribute-card">Shooting Power</div>
+            </div>
+            <div class="attribute-row">
+                <div class="attribute-card">Passing</div>
+                <div class="attribute-card">Finishing</div>
+            </div>
+        </div>
+
+        <!-- Attribute Section 3 -->
+        <div class="attribute-section">
+            <h2>Defensive Skills</h2>
+            <div class="attribute-row">
+                <div class="attribute-card">Defending</div>
+                <div class="attribute-card">Tackling</div>
+            </div>
+            <div class="attribute-row">
+                <div class="attribute-card">Positioning</div>
+                <div class="attribute-card">Crossing</div>
+            </div>
+        </div>
+
+        <!-- Attribute Section 4 -->
+        <div class="attribute-section">
+            <h2>Game Vision</h2>
+            <div class="attribute-row">
+                <div class="attribute-card">Control</div>
+                <div class="attribute-card">Creativity</div>
+            </div>
+            <div class="attribute-row">
+                <div class="attribute-card">Leadership</div>
+                <div class="attribute-card">Ball Handling</div>
+            </div>
+        </div>
     </main>
 
     <main id="airdrop" class="hidden">

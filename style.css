@@ -1,76 +1,159 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    background: url("images/cr7_poster9.jpg") no-repeat center center fixed;
-    background-size: cover;
-    margin: 0;
-    padding: 0;
-    color: #f2f2f2;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CR7SIU Fan Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>CR7SIU Fan Game</h1>
+        <div style="display: flex; justify-content: space-between; padding: 0 15px;">
+            <div>
+                <p>Player Level: <span id="player-level">1</span></p>
+                <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p>
+            </div>
+            <div>
+                <p>Total CR7SIU Points: <span id="cr7siu-points">0</span></p>
+                <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
+            </div>
+        </div>
+    </header>
 
-header, nav, #tasks-container, .task, .attribute-card, .referral-card, #referral-earning {
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    background-color: rgba(50, 50, 50, 0.9);
-    text-align: center;
-}
+    <nav>
+        <ul>
+            <li><button onclick="showPage('home')">Home</button></li>
+            <li><button onclick="showPage('improvements')">Improvements</button></li>
+            <li><button onclick="showPage('airdrop')">Airdrop</button></li>
+            <li><button onclick="showPage('rewards')">Rewards</button></li>
+        </ul>
+    </nav>
 
-header { color: #fff; background-color: rgba(0, 0, 0, 0.8); }
-nav { background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: space-between; }
-nav ul { list-style: none; display: flex; margin: 0; }
-nav li { flex: 1; }
-nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
-    background-color: #444; color: #fff; border: none; padding: 10px; border-radius: 5px;
-    cursor: pointer;
-}
+    <main id="home">
+        <h2>Player Dashboard</h2>
+        <p>Username: <span id="username-display">Not Set</span></p>
+        <div style="text-align: center;">
+            <div id="tap-to-earn" onclick="earnPoints()"></div>
+            <div>Tap to Earn</div>
+        </div>
+    </main>
 
-nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
-    background-color: #888;
-}
+    <main id="improvements" class="hidden">
+        <h1>Improvements</h1>
+        <p>Upgrade your football skills to earn more points!</p>
+        <div id="attributes-container"></div>
+    </main>
 
-.main { text-align: center; }
+    <main id="airdrop" class="hidden">
+        <h1>Airdrop</h1>
+        <p>Convert points to CR7SIU Tokens (5000 points = 1 Token).</p>
+        <button onclick="convertToTokens()">Convert Points</button>
+        <div id="referral-earning">
+            <h2>Referral Earning</h2>
+            <p>Earn 10,000 CR7SIU Points for each successful referral!</p>
+            <input type="text" id="referral-link" readonly value="Generating referral link..." />
+            <button onclick="copyReferralLink()">Copy Link</button>
+            <p>Referrals Earned: <span id="referral-count">0</span></p>
+            <button onclick="toggleShareOptions()">Share Referral Link</button>
+            <div id="social-share" class="hidden">
+                <button onclick="shareLink('facebook')" class="share-button">Facebook</button>
+                <button onclick="shareLink('twitter')" class="share-button">X (formerly Twitter)</button>
+                <button onclick="shareLink('whatsapp')" class="share-button">WhatsApp</button>
+                <button onclick="shareLink('telegram')" class="share-button">Telegram</button>
+                <button onclick="shareLink('instagram')" class="share-button">Instagram</button>
+            </div>
+        </div>
+    </main>
 
-/* Button and Images */
-#tap-to-earn {
-    width: 200px; height: 200px; border-radius: 50%; background: url("images/cr7_poster6.jpg") center center no-repeat;
-    background-size: cover; margin: 20px auto; display: block; border: 2px solid #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8); cursor: pointer;
-}
+    <main id="rewards" class="hidden">
+        <h1>Rewards</h1>
+        <div id="ads-section">
+            <h2>Earn from Ads</h2>
+            <a href="https://youtu.be/byZi0lcy-jw?si=mgizMFfa7SjYugq7" target="_blank">Click to Watch Ad</a>
+            <button onclick="completeAdTask()" id="ad-claim-button" disabled>Claim Ad Reward</button>
+        </div>
+        <div id="daily-checkin">
+            <h2>Daily Check-In</h2>
+            <button onclick="completeCheckInTask()" id="check-in-button" disabled>Claim Daily Check-In Reward</button>
+        </div>
+        <div id="spin-the-wheel">
+            <h2>Spin the Wheel</h2>
+            <button onclick="spinWheel()" id="spin-button">Spin to Win!</button>
+            <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
+        </div>
+        <div id="validate-all-offers">
+            <button onclick="validateAllTasks()">Validate All Tasks</button>
+        </div>
+        <div style="text-align: left; margin-top: 20px;">
+            <h3>Subscribe and Join:</h3>
+            <ul>
+                <li><a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank">Subscribe to our Youtube Channel</a></li>
+                <li><a href="https://x.com/cr7siucoin" target="_blank">Join our X Account</a></li>
+                <li><a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank">Like and join our Facebook Page</a></li>
+                <li><a href="https://youtu.be/byZi0lcy-jw?si=7yxJZdC_6y42Pqs1" target="_blank">Watch Ad</a></li>
+            </ul>
+        </div>
+    </main>
 
-#tap-to-earn:hover { box-shadow: 0px 6px 10px rgba(0, 0, 0, 1); }
+    <div id="username-setup" class="hidden">
+        <h2>Welcome! Please enter your username to start:</h2>
+        <input type="text" id="username-input" placeholder="Enter Username">
+        <button onclick="setUsername()">Set Username</button>
+    </div>
 
-/* Text */
-#tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-}
+    <script src="game.js"></script>
+    <script>
+        let referralLink = "";
 
-#referral-earning input, #username-setup input {
-    width: 80%; padding: 10px; margin: 10px; border-radius: 5px; border: 1px solid #fff; background-color: #333;
-}
+        function generateReferralLink() {
+            let userId = Math.random().toString(36).substr(2, 9);
+            referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;
+            document.getElementById('referral-link').value = referralLink;
+        }
 
-/* Tasks & Rewards */
-#tasks-container, .task, .referral-card, #social-share { max-width: 80%; margin: 20px auto; }
-.task { justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.task a { text-decoration: none; color: #f2f2f2; }
+        function copyReferralLink() {
+            let referralInput = document.getElementById('referral-link');
+            referralInput.select();
+            document.execCommand('copy');
+        }
 
-/* Spinner Wheel */
-#wheel { border-radius: 50%; border: 5px solid #fff; width: 200px; height: 200px; margin: 20px auto; position: relative; }
+        function getReferralLink() {
+            return referralLink;
+        }
 
-/* Social Share */
-#social-share {
-    display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px;
-}
+        function toggleShareOptions() {
+            document.getElementById('social-share').classList.toggle('hidden');
+        }
 
-#social-share .share-button {
-    background-color: #444; color: #fff; padding: 10px 20px; border-radius: 5px; cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6); transition: background-color 0.3s ease, transform 0.2s ease;
-}
+        function shareLink(platform) {
+            let referralText = `🚨 CR7SIU Referral Program! 🚨
+Earn 10,000 CR7SIU Points for each successful referral!
+👉 ${getReferralLink()}
+#CR7SIU #ReferralProgram #Crypto #FanToken`;
 
-#social-share .share-button:hover { background-color: #888; transform: translateY(-3px); }
-#social-share .share-button i { margin-right: 8px; }
+            let shareUrls = {
+                facebook: `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`,
+                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`,
+                whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`,
+                telegram: `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`,
+                instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`
+            };
 
-/* Hide Elements */
-.hidden { display: none; }
+            window.open(shareUrls[platform] || `https://t.me/share/url?url=${encodeURIComponent(referralText)}`, '_blank');
+        }
+
+        generateReferralLink();
+
+        function spinWheel() {
+            let wheelRewards = [2500, 3500, 5500, 6500, 7500];
+            alert("You won " + wheelRewards[Math.floor(Math.random() * wheelRewards.length)] + " CR7SIU points!");
+        }
+
+        function validateAllTasks() {
+            alert("All tasks validated successfully!");
+            document.getElementById('validate-all-offers').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
