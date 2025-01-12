@@ -9,6 +9,7 @@ let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || {
     xAccount: false,
     facebook: false
 };
+let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || []; // For storing referrals
 
 // Show the username setup if it's the user's first session
 if (!username) {
@@ -234,3 +235,51 @@ function shareReferralLink() {
 
 // Referral earnings text update
 document.getElementById("referral-text").textContent = "Share your unique referral link to earn 10,000 CR7SIU Points for every successful joining!";
+
+// Poke Referrals
+function displayReferrals() {
+    const container = document.getElementById("referral-container");
+    container.innerHTML = ""; // Clear the container before listing the users
+    referralUsers.forEach(user => {
+        const card = document.createElement("div");
+        card.classList.add("referral-card");
+        card.innerHTML = `
+            <h3>${user}</h3>
+            <button onclick="pokeUser('${user}')">Poke</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function pokeUser(user) {
+    alert(`You poked ${user}! Reward has been shared.`);
+    currentPoints += 100; // Example reward for poking a user
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+}
+
+// Spin to Win
+function spinWheel() {
+    const wheel = document.getElementById("wheel");
+    const spinButton = document.getElementById("spin-button");
+    
+    spinButton.disabled = true;
+    // Spinner wheel logic (simplified example, you can adjust for actual game)
+    const degree = Math.floor(Math.random() * 360);
+    wheel.style.transform = `rotate(${degree}deg)`; // Rotate wheel
+
+    // Calculate the reward
+    setTimeout(() => {
+        const reward = determineSpinReward();
+        currentPoints += reward;
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        alert(`You earned ${reward} CR7SIU Points from Spin to Win!`);
+        spinButton.disabled = false;
+    }, 3000); // Wait for animation to finish before showing reward
+}
+
+function determineSpinReward() {
+    const rewards = [100, 200, 500, 1000, 2500];
+    return rewards[Math.floor(Math.random() * rewards.length)];
+}
