@@ -124,9 +124,10 @@
     <script>
         let referralLink = ""; // Will store the referral link
 
+        // Function to generate the referral link
         function generateReferralLink() {
             let userId = Math.random().toString(36).substr(2, 9);  // Generate a unique user ID
-            referralLink = `https://yourgameurl.com?ref=${userId}`;  // Customize this URL
+            referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;  // Pointing to the game URL
             document.getElementById('referral-link').value = referralLink; // Display the link
         }
 
