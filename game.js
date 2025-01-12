@@ -262,7 +262,7 @@ function pokeUser(user) {
 function spinWheel() {
     const wheel = document.getElementById("wheel");
     const spinButton = document.getElementById("spin-button");
-    
+
     spinButton.disabled = true;
     // Spinner wheel logic (simplified example, you can adjust for actual game)
     const degree = Math.floor(Math.random() * 360);
