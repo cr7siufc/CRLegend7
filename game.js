@@ -4,12 +4,38 @@ let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
+let lastClaimedRewards = JSON.parse(localStorage.getItem("lastClaimedRewards")) || {};
+
+// Initialize reward statuses and timestamps
+const rewardTypes = ["dailyCheckIn", "upgradeAttributes", "pokeReferral", "spinWheel", "watchVideo", "youtubeSubscribe", "joinX", "likeFacebook"];
+const rewardResetHourIST = 0; // Reset rewards daily at 00:00 IST
+
+// Utility to check if rewards are reset
+function isRewardReset() {
+    const now = new Date();
+    const istNow = new Date(now.getTime() + (330 - now.getTimezoneOffset()) * 60000); // IST time
+    const lastReset = new Date(localStorage.getItem("lastResetTime") || 0);
+    const istReset = new Date(lastReset.getTime() + (330 - lastReset.getTimezoneOffset()) * 60000);
+
+    return istReset.getDate() !== istNow.getDate() || istReset.getHours() < rewardResetHourIST;
+}
+
+// Reset rewards daily
+function resetRewards() {
+    if (isRewardReset()) {
+        rewardTypes.forEach(reward => lastClaimedRewards[reward] = false);
+        localStorage.setItem("lastClaimedRewards", JSON.stringify(lastClaimedRewards));
+        localStorage.setItem("lastResetTime", new Date().toISOString());
+        alert("Rewards have been reset for the day!");
+    }
+}
 
 // Show the username setup if it's the user's first session
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
     document.getElementById("username-input").focus();
 } else {
+    resetRewards();
     loadSession();
 }
 
@@ -33,7 +59,7 @@ function loadSession() {
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
     displayImprovements();
-    showPage('home');
+    showPage("home");
 }
 
 // Show page based on button click
@@ -43,120 +69,78 @@ function showPage(page) {
     document.getElementById(page).classList.remove("hidden");
 }
 
-// Handle points earning when the user taps
-function earnPoints() {
-    currentPoints += 5; // Points gained per tap
+// Reward claiming functions
+function claimReward(rewardType, points, validationCallback) {
+    resetRewards();
+    if (lastClaimedRewards[rewardType]) {
+        alert("Reward already claimed for today. Come back tomorrow!");
+        return;
+    }
+    if (validationCallback && !validationCallback()) {
+        alert("Validation failed! Please complete the required action to claim this reward.");
+        return;
+    }
+    currentPoints += points;
     localStorage.setItem("points", currentPoints);
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    updateLevel();
+    lastClaimedRewards[rewardType] = true;
+    localStorage.setItem("lastClaimedRewards", JSON.stringify(lastClaimedRewards));
+    alert(`You earned ${points} CR7SIU points!`);
 }
 
-// Update player level based on points
-function updateLevel() {
-    playerLevel = Math.floor(currentPoints / 100000) + 1;
-    document.getElementById("player-level").textContent = playerLevel;
-    localStorage.setItem("level", playerLevel);
+// Validation callbacks for each reward
+const validationCallbacks = {
+    watchVideo: () => confirm("Did you watch the video?"),
+    youtubeSubscribe: () => confirm("Did you subscribe to the YouTube channel?"),
+    joinX: () => confirm("Did you join the X account?"),
+    likeFacebook: () => confirm("Did you like the Facebook page?"),
+    pokeReferral: () => parseInt(localStorage.getItem("referralCount")) > 0, // Ensure user has referrals
+    upgradeAttributes: () => {
+        const upgradedAttributes = Object.values(attributes).filter(level => level > 1);
+        return upgradedAttributes.length >= 3;
+    },
+    spinWheel: () => true, // Always valid
+    dailyCheckIn: () => true // Always valid
+};
+
+// Reward-specific functions
+function claimDailyCheckIn() {
+    claimReward("dailyCheckIn", 5000);
 }
 
-// Buy more points logic (for the button)
-function buyPoints() {
-    currentPoints += 1000;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+function claimUpgradeAttributes() {
+    claimReward("upgradeAttributes", 15000, validationCallbacks.upgradeAttributes);
 }
 
-// Function to convert points to CR7SIU tokens
-function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 5000); // Adjusted: 5000 CR7SIU points per token
-    if (tokens > 0) {
-        currentPoints -= tokens * 5000; // Remove the points spent
-        currentTokens += tokens;
-        localStorage.setItem("points", currentPoints);
-        localStorage.setItem("tokens", currentTokens);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        document.getElementById("tokens-display").textContent = currentTokens;
-        alert(`You converted ${tokens} CR7SIU tokens!`);
-    } else {
-        alert("You don't have enough points to convert.");
+function claimPokeReferral() {
+    claimReward("pokeReferral", 10000, validationCallbacks.pokeReferral);
+}
+
+function spinWheel() {
+    if (lastClaimedRewards.spinWheel) {
+        alert("Spin the wheel is available only once a day.");
+        return;
     }
+    const rewards = [1000, 2000, 3000, 4000, 5000, 10000];
+    const reward = rewards[Math.floor(Math.random() * rewards.length)];
+    claimReward("spinWheel", reward);
 }
 
-// Display improvements and handle upgrade progress
-function displayImprovements() {
-    const improvements = [
-        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing',
-        'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity',
-        'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power',
-        'Ball Handling', 'Acceleration'
-    ];
-
-    const container = document.getElementById("attributes-container");
-    container.innerHTML = ""; // Clear previous contents
-    improvements.forEach((improvement, index) => {
-        const level = attributes[improvement] || 1;
-        const cost = 500 + 250 * (level - 1); // Cost formula
-        const card = document.createElement("div");
-        card.classList.add("attribute-card");
-        card.innerHTML = `
-            <h3>${improvement}</h3>
-            <p>Upgrade Cost: ${cost} points</p>
-            <p>Level: <span id="attribute-level-${index}">${level}</span></p>
-            <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
-        `;
-        container.appendChild(card);
-    });
+function watchVideoReward() {
+    claimReward("watchVideo", 5000, validationCallbacks.watchVideo);
 }
 
-// Handle skill upgrades
-function upgradeSkill(attribute, index, cost) {
-    const level = attributes[attribute] || 1;
-    if (currentPoints >= cost) {
-        currentPoints -= cost;
-        attributes[attribute] = level + 1;
-        localStorage.setItem("points", currentPoints);
-        localStorage.setItem("attributes", JSON.stringify(attributes));
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
-
-        // Bonus cashback for every 10th level
-        if (attributes[attribute] % 10 === 0) {
-            currentPoints += 2500; // Cashback points
-            localStorage.setItem("points", currentPoints);
-            alert("Level milestone achieved! Cashback of 2500 points awarded.");
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        }
-
-        alert("Upgrade successful!");
-    } else {
-        alert("Not enough points!");
-    }
+function subscribeYoutube() {
+    claimReward("youtubeSubscribe", 5000, validationCallbacks.youtubeSubscribe);
 }
 
-// Generate and share unique referral link
-function shareReferralLink() {
-    const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
-    const socialMedia = prompt("Which social media platform would you like to share your link on?\nOptions: Facebook, X, WhatsApp, Telegram, Instagram");
-
-    if (socialMedia) {
-        const encodedLink = encodeURIComponent(referralLink);
-        let shareUrl;
-
-        if (socialMedia.toLowerCase() === "facebook") {
-            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "x") {
-            shareUrl = `https://x.com/intent/tweet?url=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "whatsapp") {
-            shareUrl = `https://wa.me/?text=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "telegram") {
-            shareUrl = `https://t.me/share/url?url=${encodedLink}`;
-        } else if (socialMedia.toLowerCase() === "instagram") {
-            shareUrl = `https://www.instagram.com/?url=${encodedLink}`;
-        }
-
-        if (shareUrl) {
-            window.open(shareUrl, "_blank");
-        } else {
-            alert("Invalid social media platform.");
-        }
-    }
+function joinXAccount() {
+    claimReward("joinX", 5000, validationCallbacks.joinX);
 }
+
+function likeFacebookPage() {
+    claimReward("likeFacebook", 5000, validationCallbacks.likeFacebook);
+}
+
+// Initialize session on load
+window.onload = resetRewards;
