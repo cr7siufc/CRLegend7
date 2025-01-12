@@ -6,27 +6,28 @@ body {
     margin: 0;
     padding: 0;
     color: #f2f2f2;
+    text-align: center; /* Align all content to the center */
 }
 
 header {
-    color: #fff; 
+    color: #fff;
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 24px; /* Reduced the font size for "CR7SIU" to 24px */
-    text-align: center;
+    font-size: 24px; /* Reduced the font size for "CR7SIU Fan Game" to 24px */
     padding: 20px;
 }
 
 nav { 
-    background-color: rgba(0, 0, 0, 0.9); 
-    display: flex; 
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
     justify-content: center; /* Center the navigation items */
     align-items: center;
+    flex-wrap: wrap; /* Allow wrapping if necessary */
 }
 
 nav ul { 
     list-style: none; 
-    display: flex; 
-    margin: 0; 
+    display: flex;
+    margin: 0;
     padding: 0;
 }
 
@@ -48,8 +49,8 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     background-color: #888;
 }
 
-.main { 
-    text-align: center; 
+.main {
+    text-align: center;
 }
 
 /* Button and Images */
@@ -117,11 +118,12 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 /* Tasks & Rewards */
 #tasks-container, .task, .referral-card, #social-share { 
     max-width: 80%; 
-    margin: 20px auto; 
+    margin: 20px auto;
+    text-align: center; /* Center task items */
 }
 
 .task { 
-    justify-content: space-between; 
+    justify-content: center; 
     align-items: center; 
     margin-bottom: 15px; 
 }
@@ -148,6 +150,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     align-items: center; 
     flex-wrap: wrap; 
     gap: 10px;
+    text-align: center; /* Center social buttons */
 }
 
 #social-share .share-button {
@@ -164,6 +167,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     background-color: #888; 
     transform: translateY(-3px); 
 }
+
 #social-share .share-button i { 
     margin-right: 8px; 
 }
@@ -179,6 +183,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     grid-template-columns: repeat(2, 1fr); /* Two columns */
     gap: 20px; /* Space between attributes */
     margin: 20px 0;
+    text-align: center; /* Center attribute items */
 }
 
 .attribute {
