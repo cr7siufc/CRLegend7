@@ -8,6 +8,7 @@ let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { you
 let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
 let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
 let spinClaimed = localStorage.getItem("spinClaimed") === "true";
+let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0; // To store last reward claim time
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -37,6 +38,7 @@ function loadSession() {
     displayImprovements();
     displayTasks();
     updateSpinButton();
+    updateRewardsLink();
     showPage('home');
 }
 
@@ -224,5 +226,28 @@ function updateSpinButton() {
         document.getElementById("spin-claim-time").textContent = `Next spin available on ${new Date(lastSpinTime + 86400000).toLocaleString()}`;
     } else {
         spinButton.disabled = false;
+    }
+}
+
+function claimRewardLink() {
+    const currentTime = Date.now();
+    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
+        currentPoints += 2500;
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        alert("You claimed 2500 CR7SIU Points!");   
+        lastRewardClaimTime = currentTime;
+        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime);
+    } else {
+        alert("You can claim this reward only once every 3 months.");
+    }
+}
+
+function updateRewardsLink() {
+    const currentTime = Date.now();
+    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
+        document.getElementById("rewards-link").disabled = false;
+    } else {
+        document.getElementById("rewards-link").disabled = true;
     }
 }
