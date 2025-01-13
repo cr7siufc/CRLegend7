@@ -200,6 +200,16 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-align: center;
 }
 
+/* Airdrop & Rewards Sections */
+.airdrop-section, .rewards-section {
+    border: 2px solid #fff; /* White border for sections */
+    border-radius: 10px; /* Rounded corners for aesthetic */
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 90%;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly opaque black background */
+}
+
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
     header {
