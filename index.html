@@ -58,8 +58,8 @@
             <h2>Referral Earning</h2>
             <p>Earn 10,000 CR7SIU Points for each successful referral!</p>
             <label for="referral-link">Referral Link:</label>
-            <input type="text" id="referral-link" readonly value="Generating referral link..." title="Referral link generated" placeholder="Your referral link will appear here" />
-            <button onclick="shareReferralLink()">Copy Link</button>
+            <input type="text" id="referral-link-field" readonly title="Referral link generated" placeholder="Your referral link will appear here" />
+            <button onclick="generateReferralLink()">Generate Referral Link</button>
             <p>Referrals Earned: <span id="referral-count">0</span></p>
             <button onclick="toggleShareOptions()">Share Referral Link</button>
             <div id="social-share" class="hidden">
@@ -68,6 +68,10 @@
                 <button onclick="shareLink('whatsapp')">WhatsApp</button>
                 <button onclick="shareLink('telegram')">Telegram</button>
                 <button onclick="shareLink('instagram')">Instagram</button>
+            </div>
+            <div id="referral-container">
+                <h3>Your Referrals</h3>
+                <div id="referrals-list"></div>
             </div>
         </div>
     </main>
@@ -113,7 +117,9 @@
 
     <script src="game.js"></script>
     <script>
-        // Include JavaScript here
+        // JavaScript code implementation here
+
+        // Include updated JS from above discussion
     </script>
 </body>
 </html>

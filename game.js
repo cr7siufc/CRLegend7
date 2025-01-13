@@ -171,8 +171,8 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// Share Referral Link
-function shareReferralLink() {
+// Generate and display referral link
+function generateReferralLink() {
     // Ensure the username is available before generating the link
     if (!username) {
         alert("Please set your username first!");
@@ -180,20 +180,17 @@ function shareReferralLink() {
     }
 
     const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
-    const socialMedia = prompt("Which platform to share on? Facebook, X, WhatsApp, Telegram, Instagram").toLowerCase();
-    const platforms = {
-        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`,
-        x: `https://x.com/intent/tweet?url=${encodeURIComponent(referralLink)}`,
-        whatsapp: `https://wa.me/?text=${encodeURIComponent(referralLink)}`,
-        telegram: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}`,
-        instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralLink)}`
-    };
+    
+    // Update the input field with the referral link for easy copying
+    document.getElementById("referral-link-field").value = referralLink;
 
-    if (platforms[socialMedia]) window.open(platforms[socialMedia], "_blank");
-    else alert("Invalid platform.");
+    // Optionally, you can also automatically copy the link to clipboard here:
+    document.getElementById("referral-link-field").select();
+    document.execCommand("copy");  // Copy to clipboard
+    alert("Referral link copied to clipboard!");
 }
 
-// Display Referrals
+// Display Referrals (users who used your referral link)
 function displayReferrals() {
     const container = document.getElementById("referral-container");
     container.innerHTML = referralUsers.map(user => `
