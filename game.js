@@ -170,10 +170,12 @@ function upgradeSkill(attribute, index, cost) {
 }
 
 function shareReferralLink() {
+    // Ensure the username is available before generating the link
     if (!username) {
-        alert("Please set a username before sharing the referral link.");
+        alert("Please set your username first!");
         return;
     }
+
     const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
     const socialMedia = prompt("Which platform to share on? Facebook, X, WhatsApp, Telegram, Instagram").toLowerCase();
     const platforms = {
@@ -183,6 +185,7 @@ function shareReferralLink() {
         telegram: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}`,
         instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralLink)}`
     };
+    
     if (platforms[socialMedia]) window.open(platforms[socialMedia], "_blank");
     else alert("Invalid platform.");
 }
@@ -254,4 +257,4 @@ function updateRewardsLink() {
     } else {
         document.getElementById("rewards-link").disabled = true;
     }
-}
+} 
