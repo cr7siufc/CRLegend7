@@ -12,12 +12,12 @@ body {
 header {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 24px;
+    font-size: 20px;
     padding: 20px;
 }
 
 #cr7siu-note {
-    font-size: 10px;
+    font-size: 12px;
     color: #fff;
     margin-top: 10px;
     padding: 0 20px;
@@ -25,8 +25,8 @@ header {
 }
 
 #cr7-logo {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
@@ -102,7 +102,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
     color: #fff;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
 }
 
