@@ -102,26 +102,16 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     transition: transform 0.2s ease-in-out;
 }
 
+/* Increased spacing below Tap-to-Earn */
 #tap-to-earn-container {
-    padding-bottom: 100px; /* Ensured proper spacing below Tap-to-Earn section */
-}
-
-#tap-to-earn:hover {
-    animation: bounce 0.5s ease infinite;
-}
-
-@keyframes bounce {
-    0% { transform: translateY(0); }
-    25% { transform: translateY(-10px); }
-    50% { transform: translateY(0); }
-    75% { transform: translateY(-5px); }
-    100% { transform: translateY(0); }
+    padding-bottom: 150px; /* Increased padding below Tap-to-Earn section */
 }
 
 #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
     color: #fff;
-    font-size: 18px; /* Reduced font size */
+    font-size: 18px; /* Reduced font size for consistency */
     font-weight: bold;
+    margin-bottom: 30px; /* Increased margin to create more space below the text */
 }
 
 #referral-earning input, #username-setup input {
