@@ -18,8 +18,8 @@ body {
 }
 
 #cr7-logo {
-    width: 210px; /* Reduced size by 30% */
-    height: 210px; /* Reduced size by 30% */
+    width: 147px; /* Reduced size by 30% */
+    height: 147px; /* Reduced size by 30% */
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
@@ -189,6 +189,15 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     height: 50px;
     border-top: 2px solid black;
     margin-top: 20px;
+    background-color: transparent;
+}
+
+/* Total Score and Total CR7SIU Points - Custom CSS */
+#total-score, #total-cr7siu-points {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 15px;
 }
 
 /* Mobile Responsive Design */
