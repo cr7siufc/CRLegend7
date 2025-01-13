@@ -18,8 +18,8 @@ body {
 }
 
 #cr7-logo {
-    width: 250px;
-    height: 250px;
+    width: 210px; /* Reduced size by 30% */
+    height: 210px; /* Reduced size by 30% */
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
@@ -183,6 +183,12 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 #player-dashboard {
     text-align: center;
+}
+
+#footer {
+    height: 50px;
+    border-top: 2px solid black;
+    margin-top: 20px;
 }
 
 /* Mobile Responsive Design */
