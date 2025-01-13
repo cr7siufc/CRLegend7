@@ -18,10 +18,10 @@
         <div style="display: flex; justify-content: space-between; padding: 0 15px;">
             <div>
                 <p>Player Level: <span id="player-level">1</span></p>
-                <p>Total Score: <span id="score-display">0 CR7SIU Points</span> <!-- Updated --></p>
+                <p>Total Score: <span id="total-score">0 CR7SIU Points</span> <!-- Updated --></p>
             </div>
             <div>
-                <p>Total CR7SIU Points: <span id="cr7siu-points">0</span> <!-- Updated --></p>
+                <p>Total CR7SIU Points: <span id="total-cr7siu-points">0</span> <!-- Updated --></p>
                 <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
             </div>
         </div>
@@ -115,14 +115,14 @@
     <script>
         let referralLink = "";
         let cr7siuPoints = 0;
+        let totalScore = 0; // To track the total accumulated points
         let lastClaimTime = localStorage.getItem('lastClaimTime') ? new Date(localStorage.getItem('lastClaimTime')) : null;
         let spinClaimed = lastClaimTime && (new Date() - lastClaimTime < 86400000); // 24 hours in milliseconds
 
-        document.getElementById('cr7siu-points').innerText = cr7siuPoints;
-
         // Update the available points when earned or spent
         function updatePointsDisplay() {
-            document.getElementById('cr7siu-points').innerText = cr7siuPoints;
+            document.getElementById('total-cr7siu-points').innerText = cr7siuPoints;
+            document.getElementById('total-score').innerText = totalScore + " CR7SIU Points";
         }
 
         function generateReferralLink() {
@@ -185,6 +185,7 @@ Earn 10,000 CR7SIU Points for each successful referral!
             let randomReward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
             alert("You won " + randomReward + " CR7SIU points!");
             cr7siuPoints += randomReward;
+            totalScore += randomReward; // Add to total score as well
             updatePointsDisplay();
 
             lastClaimTime = new Date();
