@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Logo before Header -->
     <div id="cr7-logo"></div>
 
     <header>
@@ -15,13 +14,13 @@
         <div id="cr7siu-note">
             The ultimate platform for Cristiano Ronaldo fans! Earn CR7 tokens by tapping to earn or playing exciting games, access live football scores, get exclusive Ronaldo interviews, updates, and highlights, explore CR7-themed NFTs, and redeem rewards.
         </div>
-        <div style="display: flex; justify-content: space-between; padding: 0 15px;">
-            <div>
+        <div class="score-container">
+            <div class="score-left">
                 <p>Player Level: <span id="player-level">1</span></p>
-                <p>Total Score: <span id="score-display">0 CR7SIU Points</span> <!-- Updated --></p>
+                <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p>
             </div>
-            <div>
-                <p>Total CR7SIU Points: <span id="cr7siu-points">0</span> <!-- Updated --></p>
+            <div class="score-right">
+                <p>Total CR7SIU Points: <span id="cr7siu-points">0</span></p>
                 <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
             </div>
         </div>
@@ -39,7 +38,7 @@
     <main id="home">
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
-        <div style="text-align: center;">
+        <div class="tap-to-earn">
             <div id="tap-to-earn" onclick="earnPoints()"></div>
             <div>Tap to Earn</div>
         </div>
@@ -58,8 +57,8 @@
         <div id="referral-earning">
             <h2>Referral Earning</h2>
             <p>Earn 10,000 CR7SIU Points for each successful referral!</p>
-            <label for="referral-link">Referral Link:</label> <!-- Added label -->
-            <input type="text" id="referral-link" readonly value="Generating referral link..." title="Referral link generated" placeholder="Your referral link will appear here" /> <!-- Added title and placeholder -->
+            <label for="referral-link">Referral Link:</label>
+            <input type="text" id="referral-link" readonly value="Generating referral link..." title="Referral link generated" placeholder="Your referral link will appear here" />
             <button onclick="copyReferralLink()">Copy Link</button>
             <p>Referrals Earned: <span id="referral-count">0</span></p>
             <button onclick="toggleShareOptions()">Share Referral Link</button>
@@ -77,7 +76,7 @@
         <h1>Rewards</h1>
         <div id="ads-section">
             <h2>Earn from Ads</h2>
-            <a href="https://youtu.be/byZi0lcy-jw?si=mgizMFfa7SjYugq7" target="_blank" rel="noopener">Click to Watch Ad</a> <!-- Added rel="noopener" -->
+            <a href="https://youtu.be/byZi0lcy-jw?si=mgizMFfa7SjYugq7" target="_blank" rel="noopener">Click to Watch Ad</a>
             <button onclick="completeAdTask()" id="ad-claim-button" disabled>Claim Ad Reward</button>
         </div>
         <div id="daily-checkin">
@@ -93,119 +92,28 @@
         <div id="validate-all-offers">
             <button onclick="validateAllTasks()">Validate All Tasks</button>
         </div>
-        <div style="text-align: left; margin-top: 20px;">
+        <div class="social-links">
             <h3>Subscribe and Join:</h3>
             <ul>
-                <li><a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" rel="noopener">Subscribe to our Youtube Channel</a></li> <!-- Added rel="noopener" -->
-                <li><a href="https://x.com/cr7siucoin" target="_blank" rel="noopener">Join our X Account</a></li> <!-- Added rel="noopener" -->
-                <li><a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" rel="noopener">Like and join our Facebook Page</a></li> <!-- Added rel="noopener" -->
-                <li><a href="https://youtu.be/byZi0lcy-jw?si=7yxJZdC_6y42Pqs1" target="_blank" rel="noopener">Watch Ad</a></li> <!-- Added rel="noopener" -->
+                <li><a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" rel="noopener">Subscribe to our Youtube Channel</a></li>
+                <li><a href="https://x.com/cr7siucoin" target="_blank" rel="noopener">Join our X Account</a></li>
+                <li><a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" rel="noopener">Like and join our Facebook Page</a></li>
+                <li><a href="https://youtu.be/byZi0lcy-jw?si=7yxJZdC_6y42Pqs1" target="_blank" rel="noopener">Watch Ad</a></li>
             </ul>
         </div>
     </main>
 
     <div id="username-setup" class="hidden">
         <h2>Welcome! Please enter your username to start:</h2>
-        <input type="text" id="username-input" placeholder="Enter Username" title="Enter your username" /> <!-- Added title and placeholder -->
+        <input type="text" id="username-input" placeholder="Enter Username" title="Enter your username" />
         <button onclick="setUsername()">Set Username</button>
     </div>
 
-    <!-- Blank Footer with Black Border -->
-    <footer id="footer"></footer> <!-- This is your blank footer as per the CSS -->
+    <footer id="footer"></footer>
 
     <script src="game.js"></script>
     <script>
-        let referralLink = "";
-        let spinCooldown = 0;  // Track cooldown for the spin wheel
-        const cooldownDuration = 86400000; // 24 hours in milliseconds
-
-        function generateReferralLink() {
-            let userId = Math.random().toString(36).substr(2, 9);  // Generate a random 9 character string
-            referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;
-            document.getElementById('referral-link').value = referralLink;
-        }
-
-        function copyReferralLink() {
-            let referralInput = document.getElementById('referral-link');
-            referralInput.select();
-            document.execCommand('copy');
-        }
-
-        function getReferralLink() {
-            return referralLink;
-        }
-
-        function toggleShareOptions() {
-            document.getElementById('social-share').classList.toggle('hidden');
-        }
-
-        function shareLink(platform) {
-            let referralText = `🚨 CR7SIU Referral Program! 🚨
-Earn 10,000 CR7SIU Points for each successful referral!
-👉 ${getReferralLink()}
-#CR7SIU #ReferralProgram #Crypto #FanToken`;
-
-            let shareUrls = {
-                facebook: `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`,
-                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`,
-                whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`,
-                telegram: `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`,
-                instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`
-            };
-
-            window.open(shareUrls[platform] || `https://t.me/share/url?url=${encodeURIComponent(referralText)}`, '_blank');
-        }
-
-        function spinWheel() {
-            let currentTime = new Date().getTime();
-            if (currentTime < spinCooldown) {
-                let remainingTime = spinCooldown - currentTime;
-                let hours = Math.floor(remainingTime / 3600000);
-                let minutes = Math.floor((remainingTime % 3600000) / 60000);
-                let seconds = Math.floor((remainingTime % 60000) / 1000);
-                document.getElementById("spin-claim-time").innerText = `Next spin available in: ${hours}h ${minutes}m ${seconds}s`;
-                return;
-            }
-
-            let wheelRewards = [2500, 3500, 5500, 6500, 7500];
-            let randomReward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
-            alert("You won " + randomReward + " CR7SIU points!");
-            updateTotalScore(randomReward);
-
-            spinCooldown = currentTime + cooldownDuration;  // Set cooldown to 24 hours
-            disableSpinButton();
-        }
-
-        function updateTotalScore(points) {
-            let currentScore = parseInt(document.getElementById('score-display').innerText) + points;
-            document.getElementById('score-display').innerText = currentScore + " CR7SIU Points";
-        }
-
-        function disableSpinButton() {
-            document.getElementById("spin-button").disabled = true;
-            setTimeout(enableSpinButton, cooldownDuration);  // Enable after cooldown
-        }
-
-        function enableSpinButton() {
-            document.getElementById("spin-button").disabled = false;
-            document.getElementById("spin-claim-time").innerText = "";
-        }
-
-        function validateAllTasks() {
-            alert("All tasks validated successfully!");
-            document.getElementById('validate-all-offers').style.display = 'none';
-        }
-
-        // Call generateReferralLink() when the user sets their username
-        function setUsername() {
-            let username = document.getElementById('username-input').value;
-            if(username) {
-                document.getElementById('username-display').innerText = username;
-                document.getElementById('username-setup').classList.add('hidden');
-                document.getElementById('home').classList.remove('hidden');
-                generateReferralLink();  // Generate referral link when username is set
-            }
-        }
+        // Include JavaScript here
     </script>
 </body>
 </html>
