@@ -1,253 +1,112 @@
-// Store username, points, tokens, and other data in localStorage
-let username = localStorage.getItem("username") || '';
-let currentPoints = parseInt(localStorage.getItem("points")) || 0;
-let playerLevel = parseInt(localStorage.getItem("level")) || 1;
-let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
-let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
-let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
-let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
-let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
-let spinClaimed = localStorage.getItem("spinClaimed") === "true";
-let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0; // To store last reward claim time
+let referralLink = "";
 
-// Show username setup if it's the user's first session
-if (!username) {
-    document.getElementById("username-setup").classList.remove("hidden");
-    document.getElementById("username-input").focus();
-} else {
-    loadSession();
+// Generate a random referral link for the user
+function generateReferralLink() {
+    let userId = Math.random().toString(36).substr(2, 9);
+    referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;
+    document.getElementById('referral-link').value = referralLink;
 }
 
-function setUsername() {
-    const input = document.getElementById("username-input").value.trim();
-    if (input) {
-        localStorage.setItem("username", input);
-        username = input;
-        loadSession();
-    } else {
-        alert("Please enter a valid username.");
-    }
+// Copy the referral link to the clipboard
+function copyReferralLink() {
+    let referralInput = document.getElementById('referral-link');
+    referralInput.select();
+    document.execCommand('copy');
 }
 
-function loadSession() {
-    document.getElementById("username-setup").classList.add("hidden");
-    document.getElementById("username-display").textContent = username;
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("tokens-display").textContent = currentTokens;
-    document.getElementById("player-level").textContent = playerLevel;
-    displayImprovements();
-    displayTasks();
-    updateSpinButton();
-    updateRewardsLink();
-    showPage('home');
+// Retrieve the referral link
+function getReferralLink() {
+    return referralLink;
 }
 
-function showPage(page) {
-    document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
-    document.getElementById(page).classList.remove("hidden");
+// Toggle the visibility of the social share options
+function toggleShareOptions() {
+    document.getElementById('social-share').classList.toggle('hidden');
 }
 
-function earnPoints() {
-    currentPoints += 5;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    updateLevel();
-}
+// Share the referral link on different platforms
+function shareLink(platform) {
+    let referralText = `🚨 CR7SIU Referral Program! 🚨
+Earn 10,000 CR7SIU Points for each successful referral!
+👉 ${getReferralLink()}
+#CR7SIU #ReferralProgram #Crypto #FanToken`;
 
-function updateLevel() {
-    playerLevel = Math.floor(currentPoints / 100000) + 1;
-    document.getElementById("player-level").textContent = playerLevel;
-    localStorage.setItem("level", playerLevel);
-}
-
-function buyPoints() {
-    currentPoints += 1000;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-}
-
-function convertToTokens() {
-    const tokens = Math.floor(currentPoints / 5000);
-    if (tokens > 0) {
-        currentPoints -= tokens * 5000;
-        currentTokens += tokens;
-        localStorage.setItem("points", currentPoints);
-        localStorage.setItem("tokens", currentTokens);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        document.getElementById("tokens-display").textContent = currentTokens;
-        alert(`You converted ${tokens} CR7SIU tokens!`);
-    } else {
-        alert("Not enough points.");
-    }
-}
-
-function displayTasks() {
-    const tasksContainer = document.getElementById("task-section");
-    tasksContainer.innerHTML = Object.keys(tasksCompleted).map(task => `
-        <div class="task">
-            <a href="https://www.${task}.com" target="_blank" onclick="enableTaskButton('${task}')">Complete ${task} task</a>
-            <button id="validate-${task}" onclick="completeTask('${task}')" ${tasksCompleted[task] ? 'disabled' : ''}>Mark as Done</button>
-            ${tasksCompleted[task] ? '<span class="completed-task">Completed</span>' : ''}
-        </div>
-    `).join('');
-    updateTaskButtons();
-}
-
-function enableTaskButton(task) {
-    document.getElementById(`validate-${task}`).disabled = false;
-}
-
-function completeTask(task) {
-    tasksCompleted[task] = true;
-    localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
-    alert(`Task "${task}" marked as completed!`);
-    updateTaskButtons();
-}
-
-function updateTaskButtons() {
-    Object.keys(tasksCompleted).forEach(task => {
-        const button = document.getElementById(`validate-${task}`);
-        if (tasksCompleted[task]) {
-            button.disabled = true;
-            button.textContent = "Completed";
-            button.classList.add("completed");
-        }
-    });
-    document.getElementById("claim-rewards-btn").disabled = !Object.values(tasksCompleted).every(Boolean);
-}
-
-function claimRewards() {
-    if (Object.values(tasksCompleted).every(Boolean)) {
-        if (!localStorage.getItem("rewardsClaimed")) {
-            currentPoints += 5000;
-            localStorage.setItem("points", currentPoints);
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-            alert("Congratulations! You earned 5000 CR7SIU Points.");
-            localStorage.setItem("rewardsClaimed", true);
-        } else {
-            alert("Rewards already claimed.");
-        }
-    } else {
-        alert("Complete all tasks before claiming rewards.");
-    }
-}
-
-function displayImprovements() {
-    const improvements = ['Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 'Ball Handling', 'Acceleration'];
-    const container = document.getElementById("attributes-container");
-    container.innerHTML = improvements.map((improvement, index) => {
-        const level = attributes[improvement] || 1;
-        const cost = 500 + 250 * (level - 1);
-        return `
-            <div class="attribute-card">
-                <h3>${improvement}</h3>
-                <p>Upgrade Cost: ${cost} points</p>
-                <p>Level: <span id="attribute-level-${index}">${level}</span></p>
-                <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
-            </div>
-        `;
-    }).join('');
-}
-
-function upgradeSkill(attribute, index, cost) {
-    const level = attributes[attribute] || 1;
-    if (currentPoints >= cost) {
-        currentPoints -= cost;
-        attributes[attribute] = level + 1;
-        localStorage.setItem("points", currentPoints);
-        localStorage.setItem("attributes", JSON.stringify(attributes));
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
-        if (attributes[attribute] % 10 === 0) {
-            currentPoints += 2500;
-            localStorage.setItem("points", currentPoints);
-            alert("Level milestone achieved! Cashback of 2500 points awarded.");
-        }
-        alert("Upgrade successful!");
-    } else {
-        alert("Not enough points!");
-    }
-}
-
-function shareReferralLink() {
-    const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
-    const socialMedia = prompt("Which platform to share on? Facebook, X, WhatsApp, Telegram, Instagram").toLowerCase();
-    const platforms = {
-        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`,
-        x: `https://x.com/intent/tweet?url=${encodeURIComponent(referralLink)}`,
-        whatsapp: `https://wa.me/?text=${encodeURIComponent(referralLink)}`,
-        telegram: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}`,
-        instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralLink)}`
+    let shareUrls = {
+        facebook: `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`,
+        twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`,
+        whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`,
+        telegram: `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`,
+        instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`
     };
-    if (platforms[socialMedia]) window.open(platforms[socialMedia], "_blank");
-    else alert("Invalid platform.");
+
+    window.open(shareUrls[platform] || `https://t.me/share/url?url=${encodeURIComponent(referralText)}`, '_blank');
 }
 
-function displayReferrals() {
-    const container = document.getElementById("referral-container");
-    container.innerHTML = referralUsers.map(user => `
-        <div class="referral-card">
-            <h3>${user}</h3>
-            <button onclick="pokeUser('${user}')">Poke</button>
-        </div>
-    `).join('');
-}
-
-function pokeUser(user) {
-    alert(`You poked ${user}!`);
-    currentPoints += 100;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-}
-
+// Spin the wheel for a chance to win CR7SIU points
 function spinWheel() {
-    const rewards = [2500, 3500, 5500, 6500, 7500];
-    const spinButton = document.getElementById("spin-button");
-    spinButton.disabled = true;
-    document.getElementById("wheel").style.transform = `rotate(${Math.floor(Math.random() * 360)}deg)`;
-    setTimeout(() => {
-        const reward = rewards[Math.floor(Math.random() * rewards.length)];
-        currentPoints += reward;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert(`You earned ${reward} CR7SIU Points!`);
-        spinClaimed = true;
-        localStorage.setItem("spinClaimed", "true");
-        localStorage.setItem("lastSpinTime", Date.now());
-        updateSpinButton();
-    }, 3000);
+    let wheelRewards = [2500, 3500, 5500, 6500, 7500];
+    let randomReward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
+    alert("You won " + randomReward + " CR7SIU points!");
+    updateTotalScore(randomReward);
 }
 
-function updateSpinButton() {
-    const spinButton = document.getElementById("spin-button");
-    const currentTime = Date.now();
-    if (spinClaimed || currentTime - lastSpinTime < 86400000) {
-        spinButton.disabled = true;
-        document.getElementById("spin-claim-time").textContent = `Next spin available on ${new Date(lastSpinTime + 86400000).toLocaleString()}`;
+// Update the total score with the earned points
+function updateTotalScore(points) {
+    let currentScore = parseInt(document.getElementById('score-display').innerText) + points;
+    document.getElementById('score-display').innerText = currentScore + " CR7SIU Points";
+}
+
+// Validate all tasks and hide the "Validate All Tasks" button
+function validateAllTasks() {
+    alert("All tasks validated successfully!");
+    document.getElementById('validate-all-offers').style.display = 'none';
+}
+
+// Complete the ad task and enable the "Claim Ad Reward" button
+function completeAdTask() {
+    document.getElementById('ad-claim-button').disabled = false;
+    alert("You can now claim your ad reward!");
+}
+
+// Complete the daily check-in task and enable the "Claim Daily Check-In Reward" button
+function completeCheckInTask() {
+    document.getElementById('check-in-button').disabled = false;
+    alert("You can now claim your daily check-in reward!");
+}
+
+// Set the username and update the display
+function setUsername() {
+    let username = document.getElementById('username-input').value;
+    if (username) {
+        document.getElementById('username-display').innerText = username;
+        document.getElementById('username-setup').classList.add('hidden');
+        document.getElementById('home').classList.remove('hidden');
     } else {
-        spinButton.disabled = false;
+        alert("Please enter a username!");
     }
 }
 
-function claimRewardLink() {
-    const currentTime = Date.now();
-    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
-        currentPoints += 2500;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert("You claimed 2500 CR7SIU Points!");   
-        lastRewardClaimTime = currentTime;
-        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime);
-    } else {
-        alert("You can claim this reward only once every 3 months.");
+// Function to handle tasks like referral, watching ads, daily check-ins, etc.
+function handleTask(task) {
+    switch (task) {
+        case 'watch-ad':
+            completeAdTask();
+            break;
+        case 'daily-checkin':
+            completeCheckInTask();
+            break;
+        case 'spin-wheel':
+            spinWheel();
+            break;
+        case 'validate-tasks':
+            validateAllTasks();
+            break;
+        default:
+            console.log("Unknown task");
     }
 }
 
-function updateRewardsLink() {
-    const currentTime = Date.now();
-    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
-        document.getElementById("rewards-link").disabled = false;
-    } else {
-        document.getElementById("rewards-link").disabled = true;
-    }
-}
+// Load initial data and setup the referral link
+window.onload = function() {
+    generateReferralLink();
+};
