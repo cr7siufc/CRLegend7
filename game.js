@@ -8,7 +8,7 @@ let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { you
 let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
 let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
 let spinClaimed = localStorage.getItem("spinClaimed") === "true";
-let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
+let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0; // To store last reward claim time
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -47,7 +47,6 @@ function showPage(page) {
     document.getElementById(page).classList.remove("hidden");
 }
 
-// Points management
 function earnPoints() {
     currentPoints += 5;
     localStorage.setItem("points", currentPoints);
@@ -61,7 +60,12 @@ function updateLevel() {
     localStorage.setItem("level", playerLevel);
 }
 
-// Token conversion
+function buyPoints() {
+    currentPoints += 1000;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+}
+
 function convertToTokens() {
     const tokens = Math.floor(currentPoints / 5000);
     if (tokens > 0) {
@@ -77,22 +81,20 @@ function convertToTokens() {
     }
 }
 
-// Display and manage tasks
 function displayTasks() {
-    const tasks = [
-        { name: "Subscribe to the Youtube Channel", url: "https://www.youtube.com/@CR7SIUnextbigthing", key: "youtube" },
-        { name: "Join the X Account", url: "https://x.com/cr7siucoin", key: "xAccount" },
-        { name: "Like and join the Facebook Page", url: "https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL", key: "facebook" }
-    ];
     const tasksContainer = document.getElementById("task-section");
-    tasksContainer.innerHTML = tasks.map(task => `
+    tasksContainer.innerHTML = Object.keys(tasksCompleted).map(task => `
         <div class="task">
-            <a href="${task.url}" target="_blank" onclick="enableTaskButton('${task.key}')">${task.name}</a>
-            <button id="validate-${task.key}" onclick="completeTask('${task.key}')" ${tasksCompleted[task.key] ? 'disabled' : ''}>Mark as Done</button>
-            ${tasksCompleted[task.key] ? '<span class="completed-task">Completed</span>' : ''}
+            <a href="https://www.${task}.com" target="_blank" onclick="enableTaskButton('${task}')">Complete ${task} task</a>
+            <button id="validate-${task}" onclick="completeTask('${task}')" ${tasksCompleted[task] ? 'disabled' : ''}>Mark as Done</button>
+            ${tasksCompleted[task] ? '<span class="completed-task">Completed</span>' : ''}
         </div>
     `).join('');
     updateTaskButtons();
+}
+
+function enableTaskButton(task) {
+    document.getElementById(`validate-${task}`).disabled = false;
 }
 
 function completeTask(task) {
@@ -108,12 +110,12 @@ function updateTaskButtons() {
         if (tasksCompleted[task]) {
             button.disabled = true;
             button.textContent = "Completed";
+            button.classList.add("completed");
         }
     });
     document.getElementById("claim-rewards-btn").disabled = !Object.values(tasksCompleted).every(Boolean);
 }
 
-// Claim rewards
 function claimRewards() {
     if (Object.values(tasksCompleted).every(Boolean)) {
         if (!localStorage.getItem("rewardsClaimed")) {
@@ -130,12 +132,79 @@ function claimRewards() {
     }
 }
 
-// Spin wheel functionality
+function displayImprovements() {
+    const improvements = ['Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 'Ball Handling', 'Acceleration'];
+    const container = document.getElementById("attributes-container");
+    container.innerHTML = improvements.map((improvement, index) => {
+        const level = attributes[improvement] || 1;
+        const cost = 500 + 250 * (level - 1);
+        return `
+            <div class="attribute-card">
+                <h3>${improvement}</h3>
+                <p>Upgrade Cost: ${cost} points</p>
+                <p>Level: <span id="attribute-level-${index}">${level}</span></p>
+                <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function upgradeSkill(attribute, index, cost) {
+    const level = attributes[attribute] || 1;
+    if (currentPoints >= cost) {
+        currentPoints -= cost;
+        attributes[attribute] = level + 1;
+        localStorage.setItem("points", currentPoints);
+        localStorage.setItem("attributes", JSON.stringify(attributes));
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
+        if (attributes[attribute] % 10 === 0) {
+            currentPoints += 2500;
+            localStorage.setItem("points", currentPoints);
+            alert("Level milestone achieved! Cashback of 2500 points awarded.");
+        }
+        alert("Upgrade successful!");
+    } else {
+        alert("Not enough points!");
+    }
+}
+
+function shareReferralLink() {
+    const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
+    const socialMedia = prompt("Which platform to share on? Facebook, X, WhatsApp, Telegram, Instagram").toLowerCase();
+    const platforms = {
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`,
+        x: `https://x.com/intent/tweet?url=${encodeURIComponent(referralLink)}`,
+        whatsapp: `https://wa.me/?text=${encodeURIComponent(referralLink)}`,
+        telegram: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}`,
+        instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralLink)}`
+    };
+    if (platforms[socialMedia]) window.open(platforms[socialMedia], "_blank");
+    else alert("Invalid platform.");
+}
+
+function displayReferrals() {
+    const container = document.getElementById("referral-container");
+    container.innerHTML = referralUsers.map(user => `
+        <div class="referral-card">
+            <h3>${user}</h3>
+            <button onclick="pokeUser('${user}')">Poke</button>
+        </div>
+    `).join('');
+}
+
+function pokeUser(user) {
+    alert(`You poked ${user}!`);
+    currentPoints += 100;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+}
+
 function spinWheel() {
     const rewards = [2500, 3500, 5500, 6500, 7500];
     const spinButton = document.getElementById("spin-button");
     spinButton.disabled = true;
-    document.getElementById("wheel").style.transform = `rotate(${Math.random() * 360}deg)`;
+    document.getElementById("wheel").style.transform = `rotate(${Math.floor(Math.random() * 360)}deg)`;
     setTimeout(() => {
         const reward = rewards[Math.floor(Math.random() * rewards.length)];
         currentPoints += reward;
@@ -160,14 +229,13 @@ function updateSpinButton() {
     }
 }
 
-// Quarterly reward link
 function claimRewardLink() {
     const currentTime = Date.now();
     if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
         currentPoints += 2500;
         localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert("You claimed 2500 CR7SIU Points!");
+        alert("You claimed 2500 CR7SIU Points!");   
         lastRewardClaimTime = currentTime;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime);
     } else {
@@ -177,7 +245,9 @@ function claimRewardLink() {
 
 function updateRewardsLink() {
     const currentTime = Date.now();
-    document.getElementById("rewards-link").disabled = currentTime - lastRewardClaimTime <= 7776000000;
+    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
+        document.getElementById("rewards-link").disabled = false;
+    } else {
+        document.getElementById("rewards-link").disabled = true;
+    }
 }
-
-// Additional functions for improvements, referrals, and UI updates remain unchanged.

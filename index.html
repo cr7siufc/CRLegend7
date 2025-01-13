@@ -18,10 +18,10 @@
         <div style="display: flex; justify-content: space-between; padding: 0 15px;">
             <div>
                 <p>Player Level: <span id="player-level">1</span></p>
-                <p>Total Score: <span id="total-score">0 CR7SIU Points</span> <!-- Updated --></p>
+                <p>Total Score: <span id="score-display">0 CR7SIU Points</span></p> <!-- Updated -->
             </div>
             <div>
-                <p>Total CR7SIU Points: <span id="total-cr7siu-points">0</span> <!-- Updated --></p>
+                <p>Total CR7SIU Points: <span id="cr7siu-points">0</span></p> <!-- Updated -->
                 <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
             </div>
         </div>
@@ -109,21 +109,11 @@
         <button onclick="setUsername()">Set Username</button>
     </div>
 
-    <div id="footer" style="background-color: black; height: 50px;"></div> <!-- Updated footer background -->
+    <div id="footer"></div> <!-- Blank footer with black border -->
 
     <script src="game.js"></script>
     <script>
         let referralLink = "";
-        let cr7siuPoints = 0;
-        let totalScore = 0; // To track the total accumulated points
-        let lastClaimTime = localStorage.getItem('lastClaimTime') ? new Date(localStorage.getItem('lastClaimTime')) : null;
-        let spinClaimed = lastClaimTime && (new Date() - lastClaimTime < 86400000); // 24 hours in milliseconds
-
-        // Update the available points when earned or spent
-        function updatePointsDisplay() {
-            document.getElementById('total-cr7siu-points').innerText = cr7siuPoints;
-            document.getElementById('total-score').innerText = totalScore + " CR7SIU Points";
-        }
 
         function generateReferralLink() {
             let userId = Math.random().toString(36).substr(2, 9);
@@ -164,33 +154,16 @@ Earn 10,000 CR7SIU Points for each successful referral!
 
         generateReferralLink();
 
-        function convertToTokens() {
-            if (cr7siuPoints >= 5000) {
-                let tokens = Math.floor(cr7siuPoints / 5000);
-                cr7siuPoints -= tokens * 5000;
-                updatePointsDisplay();
-                alert(`${tokens} CR7SIU Token(s) converted successfully!`);
-            } else {
-                alert('Not enough points to convert!');
-            }
-        }
-
         function spinWheel() {
-            if (spinClaimed) {
-                alert('You have already claimed your reward today. Please try again after 24 hours.');
-                return;
-            }
-
             let wheelRewards = [2500, 3500, 5500, 6500, 7500];
             let randomReward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
             alert("You won " + randomReward + " CR7SIU points!");
-            cr7siuPoints += randomReward;
-            totalScore += randomReward; // Add to total score as well
-            updatePointsDisplay();
+            updateTotalScore(randomReward);
+        }
 
-            lastClaimTime = new Date();
-            localStorage.setItem('lastClaimTime', lastClaimTime);
-            spinClaimed = true;
+        function updateTotalScore(points) {
+            let currentScore = parseInt(document.getElementById('score-display').innerText) + points;
+            document.getElementById('score-display').innerText = currentScore + " CR7SIU Points";
         }
 
         function validateAllTasks() {
