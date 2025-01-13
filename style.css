@@ -239,3 +239,18 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* Disabled button state for spin button and rewards */
+#spin-button:disabled, #claim-rewards-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Total Points */
+#total-score, #total-cr7siu-points {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 15px;
+    display: inline-block;
+}
