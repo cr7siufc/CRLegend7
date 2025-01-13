@@ -38,6 +38,7 @@ footer {
     color: #fff; /* Text color inside footer */
 }
 
+/* Logo and Navigation */
 #cr7-logo {
     width: 200px;
     height: 200px;
@@ -84,6 +85,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     background-color: #888;
 }
 
+/* Main Content */
 .main {
     text-align: center;
 }
@@ -100,6 +102,11 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: transform 0.2s ease-in-out;
+}
+
+/* Added spacing below Tap-to-Earn */
+#tap-to-earn-container {
+    padding-bottom: 20px; /* Proper spacing below the Tap-to-Earn section */
 }
 
 #tap-to-earn:hover {
