@@ -34,7 +34,7 @@ function setUsername() {
 function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("username-display").textContent = username;
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
     displayImprovements();
@@ -54,7 +54,7 @@ function showPage(page) {
 function earnPoints() {
     currentPoints += 5;
     localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`; // Updated Total Score
     updateLevel();
 }
 
@@ -67,7 +67,7 @@ function updateLevel() {
 function buyPoints() {
     currentPoints += 1000;
     localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`; // Updated Total Score
 }
 
 function convertToTokens() {
@@ -77,7 +77,7 @@ function convertToTokens() {
         currentTokens += tokens;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("tokens", currentTokens);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
         document.getElementById("tokens-display").textContent = currentTokens;
         alert(`You converted ${tokens} CR7SIU tokens!`);
     } else {
@@ -114,7 +114,7 @@ function upgradeSkill(attribute, index, cost) {
         attributes[attribute] = level + 1;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("attributes", JSON.stringify(attributes));
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
         document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
         if (attributes[attribute] % 10 === 0) {
             currentPoints += 2500;
@@ -168,7 +168,7 @@ function claimRewards() {
         if (!localStorage.getItem("rewardsClaimed")) {
             currentPoints += 5000;
             localStorage.setItem("points", currentPoints);
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
             alert("Congratulations! You earned 5000 CR7SIU Points.");
             localStorage.setItem("rewardsClaimed", true);
         } else {
@@ -189,7 +189,7 @@ function spinWheel() {
         const reward = rewards[Math.floor(Math.random() * rewards.length)];
         currentPoints += reward;
         localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
         alert(`You earned ${reward} CR7SIU Points!`);
         spinClaimed = true;
         localStorage.setItem("spinClaimed", "true");
@@ -215,7 +215,7 @@ function claimRewardLink() {
     if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
         currentPoints += 2500;
         localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
         alert("You claimed 2500 CR7SIU Points!");
         lastRewardClaimTime = currentTime;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime);
