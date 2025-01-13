@@ -170,6 +170,10 @@ function upgradeSkill(attribute, index, cost) {
 }
 
 function shareReferralLink() {
+    if (!username) {
+        alert("Please set a username before sharing the referral link.");
+        return;
+    }
     const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
     const socialMedia = prompt("Which platform to share on? Facebook, X, WhatsApp, Telegram, Instagram").toLowerCase();
     const platforms = {
