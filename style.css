@@ -12,14 +12,14 @@ body {
 header {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 20px;
+    font-size: 18px; /* Reduced font size */
     padding: 5px;
 }
 
 #cr7siu-note {
     font-size: 12px;
     color: #fff;
-    margin-top: 10px;
+    margin-top: 5px; /* Reduced margin */
     padding: 0 20px;
     font-weight: normal;
 }
@@ -107,7 +107,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Added spacing below Tap-to-Earn */
 #tap-to-earn-container {
-    padding-bottom: 350px; /* Proper spacing below the Tap-to-Earn section */
+    padding-bottom: 40px; /* Adjusted spacing below Tap-to-Earn section */
 }
 
 #tap-to-earn:hover {
@@ -124,7 +124,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
     color: #fff;
-    font-size: 20px;
+    font-size: 18px; /* Reduced font size */
     font-weight: bold;
 }
 
@@ -217,7 +217,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
     header {
-        font-size: 20px;
+        font-size: 18px; /* Reduced font size for mobile */
         padding: 15px;
     }
 
