@@ -8,7 +8,7 @@ let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { you
 let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
 let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
 let spinClaimed = localStorage.getItem("spinClaimed") === "true";
-let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
+let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0; // To store last reward claim time
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -18,6 +18,7 @@ if (!username) {
     loadSession();
 }
 
+// Set up username
 function setUsername() {
     const input = document.getElementById("username-input").value.trim();
     if (input) {
@@ -29,6 +30,7 @@ function setUsername() {
     }
 }
 
+// Load user session data
 function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("username-display").textContent = username;
@@ -42,12 +44,13 @@ function loadSession() {
     showPage('home');
 }
 
+// Show a specific page
 function showPage(page) {
     document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
     document.getElementById(page).classList.remove("hidden");
 }
 
-// Points management
+// Points and level management
 function earnPoints() {
     currentPoints += 5;
     localStorage.setItem("points", currentPoints);
@@ -61,7 +64,12 @@ function updateLevel() {
     localStorage.setItem("level", playerLevel);
 }
 
-// Token conversion
+function buyPoints() {
+    currentPoints += 1000;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+}
+
 function convertToTokens() {
     const tokens = Math.floor(currentPoints / 5000);
     if (tokens > 0) {
@@ -77,7 +85,49 @@ function convertToTokens() {
     }
 }
 
-// Display and manage tasks
+// Display and upgrade player attributes
+function displayImprovements() {
+    const improvements = [
+        'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 'Defending', 
+        'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 'Leadership', 
+        'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 'Ball Handling', 'Acceleration'
+    ];
+    const container = document.getElementById("attributes-container");
+    container.innerHTML = improvements.map((improvement, index) => {
+        const level = attributes[improvement] || 1;
+        const cost = 500 + 250 * (level - 1);
+        return `
+            <div class="attribute-card">
+                <h3>${improvement}</h3>
+                <p>Upgrade Cost: ${cost} points</p>
+                <p>Level: <span id="attribute-level-${index}">${level}</span></p>
+                <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function upgradeSkill(attribute, index, cost) {
+    const level = attributes[attribute] || 1;
+    if (currentPoints >= cost) {
+        currentPoints -= cost;
+        attributes[attribute] = level + 1;
+        localStorage.setItem("points", currentPoints);
+        localStorage.setItem("attributes", JSON.stringify(attributes));
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
+        if (attributes[attribute] % 10 === 0) {
+            currentPoints += 2500;
+            localStorage.setItem("points", currentPoints);
+            alert("Level milestone achieved! Cashback of 2500 points awarded.");
+        }
+        alert("Upgrade successful!");
+    } else {
+        alert("Not enough points!");
+    }
+}
+
+// Tasks and rewards
 function displayTasks() {
     const tasks = [
         { name: "Subscribe to the Youtube Channel", url: "https://www.youtube.com/@CR7SIUnextbigthing", key: "youtube" },
@@ -113,7 +163,6 @@ function updateTaskButtons() {
     document.getElementById("claim-rewards-btn").disabled = !Object.values(tasksCompleted).every(Boolean);
 }
 
-// Claim rewards
 function claimRewards() {
     if (Object.values(tasksCompleted).every(Boolean)) {
         if (!localStorage.getItem("rewardsClaimed")) {
@@ -179,5 +228,3 @@ function updateRewardsLink() {
     const currentTime = Date.now();
     document.getElementById("rewards-link").disabled = currentTime - lastRewardClaimTime <= 7776000000;
 }
-
-// Additional functions for improvements, referrals, and UI updates remain unchanged.
