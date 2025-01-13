@@ -16,6 +16,7 @@ if (!username) {
     document.getElementById("username-input").focus();
 } else {
     loadSession();
+    checkForReferral(); // Check if user came from a referral link
 }
 
 function setUsername() {
@@ -187,11 +188,12 @@ function shareReferralLink() {
         telegram: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}`,
         instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralLink)}`
     };
-    
+
     if (platforms[socialMedia]) window.open(platforms[socialMedia], "_blank");
     else alert("Invalid platform.");
 }
 
+// Display Referrals
 function displayReferrals() {
     const container = document.getElementById("referral-container");
     container.innerHTML = referralUsers.map(user => `
@@ -200,6 +202,23 @@ function displayReferrals() {
             <button onclick="pokeUser('${user}')">Poke</button>
         </div>
     `).join('');
+}
+
+// Add referrer to referral users list
+function checkForReferral() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const referrerUsername = urlParams.get('referral'); // Get referral parameter
+    if (referrerUsername && !referralUsers.includes(referrerUsername)) {
+        referralUsers.push(referrerUsername);  // Add the referrer to the list
+        localStorage.setItem('referralUsers', JSON.stringify(referralUsers));  // Store updated referral list
+        updateReferralDisplay(); // Update referral UI
+    }
+}
+
+function updateReferralDisplay() {
+    const referralCount = referralUsers.length;
+    document.getElementById("referral-count").textContent = referralCount;
+    displayReferrals();
 }
 
 function pokeUser(user) {
