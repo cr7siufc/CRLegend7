@@ -18,8 +18,8 @@ body {
 }
 
 #cr7-logo {
-    width: 147px; /* Reduced size by 30% */
-    height: 147px; /* Reduced size by 30% */
+    width: 250px;
+    height: 250px;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
@@ -185,21 +185,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-align: center;
 }
 
-#footer {
-    height: 50px;
-    border-top: 2px solid black;
-    margin-top: 20px;
-    background-color: transparent;
-}
-
-/* Total Score and Total CR7SIU Points - Custom CSS */
-#total-score, #total-cr7siu-points {
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    margin-top: 15px;
-}
-
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
     #cr7-logo {
@@ -238,19 +223,4 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     #attributes-container {
         grid-template-columns: repeat(2, 1fr);
     }
-}
-
-/* Disabled button state for spin button and rewards */
-#spin-button:disabled, #claim-rewards-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* Total Points */
-#total-score, #total-cr7siu-points {
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    margin-top: 15px;
-    display: inline-block;
 }

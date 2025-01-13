@@ -7,18 +7,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Logo -->
+    <!-- Logo before Header -->
     <div id="cr7-logo"></div>
 
     <header>
         <h1>CR7SIU</h1>
-        <p id="cr7siu-note">
-            The ultimate platform for Cristiano Ronaldo fans! Earn CR7 tokens, get exclusive Ronaldo interviews, updates, and highlights, and redeem rewards.
-        </p>
-        <div class="score-info">
-            <div>Total Score: <span id="score-display">0 CR7SIU Points</span></div>
-            <div>Total CR7SIU Points: <span id="total-cr7siu-points">0</span></div>
-            <div>Total CR7SIU Tokens: <span id="tokens-display">0</span></div>
+        <div id="cr7siu-note">
+            The ultimate platform for Cristiano Ronaldo fans! Earn CR7 tokens by tapping to earn or playing exciting games, access live football scores, get exclusive Ronaldo interviews, updates, and highlights, explore CR7-themed NFTs, and redeem rewards.
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 0 15px;">
+            <div>
+                <p>Player Level: <span id="player-level">1</span></p>
+                <p>Total Score: <span id="total-score">0 CR7SIU Points</span> <!-- Updated --></p>
+            </div>
+            <div>
+                <p>Total CR7SIU Points: <span id="total-cr7siu-points">0</span> <!-- Updated --></p>
+                <p>Total CR7SIU Tokens: <span id="tokens-display">0</span></p>
+            </div>
         </div>
     </header>
 
@@ -34,11 +39,15 @@
     <main id="home">
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
-        <div class="tap-to-earn" onclick="earnPoints()">Tap to Earn</div>
+        <div style="text-align: center;">
+            <div id="tap-to-earn" onclick="earnPoints()"></div>
+            <div>Tap to Earn</div>
+        </div>
     </main>
 
     <main id="improvements" class="hidden">
         <h1>Improvements</h1>
+        <p>Upgrade your football skills to earn more points!</p>
         <div id="attributes-container"></div>
     </main>
 
@@ -46,6 +55,21 @@
         <h1>Airdrop</h1>
         <p>Convert CR7SIU points to CR7SIU Tokens (5000 CR7SIU Points = 1 CR7SIU Token).</p>
         <button onclick="convertToTokens()">Convert CR7SIU Points</button>
+        <div id="referral-earning">
+            <h2>Referral Earning</h2>
+            <p>Earn 10,000 CR7SIU Points for each successful referral!</p>
+            <input type="text" id="referral-link" readonly value="Generating referral link..." />
+            <button onclick="copyReferralLink()">Copy Link</button>
+            <p>Referrals Earned: <span id="referral-count">0</span></p>
+            <button onclick="toggleShareOptions()">Share Referral Link</button>
+            <div id="social-share" class="hidden">
+                <button onclick="shareLink('facebook')">Facebook</button>
+                <button onclick="shareLink('twitter')">X (formerly Twitter)</button>
+                <button onclick="shareLink('whatsapp')">WhatsApp</button>
+                <button onclick="shareLink('telegram')">Telegram</button>
+                <button onclick="shareLink('instagram')">Instagram</button>
+            </div>
+        </div>
     </main>
 
     <main id="rewards" class="hidden">
@@ -62,168 +86,116 @@
         <div id="spin-the-wheel">
             <h2>Spin the Wheel</h2>
             <button onclick="spinWheel()" id="spin-button">Spin to Win!</button>
+            <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
             <p id="spin-claim-time"></p>
         </div>
-        <div class="subscribe-join">
+        <div id="validate-all-offers">
+            <button onclick="validateAllTasks()">Validate All Tasks</button>
+        </div>
+        <div style="text-align: left; margin-top: 20px;">
             <h3>Subscribe and Join:</h3>
-            <ul id="subscribe-join-list"></ul>
+            <ul>
+                <li><a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank">Subscribe to our Youtube Channel</a></li>
+                <li><a href="https://x.com/cr7siucoin" target="_blank">Join our X Account</a></li>
+                <li><a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank">Like and join our Facebook Page</a></li>
+                <li><a href="https://youtu.be/byZi0lcy-jw?si=7yxJZdC_6y42Pqs1" target="_blank">Watch Ad</a></li>
+            </ul>
         </div>
     </main>
 
-    <div id="footer" style="background-color: black; height: 50px;"></div>
+    <div id="username-setup" class="hidden">
+        <h2>Welcome! Please enter your username to start:</h2>
+        <input type="text" id="username-input" placeholder="Enter Username">
+        <button onclick="setUsername()">Set Username</button>
+    </div>
 
+    <div id="footer" style="background-color: black; height: 50px;"></div> <!-- Updated footer background -->
+
+    <script src="game.js"></script>
     <script>
-        const pages = ['home', 'improvements', 'airdrop', 'rewards'];
-        const tasks = [
-            { name: "Subscribe to the Youtube Channel", url: "https://www.youtube.com/@CR7SIUnextbigthing", key: "youtube" },
-            { name: "Join the X Account", url: "https://x.com/cr7siucoin", key: "xAccount" },
-            { name: "Like and join the Facebook Page", url: "https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL", key: "facebook" }
-        ];
-        const links = [
-            { name: "Subscribe to our Youtube Channel", url: "https://www.youtube.com/@CR7SIUnextbigthing" },
-            { name: "Join our X Account", url: "https://x.com/cr7siucoin" },
-            { name: "Like and join our Facebook Page", url: "https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" },
-            { name: "Watch Ad", url: "https://youtu.be/byZi0lcy-jw?si=7yxJZdC_6y42Pqs1" }
-        ];
+        let referralLink = "";
+        let cr7siuPoints = 0;
+        let totalScore = 0; // To track the total accumulated points
+        let lastClaimTime = localStorage.getItem('lastClaimTime') ? new Date(localStorage.getItem('lastClaimTime')) : null;
+        let spinClaimed = lastClaimTime && (new Date() - lastClaimTime < 86400000); // 24 hours in milliseconds
 
-        let user = {
-            username: localStorage.getItem("username") || '',
-            points: parseInt(localStorage.getItem("points")) || 0,
-            level: parseInt(localStorage.getItem("level")) || 1,
-            tokens: parseInt(localStorage.getItem("tokens")) || 0,
-            attributes: JSON.parse(localStorage.getItem("attributes")) || {},
-            tasksCompleted: JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false },
-            referralLink: localStorage.getItem("referralLink") || 'Generating referral link...'
-        };
-
-        if (!user.username) {
-            document.getElementById("username-setup").classList.remove("hidden");
-            document.getElementById("username-input").focus();
-        } else {
-            loadSession();
+        // Update the available points when earned or spent
+        function updatePointsDisplay() {
+            document.getElementById('total-cr7siu-points').innerText = cr7siuPoints;
+            document.getElementById('total-score').innerText = totalScore + " CR7SIU Points";
         }
 
-        function loadSession() {
-            document.getElementById("username-setup").classList.add("hidden");
-            document.getElementById("username-display").textContent = user.username;
-            updateScores();
-            displayImprovements();
-            displayTasks();
-            displaySubscribeJoin();
-            updateSpinButton();
-            showPage('home');
+        function generateReferralLink() {
+            let userId = Math.random().toString(36).substr(2, 9);
+            referralLink = `https://t.me/CRLegend7_Bot?ref=${userId}`;
+            document.getElementById('referral-link').value = referralLink;
         }
 
-        function showPage(page) {
-            pages.forEach(p => document.getElementById(p).classList.add("hidden"));
-            document.getElementById(page).classList.remove("hidden");
+        function copyReferralLink() {
+            let referralInput = document.getElementById('referral-link');
+            referralInput.select();
+            document.execCommand('copy');
         }
 
-        function updateScores() {
-            document.getElementById("score-display").textContent = `${user.points} CR7SIU Points`;
-            document.getElementById("tokens-display").textContent = user.tokens;
-            document.getElementById("total-cr7siu-points").textContent = user.points;
+        function getReferralLink() {
+            return referralLink;
         }
 
-        function earnPoints() {
-            user.points += 5;
-            localStorage.setItem("points", user.points);
-            updateScores();
-            updateLevel();
+        function toggleShareOptions() {
+            document.getElementById('social-share').classList.toggle('hidden');
         }
 
-        function updateLevel() {
-            user.level = Math.floor(user.points / 100000) + 1;
-            document.getElementById("player-level").textContent = user.level;
-            localStorage.setItem("level", user.level);
+        function shareLink(platform) {
+            let referralText = `🚨 CR7SIU Referral Program! 🚨
+Earn 10,000 CR7SIU Points for each successful referral!
+👉 ${getReferralLink()}
+#CR7SIU #ReferralProgram #Crypto #FanToken`;
+
+            let shareUrls = {
+                facebook: `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralText)}`,
+                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(referralText)}`,
+                whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(referralText)}`,
+                telegram: `https://telegram.me/share/url?url=${encodeURIComponent(referralText)}`,
+                instagram: `https://www.instagram.com/?url=${encodeURIComponent(referralText)}`
+            };
+
+            window.open(shareUrls[platform] || `https://t.me/share/url?url=${encodeURIComponent(referralText)}`, '_blank');
         }
+
+        generateReferralLink();
 
         function convertToTokens() {
-            const tokens = Math.floor(user.points / 5000);
-            if (tokens > 0) {
-                user.points -= tokens * 5000;
-                user.tokens += tokens;
-                localStorage.setItem("points", user.points);
-                localStorage.setItem("tokens", user.tokens);
-                updateScores();
-                alert(`You converted ${tokens} CR7SIU tokens!`);
+            if (cr7siuPoints >= 5000) {
+                let tokens = Math.floor(cr7siuPoints / 5000);
+                cr7siuPoints -= tokens * 5000;
+                updatePointsDisplay();
+                alert(`${tokens} CR7SIU Token(s) converted successfully!`);
             } else {
-                alert("Not enough points.");
+                alert('Not enough points to convert!');
             }
-        }
-
-        function displayImprovements() {
-            const improvements = ['Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing'];
-            const container = document.getElementById("attributes-container");
-            container.innerHTML = improvements.map((improvement, index) => {
-                const level = user.attributes[improvement] || 1;
-                const cost = 500 + 250 * (level - 1);
-                return `
-                    <div class="attribute-card">
-                        <h3>${improvement}</h3>
-                        <p>Upgrade Cost: ${cost} points</p>
-                        <p>Level: <span id="attribute-level-${index}">${level}</span></p>
-                        <button onclick="upgradeSkill('${improvement}', ${index}, ${cost})">Upgrade</button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function upgradeSkill(attribute, index, cost) {
-            if (user.points >= cost) {
-                user.points -= cost;
-                user.attributes[attribute] = (user.attributes[attribute] || 0) + 1;
-                localStorage.setItem("points", user.points);
-                localStorage.setItem("attributes", JSON.stringify(user.attributes));
-                updateScores();
-                document.getElementById(`attribute-level-${index}`).textContent = user.attributes[attribute];
-                alert("Upgrade successful!");
-            } else {
-                alert("Not enough points!");
-            }
-        }
-
-        function displayTasks() {
-            tasks.forEach(task => {
-                document.getElementById(task.key).disabled = user.tasksCompleted[task.key];
-            });
-        }
-
-        function completeTask(task) {
-            user.tasksCompleted[task] = true;
-            localStorage.setItem("tasksCompleted", JSON.stringify(user.tasksCompleted));
-            alert(`Task "${task}" marked as completed!`);
-        }
-
-        function displaySubscribeJoin() {
-            const subscribeJoinList = document.getElementById("subscribe-join-list");
-            subscribeJoinList.innerHTML = links.map(link => `
-                <li><a href="${link.url}" target="_blank">${link.name}</a></li>
-            `).join('');
         }
 
         function spinWheel() {
-            const rewards = [2500, 3500, 5500, 6500, 7500];
-            const reward = rewards[Math.floor(Math.random() * rewards.length)];
-            user.points += reward;
-            localStorage.setItem("points", user.points);
-            updateScores();
-            alert(`You won ${reward} CR7SIU Points!`);
+            if (spinClaimed) {
+                alert('You have already claimed your reward today. Please try again after 24 hours.');
+                return;
+            }
+
+            let wheelRewards = [2500, 3500, 5500, 6500, 7500];
+            let randomReward = wheelRewards[Math.floor(Math.random() * wheelRewards.length)];
+            alert("You won " + randomReward + " CR7SIU points!");
+            cr7siuPoints += randomReward;
+            totalScore += randomReward; // Add to total score as well
+            updatePointsDisplay();
+
+            lastClaimTime = new Date();
+            localStorage.setItem('lastClaimTime', lastClaimTime);
+            spinClaimed = true;
         }
 
-        function updateSpinButton() {
-            const lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
-            const timeElapsed = Date.now() - lastSpinTime;
-            const button = document.getElementById("spin-button");
-            const claimMessage = document.getElementById("spin-claim-time");
-
-            if (timeElapsed < 86400000) {
-                button.disabled = true;
-                claimMessage.textContent = "Spin available again in 24 hours.";
-            } else {
-                button.disabled = false;
-                claimMessage.textContent = "Spin now and win!";
-            }
+        function validateAllTasks() {
+            alert("All tasks validated successfully!");
+            document.getElementById('validate-all-offers').style.display = 'none';
         }
     </script>
 </body>
