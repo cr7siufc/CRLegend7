@@ -29,12 +29,10 @@ footer {
     background-color: black; /* Black fill */
     border-top: 2px solid black; /* Black border at the top */
     width: 100%; /* Full width */
-    height: 10px; /* Adjust height as needed */
-    position: fixed; /* Fix the footer at the bottom */
-    bottom: 0; /* Ensure it's at the bottom */
-    left: 0; /* Ensure it spans the full width */
+    height: 40px; /* Increased height */
     text-align: center; /* Center align content */
     color: #fff; /* Text color inside footer */
+    padding: 10px;
 }
 
 /* Logo and Navigation */
@@ -87,6 +85,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 /* Main Content */
 .main {
     text-align: center;
+    padding-bottom: 60px; /* Increased padding at the bottom */
 }
 
 #tap-to-earn {
@@ -101,12 +100,10 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: transform 0.2s ease-in-out;
-    gap: 40px; /* Added spacing between buttons */
 }
 
-/* Added spacing below Tap-to-Earn */
 #tap-to-earn-container {
-    padding-bottom: 100px; /* Increased spacing below Tap-to-Earn section */
+    padding-bottom: 100px; /* Ensured proper spacing below Tap-to-Earn section */
 }
 
 #tap-to-earn:hover {
