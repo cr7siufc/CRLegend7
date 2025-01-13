@@ -257,4 +257,4 @@ function updateRewardsLink() {
     } else {
         document.getElementById("rewards-link").disabled = true;
     }
-} 
+}
