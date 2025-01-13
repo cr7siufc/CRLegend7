@@ -203,17 +203,6 @@ function pokeUser(user) {
 function spinWheel() {
     const rewards = [2500, 3500, 5500, 6500, 7500];
     const spinButton = document.getElementById("spin-button");
-
-    // Prevent spin if already claimed or within 24 hours
-    const currentTime = Date.now();
-    if (spinClaimed || currentTime - lastSpinTime < 86400000) {
-        alert("You can only spin once every 24 hours.");
-        spinButton.disabled = true;
-        document.getElementById("spin-claim-time").textContent = `Next spin available on ${new Date(lastSpinTime + 86400000).toLocaleString()}`;
-        return;
-    }
-
-    // Disable the button while spinning
     spinButton.disabled = true;
     document.getElementById("wheel").style.transform = `rotate(${Math.floor(Math.random() * 360)}deg)`;
     setTimeout(() => {
@@ -222,11 +211,9 @@ function spinWheel() {
         localStorage.setItem("points", currentPoints);
         document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
         alert(`You earned ${reward} CR7SIU Points!`);
-        
-        // Mark the spin as claimed
         spinClaimed = true;
         localStorage.setItem("spinClaimed", "true");
-        localStorage.setItem("lastSpinTime", currentTime);
+        localStorage.setItem("lastSpinTime", Date.now());
         updateSpinButton();
     }, 3000);
 }
