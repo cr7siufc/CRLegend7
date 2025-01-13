@@ -37,6 +37,7 @@ function loadSession() {
     document.getElementById("player-level").textContent = playerLevel;
     displayImprovements();
     displayTasks();
+    displayReferrals(); // Display the referral users
     updateSpinButton();
     updateRewardsLink();
     showPage('home');
@@ -169,6 +170,7 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
+// Share Referral Link
 function shareReferralLink() {
     // Ensure the username is available before generating the link
     if (!username) {
@@ -205,56 +207,4 @@ function pokeUser(user) {
     currentPoints += 100;
     localStorage.setItem("points", currentPoints);
     document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-}
-
-function spinWheel() {
-    const rewards = [2500, 3500, 5500, 6500, 7500];
-    const spinButton = document.getElementById("spin-button");
-    spinButton.disabled = true;
-    document.getElementById("wheel").style.transform = `rotate(${Math.floor(Math.random() * 360)}deg)`;
-    setTimeout(() => {
-        const reward = rewards[Math.floor(Math.random() * rewards.length)];
-        currentPoints += reward;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert(`You earned ${reward} CR7SIU Points!`);
-        spinClaimed = true;
-        localStorage.setItem("spinClaimed", "true");
-        localStorage.setItem("lastSpinTime", Date.now());
-        updateSpinButton();
-    }, 3000);
-}
-
-function updateSpinButton() {
-    const spinButton = document.getElementById("spin-button");
-    const currentTime = Date.now();
-    if (spinClaimed || currentTime - lastSpinTime < 86400000) {
-        spinButton.disabled = true;
-        document.getElementById("spin-claim-time").textContent = `Next spin available on ${new Date(lastSpinTime + 86400000).toLocaleString()}`;
-    } else {
-        spinButton.disabled = false;
-    }
-}
-
-function claimRewardLink() {
-    const currentTime = Date.now();
-    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
-        currentPoints += 2500;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-        alert("You claimed 2500 CR7SIU Points!");   
-        lastRewardClaimTime = currentTime;
-        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime);
-    } else {
-        alert("You can claim this reward only once every 3 months.");
-    }
-}
-
-function updateRewardsLink() {
-    const currentTime = Date.now();
-    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
-        document.getElementById("rewards-link").disabled = false;
-    } else {
-        document.getElementById("rewards-link").disabled = true;
-    }
 }
