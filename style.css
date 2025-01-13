@@ -235,4 +235,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     #attributes-container {
         grid-template-columns: repeat(2, 1fr);
     }
+<<<<<<< HEAD
 }
+=======
+>>>>>>> e140484f879a5233d6add3c0d8e80558a8c6f56b
