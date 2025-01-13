@@ -35,6 +35,7 @@
         </ul>
     </nav>
 
+    <!-- Home Page -->
     <main id="home">
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
@@ -44,12 +45,14 @@
         </div>
     </main>
 
+    <!-- Improvements Page -->
     <main id="improvements" class="hidden">
         <h1>Improvements</h1>
         <p>Upgrade your football skills to earn more points!</p>
         <div id="attributes-container"></div>
     </main>
 
+    <!-- Airdrop Page -->
     <main id="airdrop" class="hidden">
         <h1>Airdrop</h1>
         <p>Convert CR7SIU points to CR7SIU Tokens (5000 CR7SIU Points = 1 CR7SIU Token).</p>
@@ -64,7 +67,7 @@
             <button onclick="toggleShareOptions()">Share Referral Link</button>
             <div id="social-share" class="hidden">
                 <button onclick="shareLink('facebook')">Facebook</button>
-                <button onclick="shareLink('twitter')">X (formerly Twitter)</button>
+                <button onclick="shareLink('x')">X (formerly Twitter)</button>
                 <button onclick="shareLink('whatsapp')">WhatsApp</button>
                 <button onclick="shareLink('telegram')">Telegram</button>
                 <button onclick="shareLink('instagram')">Instagram</button>
@@ -72,6 +75,7 @@
         </div>
     </main>
 
+    <!-- Rewards Page -->
     <main id="rewards" class="hidden">
         <h1>Rewards</h1>
         <div id="ads-section">
@@ -103,6 +107,7 @@
         </div>
     </main>
 
+    <!-- Username Setup Section -->
     <div id="username-setup" class="hidden">
         <h2>Welcome! Please enter your username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username" title="Enter your username" />
@@ -112,8 +117,5 @@
     <footer id="footer"></footer>
 
     <script src="game.js"></script>
-    <script>
-        // Include JavaScript here
-    </script>
 </body>
 </html>

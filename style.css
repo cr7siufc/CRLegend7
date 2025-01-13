@@ -6,32 +6,31 @@ body {
     margin: 0;
     padding: 0;
     color: #f2f2f2;
-    text-align: center;
 }
 
 header {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 18px; /* Reduced font size */
+    font-size: 18px;
     padding: 5px;
 }
 
 #cr7siu-note {
     font-size: 12px;
     color: #fff;
-    margin-top: 5px; /* Reduced margin */
+    margin-top: 5px;
     padding: 0 20px;
     font-weight: normal;
 }
 
 /* Blank Footer with Black Border and Fill */
 footer {
-    background-color: black; /* Black fill */
-    border-top: 2px solid black; /* Black border at the top */
-    width: 100%; /* Full width */
-    height: 10px; /* Increased height */
-    text-align: center; /* Center align content */
-    color: #fff; /* Text color inside footer */
+    background-color: black;
+    border-top: 2px solid black;
+    width: 100%; /* Ensures full width */
+    height: 10px;
+    text-align: center;
+    color: #fff;
     padding: 10px;
 }
 
@@ -50,7 +49,8 @@ nav {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px; /* Added spacing between buttons */
+    gap: 10px;
+    width: 100%;
 }
 
 nav ul {
@@ -59,7 +59,7 @@ nav ul {
     margin: 0;
     padding: 0;
     flex-wrap: wrap;
-    gap: 10px; /* Added spacing between items */
+    gap: 10px;
 }
 
 nav li {
@@ -75,7 +75,7 @@ nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-b
     cursor: pointer;
     font-size: 16px;
     width: 100%;
-    max-width: 150px; /* Adjusted width for better spacing */
+    max-width: 150px;
 }
 
 nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
@@ -85,7 +85,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 /* Main Content */
 .main {
     text-align: center;
-    padding-bottom: 60px; /* Increased padding at the bottom */
+    padding-bottom: 60px;
 }
 
 #tap-to-earn {
@@ -102,16 +102,15 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     transition: transform 0.2s ease-in-out;
 }
 
-/* Increased spacing below Tap-to-Earn */
 #tap-to-earn-container {
-    padding-bottom: 300px; /* Increased padding below Tap-to-Earn section */
+    padding-bottom: 300px;
 }
 
 #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
     color: #fff;
-    font-size: 18px; /* Reduced font size for consistency */
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 30px; /* Increased margin to create more space below the text */
+    margin-bottom: 30px;
 }
 
 #referral-earning input, #username-setup input {
@@ -124,7 +123,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 }
 
 #tasks-container, .task, .referral-card, #social-share {
-    max-width: 90%;
+    max-width: 100%; /* Removed any width restriction */
     margin: 20px auto;
     text-align: center;
 }
@@ -173,7 +172,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two attributes per row */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     margin: 20px 0;
     text-align: center;
@@ -202,18 +201,18 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Airdrop & Rewards Sections */
 .airdrop-section, .rewards-section {
-    border: 2px solid #fff; /* White border for sections */
-    border-radius: 10px; /* Rounded corners for aesthetic */
+    border: 2px solid #fff;
+    border-radius: 10px;
     padding: 15px;
     margin: 20px auto;
-    max-width: 90%;
-    background-color: rgba(0, 0, 0, 0.7); /* Slightly opaque black background */
+    max-width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
     header {
-        font-size: 18px; /* Reduced font size for mobile */
+        font-size: 18px;
         padding: 15px;
     }
 
@@ -222,7 +221,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
         height: 120px;
     }
 
-    /* Navigation aligned side by side */
     nav ul {
         flex-direction: row;
         justify-content: center;
@@ -249,7 +247,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
         height: 120px;
     }
 
-    /* Two attributes per row on mobile */
     #attributes-container {
         grid-template-columns: repeat(2, 1fr);
     }
