@@ -102,12 +102,12 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: transform 0.2s ease-in-out;
-    gap: 10px; /* Added spacing between buttons */
+    gap: 40px; /* Added spacing between buttons */
 }
 
 /* Added spacing below Tap-to-Earn */
 #tap-to-earn-container {
-    padding-bottom: 250px; /* Proper spacing below the Tap-to-Earn section */
+    padding-bottom: 350px; /* Proper spacing below the Tap-to-Earn section */
 }
 
 #tap-to-earn:hover {
