@@ -1,16 +1,16 @@
-// Store username, points, tokens, and other data in localStorage
+// Load session data from localStorage
+const loadData = (key, defaultValue) => JSON.parse(localStorage.getItem(key)) || defaultValue;
 let username = localStorage.getItem("username") || '';
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
-let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
-let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
-let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
+let attributes = loadData("attributes", {});
+let tasksCompleted = loadData("tasksCompleted", { youtube: false, xAccount: false, facebook: false });
+let referralUsers = loadData("referralUsers", []);
 let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
 let spinClaimed = localStorage.getItem("spinClaimed") === "true";
-let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0; // To store last reward claim time
+let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
 
-// Show username setup if it's the user's first session
 if (!username) {
     document.getElementById("username-setup").classList.remove("hidden");
     document.getElementById("username-input").focus();
@@ -18,23 +18,11 @@ if (!username) {
     loadSession();
 }
 
-// Set up username
-function setUsername() {
-    const input = document.getElementById("username-input").value.trim();
-    if (input) {
-        localStorage.setItem("username", input);
-        username = input;
-        loadSession();
-    } else {
-        alert("Please enter a valid username.");
-    }
-}
-
-// Load user session data
+// Show user session
 function loadSession() {
     document.getElementById("username-setup").classList.add("hidden");
     document.getElementById("username-display").textContent = username;
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
     document.getElementById("tokens-display").textContent = currentTokens;
     document.getElementById("player-level").textContent = playerLevel;
     displayImprovements();
@@ -44,18 +32,17 @@ function loadSession() {
     showPage('home');
 }
 
-// Show a specific page
+// Page navigation
 function showPage(page) {
     document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
     document.getElementById(page).classList.remove("hidden");
 }
 
-// Points and level management
-function earnPoints() {
-    currentPoints += 5;
+// Points & level management
+function updatePoints(points) {
+    currentPoints += points;
     localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`; // Updated Total Score
-    updateLevel();
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
 }
 
 function updateLevel() {
@@ -64,12 +51,7 @@ function updateLevel() {
     localStorage.setItem("level", playerLevel);
 }
 
-function buyPoints() {
-    currentPoints += 1000;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`; // Updated Total Score
-}
-
+// Points conversion & upgrades
 function convertToTokens() {
     const tokens = Math.floor(currentPoints / 5000);
     if (tokens > 0) {
@@ -77,7 +59,6 @@ function convertToTokens() {
         currentTokens += tokens;
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("tokens", currentTokens);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
         document.getElementById("tokens-display").textContent = currentTokens;
         alert(`You converted ${tokens} CR7SIU tokens!`);
     } else {
@@ -85,7 +66,6 @@ function convertToTokens() {
     }
 }
 
-// Display and upgrade player attributes
 function displayImprovements() {
     const improvements = [
         'Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 'Defending', 
@@ -110,16 +90,13 @@ function displayImprovements() {
 function upgradeSkill(attribute, index, cost) {
     const level = attributes[attribute] || 1;
     if (currentPoints >= cost) {
-        currentPoints -= cost;
         attributes[attribute] = level + 1;
-        localStorage.setItem("points", currentPoints);
+        updatePoints(-cost);
         localStorage.setItem("attributes", JSON.stringify(attributes));
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
         document.getElementById(`attribute-level-${index}`).textContent = attributes[attribute];
         if (attributes[attribute] % 10 === 0) {
-            currentPoints += 2500;
-            localStorage.setItem("points", currentPoints);
-            alert("Level milestone achieved! Cashback of 2500 points awarded.");
+            updatePoints(2500);
+            alert("Level milestone achieved! Cashback of 2500 points.");
         }
         alert("Upgrade successful!");
     } else {
@@ -164,32 +141,23 @@ function updateTaskButtons() {
 }
 
 function claimRewards() {
-    if (Object.values(tasksCompleted).every(Boolean)) {
-        if (!localStorage.getItem("rewardsClaimed")) {
-            currentPoints += 5000;
-            localStorage.setItem("points", currentPoints);
-            document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
-            alert("Congratulations! You earned 5000 CR7SIU Points.");
-            localStorage.setItem("rewardsClaimed", true);
-        } else {
-            alert("Rewards already claimed.");
-        }
+    if (Object.values(tasksCompleted).every(Boolean) && !localStorage.getItem("rewardsClaimed")) {
+        updatePoints(5000);
+        localStorage.setItem("rewardsClaimed", true);
+        alert("Congratulations! You earned 5000 CR7SIU Points.");
     } else {
-        alert("Complete all tasks before claiming rewards.");
+        alert("Complete all tasks or rewards already claimed.");
     }
 }
 
 // Spin wheel functionality
 function spinWheel() {
     const rewards = [2500, 3500, 5500, 6500, 7500];
-    const spinButton = document.getElementById("spin-button");
-    spinButton.disabled = true;
+    document.getElementById("spin-button").disabled = true;
     document.getElementById("wheel").style.transform = `rotate(${Math.random() * 360}deg)`;
     setTimeout(() => {
         const reward = rewards[Math.floor(Math.random() * rewards.length)];
-        currentPoints += reward;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
+        updatePoints(reward);
         alert(`You earned ${reward} CR7SIU Points!`);
         spinClaimed = true;
         localStorage.setItem("spinClaimed", "true");
@@ -211,13 +179,10 @@ function updateSpinButton() {
 
 // Quarterly reward link
 function claimRewardLink() {
-    const currentTime = Date.now();
-    if (currentTime - lastRewardClaimTime > 7776000000) { // 3 months in milliseconds
-        currentPoints += 2500;
-        localStorage.setItem("points", currentPoints);
-        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;  // Updated Total Score
+    if (Date.now() - lastRewardClaimTime > 7776000000) {
+        updatePoints(2500);
         alert("You claimed 2500 CR7SIU Points!");
-        lastRewardClaimTime = currentTime;
+        lastRewardClaimTime = Date.now();
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime);
     } else {
         alert("You can claim this reward only once every 3 months.");
@@ -225,6 +190,5 @@ function claimRewardLink() {
 }
 
 function updateRewardsLink() {
-    const currentTime = Date.now();
-    document.getElementById("rewards-link").disabled = currentTime - lastRewardClaimTime <= 7776000000;
+    document.getElementById("rewards-link").disabled = Date.now() - lastRewardClaimTime <= 7776000000;
 }
