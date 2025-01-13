@@ -58,7 +58,8 @@
         <div id="referral-earning">
             <h2>Referral Earning</h2>
             <p>Earn 10,000 CR7SIU Points for each successful referral!</p>
-            <input type="text" id="referral-link" readonly value="Generating referral link..." />
+            <label for="referral-link">Referral Link:</label> <!-- Added label -->
+            <input type="text" id="referral-link" readonly value="Generating referral link..." title="Referral link generated" placeholder="Your referral link will appear here" /> <!-- Added title and placeholder -->
             <button onclick="copyReferralLink()">Copy Link</button>
             <p>Referrals Earned: <span id="referral-count">0</span></p>
             <button onclick="toggleShareOptions()">Share Referral Link</button>
@@ -105,7 +106,7 @@
 
     <div id="username-setup" class="hidden">
         <h2>Welcome! Please enter your username to start:</h2>
-        <input type="text" id="username-input" placeholder="Enter Username">
+        <input type="text" id="username-input" placeholder="Enter Username" title="Enter your username" /> <!-- Added title and placeholder -->
         <button onclick="setUsername()">Set Username</button>
     </div>
 
@@ -115,7 +116,6 @@
     <script src="game.js"></script>
     <script>
         let referralLink = "";
-        let referralCount = parseInt(localStorage.getItem("referralCount")) || 0; // Tracks successful referrals
         let spinCooldown = 0;  // Track cooldown for the spin wheel
         const cooldownDuration = 86400000; // 24 hours in milliseconds
 
@@ -196,13 +196,7 @@ Earn 10,000 CR7SIU Points for each successful referral!
             document.getElementById('validate-all-offers').style.display = 'none';
         }
 
-        // Increment and store referral count in localStorage after a successful referral
-        function incrementReferralCount() {
-            referralCount += 1;
-            localStorage.setItem("referralCount", referralCount); // Store the updated count
-            document.getElementById('referral-count').innerText = referralCount;
-        }
-
+        // Call generateReferralLink() when the user sets their username
         function setUsername() {
             let username = document.getElementById('username-input').value;
             if(username) {
