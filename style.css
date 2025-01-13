@@ -9,13 +9,6 @@ body {
     text-align: center;
 }
 
-header {
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.8);
-    font-size: 24px;
-    padding: 20px;
-}
-
 #cr7siu-note {
     font-size: 10px;
     color: #fff;
@@ -25,8 +18,8 @@ header {
 }
 
 #cr7-logo {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
@@ -194,11 +187,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
-    header {
-        font-size: 20px;
-        padding: 15px;
-    }
-
     #cr7-logo {
         width: 120px;
         height: 120px;
@@ -235,7 +223,4 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     #attributes-container {
         grid-template-columns: repeat(2, 1fr);
     }
-<<<<<<< HEAD
 }
-=======
->>>>>>> e140484f879a5233d6add3c0d8e80558a8c6f56b
