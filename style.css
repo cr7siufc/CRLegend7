@@ -23,6 +23,14 @@ header {
     padding: 0 20px;
     font-weight: normal;
 }
+/* Blank Footer with Black Border and Fill */
+footer {
+    background-color: black; /* Black fill */
+    border-top: 2px solid black; /* Black border at the top */
+    width: 100%; /* Full width */
+    height: 50px; /* Adjust height as needed */
+    margin-top: 20px; /* Optional margin */
+}
 
 #cr7-logo {
     width: 200px;
@@ -235,12 +243,4 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     #attributes-container {
         grid-template-columns: repeat(2, 1fr);
     }
-}
-/* Blank Footer with Black Border and Fill */
-footer {
-    background-color: black; /* Black fill */
-    border-top: 2px solid black; /* Black border at the top */
-    width: 100%; /* Full width */
-    height: 50px; /* Adjust height as needed */
-    margin-top: 20px; /* Optional margin */
 }
