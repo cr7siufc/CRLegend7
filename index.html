@@ -115,6 +115,7 @@
     <script src="game.js"></script>
     <script>
         let referralLink = "";
+        let referralCount = parseInt(localStorage.getItem("referralCount")) || 0; // Tracks successful referrals
         let spinCooldown = 0;  // Track cooldown for the spin wheel
         const cooldownDuration = 86400000; // 24 hours in milliseconds
 
@@ -195,7 +196,13 @@ Earn 10,000 CR7SIU Points for each successful referral!
             document.getElementById('validate-all-offers').style.display = 'none';
         }
 
-        // Call generateReferralLink() when the user sets their username
+        // Increment and store referral count in localStorage after a successful referral
+        function incrementReferralCount() {
+            referralCount += 1;
+            localStorage.setItem("referralCount", referralCount); // Store the updated count
+            document.getElementById('referral-count').innerText = referralCount;
+        }
+
         function setUsername() {
             let username = document.getElementById('username-input').value;
             if(username) {
