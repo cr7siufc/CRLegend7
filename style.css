@@ -106,7 +106,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Added spacing below Tap-to-Earn */
 #tap-to-earn-container {
-    padding-bottom: 20px; /* Proper spacing below the Tap-to-Earn section */
+    padding-bottom: 80px; /* Proper spacing below the Tap-to-Earn section */
 }
 
 #tap-to-earn:hover {
