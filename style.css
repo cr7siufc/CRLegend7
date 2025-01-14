@@ -188,7 +188,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background: url("images/cr7_poster2.jpg") center center no-repeat;
+    background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
     display: block;
@@ -361,45 +361,30 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     transform: translateY(-5px);
 }
 
-/* Mobile Responsive Design */
-@media (max-width: 768px) {
-    header {
-        font-size: 18px;
-        padding: 15px;
-    }
+/* Align Player Level & Total Score to Left, CR7SIU Points & Tokens to Right */
+.score-container {
+    display: flex;
+    justify-content: space-between;
+}
 
-    #cr7-logo {
-        width: 120px;
-        height: 120px;
-    }
+.score-left {
+    text-align: left;
+    flex-basis: 45%;
+}
 
-    nav ul {
-        flex-direction: row;
-        justify-content: center;
-        gap: 10px;
-    }
+.score-right {
+    text-align: right;
+    flex-basis: 45%;
+}
 
-    nav li {
-        margin: 0;
-    }
+/* Footer with Full-width Options */
+footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
 
-    nav button {
-        font-size: 14px;
-        padding: 10px 14px;
-        max-width: 120px;
-    }
-
-    #tap-to-earn {
-        width: 120px;
-        height: 120px;
-    }
-
-    #wheel {
-        width: 120px;
-        height: 120px;
-    }
-
-    #attributes-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
+footer button {
+    width: 22%;
+    text-align: center;
 }

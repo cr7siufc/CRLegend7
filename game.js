@@ -173,20 +173,15 @@ function upgradeSkill(attribute, index, cost) {
 
 // Generate and display referral link
 function generateReferralLink() {
-    // Ensure the username is available before generating the link
     if (!username) {
         alert("Please set your username first!");
         return;
     }
 
     const referralLink = `https://t.me/CRLegend7_Bot?referral=${username}`;
-    
-    // Update the input field with the referral link for easy copying
     document.getElementById("referral-link-field").value = referralLink;
-
-    // Optionally, you can also automatically copy the link to clipboard here:
     document.getElementById("referral-link-field").select();
-    document.execCommand("copy");  // Copy to clipboard
+    document.execCommand("copy");
     alert("Referral link copied to clipboard!");
 }
 
@@ -204,11 +199,11 @@ function displayReferrals() {
 // Add referrer to referral users list
 function checkForReferral() {
     const urlParams = new URLSearchParams(window.location.search);
-    const referrerUsername = urlParams.get('referral'); // Get referral parameter
+    const referrerUsername = urlParams.get('referral');
     if (referrerUsername && !referralUsers.includes(referrerUsername)) {
-        referralUsers.push(referrerUsername);  // Add the referrer to the list
-        localStorage.setItem('referralUsers', JSON.stringify(referralUsers));  // Store updated referral list
-        updateReferralDisplay(); // Update referral UI
+        referralUsers.push(referrerUsername);
+        localStorage.setItem('referralUsers', JSON.stringify(referralUsers));
+        updateReferralDisplay();
     }
 }
 
@@ -219,8 +214,44 @@ function updateReferralDisplay() {
 }
 
 function pokeUser(user) {
-    alert(`You poked ${user}!`);
-    currentPoints += 100;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    alert(`Poking ${user}...`);
+}
+
+// Spin Button Management
+function updateSpinButton() {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastSpinTime > 86400000) {
+        spinClaimed = false;
+        localStorage.setItem('spinClaimed', spinClaimed);
+        document.getElementById("spin-btn").disabled = false;
+    } else {
+        document.getElementById("spin-btn").disabled = spinClaimed;
+    }
+}
+
+function claimSpinReward() {
+    if (spinClaimed) {
+        alert("You have already claimed your spin today.");
+        return;
+    }
+
+    if (currentPoints >= 5000) {
+        currentPoints += 10000; // Reward after spin
+        localStorage.setItem("points", currentPoints);
+        document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+        alert("You earned 10000 points from the spin!");
+        lastSpinTime = new Date().getTime();
+        spinClaimed = true;
+        localStorage.setItem("spinClaimed", true);
+        updateSpinButton();
+    } else {
+        alert("You need at least 5000 points to spin.");
+    }
+}
+
+// Handling reward claim link (display on homepage)
+function updateRewardsLink() {
+    const timeDifference = new Date().getTime() - lastRewardClaimTime;
+    const nextRewardTime = timeDifference > 86400000; // One day in milliseconds
+    document.getElementById("reward-link").style.display = nextRewardTime ? "block" : "none";
 }
