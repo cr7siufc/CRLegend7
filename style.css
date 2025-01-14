@@ -7,32 +7,53 @@ body {
     padding: 0;
     color: #f2f2f2;
     text-align: center;
+    animation: bgPulse 60s infinite alternate;
+}
+
+@keyframes bgPulse {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
 }
 
 header {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 18px; /* Reduced font size */
+    font-size: 18px;
     padding: 5px;
+    border-bottom: 3px solid #FFD700; /* Gold border for header */
+    animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { border-color: #FFD700; }
+    to { border-color: #FFA500; }
 }
 
 #cr7siu-note {
     font-size: 12px;
     color: #fff;
-    margin-top: 5px; /* Reduced margin */
+    margin-top: 5px;
     padding: 0 20px;
     font-weight: normal;
+    border-left: 2px dashed #00FF00; /* Green dashed border */
 }
 
-/* Blank Footer with Black Border and Fill */
+/* Blank Footer with Animated Border */
 footer {
-    background-color: black; /* Black fill */
-    border-top: 2px solid black; /* Black border at the top */
-    width: 100%; /* Full width */
-    height: 10px; /* Increased height */
-    text-align: center; /* Center align content */
-    color: #fff; /* Text color inside footer */
+    background-color: black;
+    border-top: 2px solid transparent;
+    width: 100%;
+    height: 10px;
+    text-align: center;
+    color: #fff;
     padding: 10px;
+    animation: neonBorder 5s infinite linear;
+}
+
+@keyframes neonBorder {
+    0% { border-color: #00FF00; }
+    50% { border-color: #FF00FF; }
+    100% { border-color: #00FF00; }
 }
 
 /* Logo and Navigation */
@@ -42,6 +63,13 @@ footer {
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
+    border: 4px solid #4B0082; /* Indigo border */
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+#cr7-logo:hover {
+    transform: scale(1.05);
 }
 
 nav {
@@ -50,7 +78,8 @@ nav {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px; /* Added spacing between buttons */
+    gap: 10px;
+    border-bottom: 3px solid #FF4500; /* Orange-Red border */
 }
 
 nav ul {
@@ -59,7 +88,7 @@ nav ul {
     margin: 0;
     padding: 0;
     flex-wrap: wrap;
-    gap: 10px; /* Added spacing between items */
+    gap: 10px;
 }
 
 nav li {
@@ -75,17 +104,19 @@ nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-b
     cursor: pointer;
     font-size: 16px;
     width: 100%;
-    max-width: 150px; /* Adjusted width for better spacing */
+    max-width: 150px;
+    transition: all 0.3s ease;
 }
 
 nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
     background-color: #888;
+    box-shadow: 0 0 10px #FFD700; /* Gold glow on hover */
 }
 
 /* Main Content */
 .main {
     text-align: center;
-    padding-bottom: 60px; /* Increased padding at the bottom */
+    padding-bottom: 60px;
 }
 
 #tap-to-earn {
@@ -96,22 +127,33 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     background-size: cover;
     margin: 20px auto;
     display: block;
-    border: 2px solid #fff;
+    border: 4px solid #FF1493; /* Pink border */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    transition: all 0.3s;
+    animation: rotate 6s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+#tap-to-earn:hover {
+    transform: scale(1.1);
 }
 
 /* Increased spacing below Tap-to-Earn */
 #tap-to-earn-container {
-    padding-bottom: 300px; /* Increased padding below Tap-to-Earn section */
+    padding-bottom: 300px;
 }
 
 #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
     color: #fff;
-    font-size: 18px; /* Reduced font size for consistency */
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 30px; /* Increased margin to create more space below the text */
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px #000000; /* Text shadow for better readability */
 }
 
 #referral-earning input, #username-setup input {
@@ -121,6 +163,11 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     border-radius: 5px;
     border: 1px solid #fff;
     background-color: #333;
+    transition: border-color 0.3s;
+}
+
+#referral-earning input:focus, #username-setup input:focus {
+    border-color: #4169E1; /* Royal Blue border on focus */
 }
 
 #tasks-container, .task, .referral-card, #social-share {
@@ -133,6 +180,8 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     justify-content: center;
     align-items: center;
     margin-bottom: 15px;
+    border: 1px solid #4169E1;
+    border-radius: 8px;
 }
 
 #wheel {
@@ -141,6 +190,12 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     width: 150px;
     height: 150px;
     margin: 20px auto;
+    animation: spin 10s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 #social-share {
@@ -159,12 +214,13 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 #social-share .share-button:hover {
     background-color: #888;
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 15px #FFD700;
 }
 
 .hidden {
@@ -173,7 +229,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two attributes per row */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     margin: 20px 0;
     text-align: center;
@@ -181,11 +237,16 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 .attribute-card {
     padding: 10px;
-    border: 2px solid #0073e6;
+    border: 3px solid #0073e6;
     background-color: rgba(60, 60, 60, 0.8);
     border-radius: 8px;
     text-align: center;
     color: #fff;
+    transition: border-color 0.3s;
+}
+
+.attribute-card:hover {
+    border-color: #FFD700;
 }
 
 .attribute-card h3 {
@@ -202,6 +263,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     justify-content: space-between;
     width: 100%;
     padding: 10px;
+    border-bottom: 2px dotted #7B68EE; /* Medium Slate Blue dotted line */
 }
 
 .score-left,
@@ -215,18 +277,23 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Airdrop & Rewards Sections */
 .airdrop-section, .rewards-section {
-    border: 2px solid #fff; /* White border for sections */
-    border-radius: 10px; /* Rounded corners for aesthetic */
+    border: 2px solid #fff;
+    border-radius: 10px;
     padding: 15px;
     margin: 20px auto;
     max-width: 90%;
-    background-color: rgba(0, 0, 0, 0.7); /* Slightly opaque black background */
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: box-shadow 0.3s;
+}
+
+.airdrop-section:hover, .rewards-section:hover {
+    box-shadow: 0 0 20px #00FF00; /* Green glow on hover */
 }
 
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
     header {
-        font-size: 18px; /* Reduced font size for mobile */
+        font-size: 18px;
         padding: 15px;
     }
 
