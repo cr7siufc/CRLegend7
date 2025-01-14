@@ -10,7 +10,7 @@ body {
     animation: bgPulse 60s infinite alternate;
 }
 
-/* New: Falling Soccer Balls Background Animation */
+/* New: Improved Falling Soccer Balls Animation */
 body::after {
     content: '';
     position: fixed;
@@ -18,16 +18,9 @@ body::after {
     left: 0;
     right: 0;
     bottom: 0;
-    pointer-events: none;  /* Makes sure clicks go through this layer */
-    z-index: -1;  /* Behind everything else */
-    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05), transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05), transparent 50%);
-    animation: moveBackground 20s linear infinite;
-}
-
-@keyframes moveBackground {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-100px, 100px); }
+    pointer-events: none;
+    z-index: -1;
+    animation: none; /* Removing the previous background movement */
 }
 
 body::before {
@@ -39,18 +32,24 @@ body::before {
     bottom: 0;
     pointer-events: none;
     z-index: -1;
-    background-image: repeating-radial-gradient(circle at 0 0,
-        transparent 0,
-        transparent 15px,
-        rgba(255, 255, 255, 0.2) 15px,  /* Soccer ball color */
-        rgba(255, 255, 255, 0.2) 16px);  /* Adjust this size for more realistic balls */
-    animation: soccerFall 3s linear infinite;
-    opacity: 0.5;  /* Adjust visibility */
+    background: 
+        repeating-radial-gradient(circle at 0% 0%, 
+            transparent 0, 
+            transparent 20px, 
+            rgba(255, 255, 255, 0.3) 20px, 
+            rgba(255, 255, 255, 0.3) 22px),
+        repeating-radial-gradient(circle at 100% 100%, 
+            transparent 0, 
+            transparent 20px, 
+            rgba(255, 255, 255, 0.3) 20px, 
+            rgba(255, 255, 255, 0.3) 22px);
+    animation: soccerBallsFall 10s linear infinite;
+    opacity: 0.7;
 }
 
-@keyframes soccerFall {
+@keyframes soccerBallsFall {
     0% {
-        transform: translateY(-100px);
+        transform: translateY(-10%);
         opacity: 0;
     }
     10% {
@@ -60,7 +59,7 @@ body::before {
         opacity: 1;
     }
     100% {
-        transform: translateY(100vh);
+        transform: translateY(110%);
         opacity: 0;
     }
 }
