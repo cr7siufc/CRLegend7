@@ -10,6 +10,49 @@ body {
     animation: bgPulse 60s infinite alternate;
 }
 
+/* New: Falling Footballs Background Animation */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;  /* Makes sure clicks go through this layer */
+    z-index: -1;  /* Behind everything else */
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05), transparent 50%);
+    animation: moveBackground 20s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100px, 100px); }
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -1;
+    background-image: repeating-radial-gradient(circle at 0 0, 
+        transparent 0, 
+        transparent 15px, 
+        rgba(255, 255, 255, 0.1) 15px, 
+        rgba(255, 255, 255, 0.1) 16px);  /* This simulates falling footballs */
+    animation: footballFall 3s linear infinite;
+    opacity: 0.5;  /* Adjust visibility */
+}
+
+@keyframes footballFall {
+    0% { transform: translateY(-100px); }
+    100% { transform: translateY(100vh); }
+}
+
 @keyframes bgPulse {
     0% { background-position: 0% 50%; }
     100% { background-position: 100% 50%; }
