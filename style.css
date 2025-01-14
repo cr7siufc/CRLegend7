@@ -10,7 +10,7 @@ body {
     animation: bgPulse 60s infinite alternate;
 }
 
-/* New: Falling Footballs Background Animation */
+/* New: Falling Soccer Balls Background Animation */
 body::after {
     content: '';
     position: fixed;
@@ -39,18 +39,30 @@ body::before {
     bottom: 0;
     pointer-events: none;
     z-index: -1;
-    background-image: repeating-radial-gradient(circle at 0 0, 
-        transparent 0, 
-        transparent 15px, 
-        rgba(255, 255, 255, 0.1) 15px, 
-        rgba(255, 255, 255, 0.1) 16px);  /* This simulates falling footballs */
-    animation: footballFall 3s linear infinite;
+    background-image: repeating-radial-gradient(circle at 0 0,
+        transparent 0,
+        transparent 15px,
+        rgba(255, 255, 255, 0.2) 15px,  /* Soccer ball color */
+        rgba(255, 255, 255, 0.2) 16px);  /* Adjust this size for more realistic balls */
+    animation: soccerFall 3s linear infinite;
     opacity: 0.5;  /* Adjust visibility */
 }
 
-@keyframes footballFall {
-    0% { transform: translateY(-100px); }
-    100% { transform: translateY(100vh); }
+@keyframes soccerFall {
+    0% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
 }
 
 @keyframes bgPulse {
