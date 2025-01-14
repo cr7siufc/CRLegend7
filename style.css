@@ -1,6 +1,6 @@
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background: url("images/cr7_poster12.jpg") no-repeat center center fixed;
     background-size: cover;
     margin: 0;
@@ -15,18 +15,19 @@ body {
     100% { background-position: 100% 50%; }
 }
 
+/* Header Enhancements */
 header {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.8);
     font-size: 18px;
-    padding: 5px;
-    border-bottom: 3px solid #FFD700; /* Gold border for header */
-    animation: glow 3s ease-in-out infinite alternate;
+    padding: 10px;
+    border-bottom: 4px solid #FF00FF; /* Vibrant purple border */
+    animation: headerGlow 3s ease-in-out infinite alternate;
 }
 
-@keyframes glow {
-    from { border-color: #FFD700; }
-    to { border-color: #FFA500; }
+@keyframes headerGlow {
+    from { border-color: #FF00FF; }
+    to { border-color: #9932CC; } /* Dark orchid */
 }
 
 #cr7siu-note {
@@ -35,15 +36,15 @@ header {
     margin-top: 5px;
     padding: 0 20px;
     font-weight: normal;
-    border-left: 2px dashed #00FF00; /* Green dashed border */
+    border-left: 3px dashed #00FF00; /* Green dashed border */
 }
 
-/* Blank Footer with Animated Border */
+/* Footer with Colorful Animation */
 footer {
     background-color: black;
-    border-top: 2px solid transparent;
+    border-top: 4px solid transparent;
     width: 100%;
-    height: 10px;
+    height: 20px;
     text-align: center;
     color: #fff;
     padding: 10px;
@@ -51,8 +52,8 @@ footer {
 }
 
 @keyframes neonBorder {
-    0% { border-color: #00FF00; }
-    50% { border-color: #FF00FF; }
+    0% { border-color: #00FF00; } /* Green */
+    50% { border-color: #FF00FF; } /* Purple */
     100% { border-color: #00FF00; }
 }
 
@@ -63,13 +64,14 @@ footer {
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
-    border: 4px solid #4B0082; /* Indigo border */
-    border-radius: 10px;
-    transition: transform 0.3s;
+    border: 5px solid #FFD700; /* Gold border */
+    border-radius: 50%;
+    animation: rotate 10s linear infinite;
 }
 
-#cr7-logo:hover {
-    transform: scale(1.05);
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 nav {
@@ -98,18 +100,26 @@ nav li {
 nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
     background-color: #444;
     color: #fff;
-    border: none;
+    border: 2px solid #FFA500; /* Vibrant orange border */
     padding: 12px 16px;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
     width: 100%;
     max-width: 150px;
     transition: all 0.3s ease;
+    animation: buttonPulse 2s infinite;
+}
+
+@keyframes buttonPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
     background-color: #888;
+    border-color: #FF00FF; /* Purple border on hover */
     box-shadow: 0 0 10px #FFD700; /* Gold glow on hover */
 }
 
@@ -130,20 +140,14 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     border: 4px solid #FF1493; /* Pink border */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
     cursor: pointer;
-    transition: all 0.3s;
-    animation: rotate 6s linear infinite;
+    animation: bounce 1s infinite;
 }
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
-#tap-to-earn:hover {
-    transform: scale(1.1);
-}
-
-/* Increased spacing below Tap-to-Earn */
 #tap-to-earn-container {
     padding-bottom: 300px;
 }
@@ -156,32 +160,40 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-shadow: 2px 2px 4px #000000; /* Text shadow for better readability */
 }
 
+/* Input fields */
 #referral-earning input, #username-setup input {
     width: 90%;
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
-    border: 1px solid #fff;
+    border: 2px solid #4169E1; /* Royal Blue border */
     background-color: #333;
     transition: border-color 0.3s;
 }
 
 #referral-earning input:focus, #username-setup input:focus {
-    border-color: #4169E1; /* Royal Blue border on focus */
+    border-color: #00FF00; /* Green border on focus */
 }
 
+/* Tasks, Referral, and Social Share */
 #tasks-container, .task, .referral-card, #social-share {
     max-width: 90%;
     margin: 20px auto;
     text-align: center;
+    border: 3px solid #0073e6; /* Blue border */
+    border-radius: 15px;
+    padding: 10px;
 }
 
 .task {
     justify-content: center;
     align-items: center;
     margin-bottom: 15px;
-    border: 1px solid #4169E1;
-    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.task:hover {
+    transform: scale(1.02);
 }
 
 #wheel {
@@ -213,6 +225,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     padding: 10px 16px;
     border-radius: 5px;
     cursor: pointer;
+    border: 2px solid #FFA500; /* Vibrant orange border */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
     transition: all 0.3s ease;
 }
@@ -220,13 +233,14 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 #social-share .share-button:hover {
     background-color: #888;
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 0 15px #FFD700;
+    box-shadow: 0 0 15px #FFD700; /* Gold glow on hover */
 }
 
 .hidden {
     display: none;
 }
 
+/* Attributes */
 #attributes-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -237,16 +251,17 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 .attribute-card {
     padding: 10px;
-    border: 3px solid #0073e6;
+    border: 3px solid #0073e6; /* Blue border */
     background-color: rgba(60, 60, 60, 0.8);
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
     color: #fff;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
 }
 
 .attribute-card:hover {
-    border-color: #FFD700;
+    border-color: #FFD700; /* Gold border on hover */
+    transform: scale(1.02);
 }
 
 .attribute-card h3 {
@@ -257,7 +272,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     font-size: 12px;
 }
 
-/* Align scores to the right side */
+/* Score Container */
 .score-container {
     display: flex;
     justify-content: space-between;
@@ -277,17 +292,18 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Airdrop & Rewards Sections */
 .airdrop-section, .rewards-section {
-    border: 2px solid #fff;
-    border-radius: 10px;
+    border: 3px solid #fff;
+    border-radius: 15px;
     padding: 15px;
     margin: 20px auto;
     max-width: 90%;
     background-color: rgba(0, 0, 0, 0.7);
-    transition: box-shadow 0.3s;
+    transition: all 0.3s;
 }
 
 .airdrop-section:hover, .rewards-section:hover {
     box-shadow: 0 0 20px #00FF00; /* Green glow on hover */
+    transform: translateY(-5px);
 }
 
 /* Mobile Responsive Design */
@@ -302,7 +318,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
         height: 120px;
     }
 
-    /* Navigation aligned side by side */
     nav ul {
         flex-direction: row;
         justify-content: center;
@@ -329,7 +344,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
         height: 120px;
     }
 
-    /* Two attributes per row on mobile */
     #attributes-container {
         grid-template-columns: repeat(2, 1fr);
     }
