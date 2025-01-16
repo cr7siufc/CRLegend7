@@ -1,2 +1,0 @@
-root: C:\Users\argha\Desktop\CR7SIU\CRLegend7\CR7SIU\my-ethers-project\nvm
-path: C:\Program Files (x86)\nodejs
