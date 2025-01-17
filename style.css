@@ -1,322 +1,279 @@
 body {
     font-family: Arial, sans-serif;
-    background: url("images/cr7_poster12.jpg") no-repeat center center fixed;
-    background-size: cover;
     margin: 0;
     padding: 0;
-    color: #f2f2f2;
+    background-color: #f4f4f4;
+}
+
+/* General Styling */
+header, main, footer {
     text-align: center;
-    animation: bgPulse 60s infinite alternate;
-}
-
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: -1;
-    background: 
-        radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.1) 0, transparent 20px),
-        radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.1) 0, transparent 20px);
-    animation: starsFall 20s linear infinite;
-    opacity: 0.5;
-}
-
-@keyframes starsFall {
-    0%   { transform: translateY(-20%); opacity: 0; }
-    10%, 90% { opacity: 1; }
-    100% { transform: translateY(120%); opacity: 0; }
-}
-
-@keyframes bgPulse {
-    0%   { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
 }
 
 header {
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.8);
-    font-size: 18px;
-    padding: 10px;
-    border-bottom: 4px solid #FF00FF;
-    animation: headerGlow 3s ease-in-out infinite alternate;
+    padding: 20px;
+    background-color: #1e90ff;
+    color: white;
 }
 
-@keyframes headerGlow {
-    from { border-color: #FF00FF; }
-    to   { border-color: #9932CC; }
+main {
+    padding: 20px;
 }
 
-#cr7siu-note {
-    font-size: 12px;
-    font-weight: normal;
-    margin-top: 5px;
-    padding: 0 20px;
-    border-left: 3px dashed #00FF00;
-}
-
-footer {
-    background-color: #000;
-    border-top: 4px solid transparent;
-    width: 100%;
-    height: auto;
-    text-align: center;
-    color: #fff;
-    padding: 10px;
-    animation: neonBorder 5s infinite linear;
-}
-
-@keyframes neonBorder {
-    0%, 100% { border-color: #00FF00; }
-    50%      { border-color: #FF00FF; }
-}
-
+/* Logo Styling */
 #cr7-logo {
-    width: 150px;
-    height: 150px;
-    background: url("images/cr7_poster6.jpg") center center no-repeat;
+    background-image: url('cr7_logo.png');
+    height: 50px;
+    width: 50px;
     background-size: cover;
     margin: 20px auto;
-    border: 5px solid #FFD700;
-    border-radius: 50%;
-    animation: rotate 10s linear infinite;
 }
 
-@keyframes rotate {
-    from { transform: rotate(0); }
-    to   { transform: rotate(360deg); }
+/* Score and Note Styling */
+#cr7siu-note {
+    margin: 20px 0;
+    color: #333;
+    font-size: 16px;
 }
 
-nav {
-    background-color: rgba(0, 0, 0, 0.9);
+.score-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    border-bottom: 3px solid #FF4500;
+    justify-content: space-between;
+    padding: 0 15px;
+    font-size: 16px;
+    margin: 20px 0;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.score-left, .score-right {
+    width: 45%;
+}
+
+.score-left p, .score-right p {
+    margin: 10px 0;
+}
+
+/* Navigation Styling */
+nav {
+    background-color: #f1f1f1;
     padding: 10px 0;
 }
 
 nav ul {
-    list-style: none;
     display: flex;
-    margin: 0;
+    justify-content: center;
+    list-style: none;
     padding: 0;
-    flex-wrap: wrap;
-    gap: 5px;
+    margin: 0;
 }
 
 nav li {
-    margin: 0;
+    margin: 0 10px;
 }
 
-nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
-    background-color: #444;
-    color: #fff;
-    border: 2px solid #FFA500;
-    padding: 10px 14px;
-    border-radius: 10px;
+button {
+    background-color: #2e87f1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
     cursor: pointer;
-    font-size: 14px;
-    width: 100%;
-    max-width: 150px;
-    transition: all 0.3s ease;
-    animation: buttonPulse 2s infinite;
-}
-
-@keyframes buttonPulse {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.05); }
-}
-
-nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
-    background-color: #888;
-    border-color: #FF00FF;
-    box-shadow: 0 0 10px #FFD700;
-}
-
-main {
-    text-align: center;
-    padding: 20px 10px;
-}
-
-#tap-to-earn {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: url("images/cr7_poster6.jpg") center center no-repeat;
-    background-size: cover;
-    margin: 20px auto;
-    display: block;
-    border: 4px solid #FF1493;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8);
-    cursor: pointer;
-    animation: bounce 1s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-10px); }
-}
-
-#tap-to-earn-container {
-    padding-bottom: 150px;
-}
-
-#tap-to-earn-text, h2 {
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px #000;
-}
-
-input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px auto;
+    font-size: 16px;
     border-radius: 5px;
-    border: 2px solid #4169E1;
-    background-color: #333;
-    transition: border-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
-input:focus {
-    border-color: #00FF00;
+button:hover {
+    background-color: #5cacee;
 }
 
-.task, #social-share {
-    max-width: 90%;
-    margin: 20px auto;
-    text-align: center;
-    border: 3px solid #0073e6;
-    border-radius: 15px;
-    padding: 10px;
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
 }
 
-.task {
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-    transition: all 0.3s;
-}
-
-.task:hover {
-    transform: scale(1.02);
-}
-
-#wheelCanvas {
-    width: 200px;
-    height: 200px;
-    margin: 20px auto;
-    display: block;
-    border-radius: 50%;
-    border: 5px solid #fff;
-}
-
-#social-share {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    text-align: center;
-}
-
+/* Hide Classes */
 .hidden {
     display: none;
 }
 
+/* Headings */
+h1, h2, h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Tap to Earn */
+.tap-to-earn {
+    margin-top: 20px;
+}
+
+#tap-to-earn {
+    background-image: url('cr7_poster6.jpg');
+    background-size: cover;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 auto 10px;
+    border: 5px solid #ff1493;
+}
+
+#tap-to-earn:hover {
+    opacity: 0.8;
+}
+
+.tap-to-earn div {
+    font-size: 18px;
+    color: #fff;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+}
+
+/* Input and Label Styling */
+input, label {
+    margin: 5px 0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+label {
+    display: block;
+}
+
+/* Special Sections */
+#airdrop, #rewards, #improvements {
+    margin-top: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+#ads-section, #spin-the-wheel, #daily-checkin {
+    margin: 20px 0;
+}
+
+#spin-the-wheel {
+    position: relative;
+}
+
+#wheelCanvas {
+    background-image: url('images/cr7_poster.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    margin: 0 auto 20px;
+}
+
+#spin-button {
+    background-color: #ff9900;
+}
+
+#spin-button:hover {
+    background-color: #e68900;
+}
+
+.social-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.social-links li {
+    margin: 5px 0;
+}
+
+.social-links a {
+    color: #2e87f1;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    text-decoration: underline;
+}
+
+#social-share {
+    margin-top: 15px;
+}
+
+#social-share button {
+    margin: 5px;
+    background-color: #3b5998;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#social-share button:hover {
+    background-color: #8b9dc3;
+}
+
+/* Improvements Page */
 #attributes-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
     margin: 20px 0;
-    text-align: center;
 }
 
 .attribute-card {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
     padding: 10px;
-    border: 3px solid #0073e6;
-    background-color: rgba(60, 60, 60, 0.8);
-    border-radius: 10px;
-    color: #fff;
-    transition: all 0.3s;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .attribute-card:hover {
-    border-color: #FFD700;
-    transform: scale(1.02);
-}
-
-.attribute-card h3 {
-    font-size: 14px;
-}
-
-.attribute-card p {
-    font-size: 12px;
-}
-
-.score-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-around;
-    width: 100%;
-    padding: 10px;
-    border-bottom: 2px dotted #7B68EE;
-}
-
-.score-left, .score-right {
-    width: calc(50% - 10px);
-    margin: 5px 0;
-}
-
-.airdrop-section, .rewards-section {
-    border: 3px solid #fff;
-    border-radius: 15px;
-    padding: 15px;
-    margin: 20px auto;
-    max-width: 90%;
-    background-color: rgba(0, 0, 0, 0.7);
-    transition: all 0.3s;
-}
-
-.airdrop-section:hover, .rewards-section:hover {
-    box-shadow: 0 0 20px #00FF00;
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* Mobile Specific Adjustments */
 @media (max-width: 768px) {
-    header {
-        font-size: 16px;
-        padding: 5px;
-    }
-
-    #cr7siu-note {
-        font-size: 10px;
-        padding: 0 10px;
-    }
-
-    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
-        font-size: 12px;
-        padding: 8px 12px;
-    }
-
-    #tap-to-earn-text, h2 {
-        font-size: 16px;
+    .score-container {
+        flex-direction: column;
+        align-items: center;
     }
 
     .score-left, .score-right {
         width: 100%;
+        text-align: center;
     }
 
-    footer button {
+    button {
         width: 100%;
-        margin: 5px 0;
     }
+
+    .social-links ul {
+        padding-left: 20px;
+    }
+
+    .tap-to-earn div {
+        font-size: 16px;
+    }
+
+    #attributes-container {
+        grid-template-columns: repeat(2, 1fr); /* Ensure two attributes per row */
+    }
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    margin-top: 20px;
 }
