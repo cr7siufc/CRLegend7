@@ -9,24 +9,46 @@ body {
     animation: bgPulse 60s infinite alternate;
 }
 
+/* New: Improved Falling Soccer Balls Animation */
 body::before {
     content: '';
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
     z-index: -1;
     background: 
-        repeating-radial-gradient(circle at 0% 0%, transparent 0, transparent 20px, rgba(255, 255, 255, 0.3) 20px, rgba(255, 255, 255, 0.3) 22px),
-        repeating-radial-gradient(circle at 100% 100%, transparent 0, transparent 20px, rgba(255, 255, 255, 0.3) 20px, rgba(255, 255, 255, 0.3) 22px);
+        repeating-radial-gradient(circle at 0% 0%, 
+            transparent 0, 
+            transparent 20px, 
+            rgba(255, 255, 255, 0.3) 20px, 
+            rgba(255, 255, 255, 0.3) 22px),
+        repeating-radial-gradient(circle at 100% 100%, 
+            transparent 0, 
+            transparent 20px, 
+            rgba(255, 255, 255, 0.3) 20px, 
+            rgba(255, 255, 255, 0.3) 22px);
     animation: soccerBallsFall 10s linear infinite;
     opacity: 0.7;
 }
 
 @keyframes soccerBallsFall {
-    0% { transform: translateY(-10%); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(110%); opacity: 0; }
+    0% {
+        transform: translateY(-10%);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110%);
+        opacity: 0;
+    }
 }
 
 @keyframes bgPulse {
@@ -34,9 +56,10 @@ body::before {
     100% { background-position: 100% 50%; }
 }
 
+/* Header Enhancements */
 header {
     color: #fff;
-    background: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.8);
     font-size: 18px;
     padding: 10px;
     border-bottom: 4px solid #FF00FF;
@@ -53,13 +76,17 @@ header {
     color: #fff;
     margin-top: 5px;
     padding: 0 20px;
+    font-weight: normal;
     border-left: 3px dashed #00FF00;
 }
 
+/* Footer with Colorful Animation */
 footer {
-    background: black;
+    background-color: black;
     border-top: 4px solid transparent;
     width: 100%;
+    height: auto;
+    text-align: center;
     color: #fff;
     padding: 10px;
     animation: neonBorder 5s infinite linear;
@@ -71,6 +98,7 @@ footer {
     100% { border-color: #00FF00; }
 }
 
+/* Logo and Navigation */
 #cr7-logo {
     width: 150px;
     height: 150px;
@@ -88,7 +116,7 @@ footer {
 }
 
 nav {
-    background: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,8 +139,8 @@ nav li {
     margin: 0;
 }
 
-nav button, .task button, .attribute-card button, #spin-button {
-    background: #444;
+nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
+    background-color: #444;
     color: #fff;
     border: 2px solid #FFA500;
     padding: 10px 14px;
@@ -131,23 +159,26 @@ nav button, .task button, .attribute-card button, #spin-button {
     100% { transform: scale(1); }
 }
 
-nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover {
-    background: #888;
+nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
+    background-color: #888;
     border-color: #FF00FF;
     box-shadow: 0 0 10px #FFD700;
 }
 
+/* Main Content */
 .main {
+    text-align: center;
     padding: 20px 10px;
 }
 
 #tap-to-earn {
-    width: 150px;
-    height: 150px;
+    width: 150px; /* Increased size */
+    height: 150px; /* Increased size */
     border-radius: 50%;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
     margin: 20px auto;
+    display: block;
     border: 4px solid #FF1493;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
     cursor: pointer;
@@ -163,7 +194,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     padding-bottom: 150px;
 }
 
-#tap-to-earn-text, #improvements h2, #referral-earning h2 {
+#tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
     color: #fff;
     font-size: 18px;
     font-weight: bold;
@@ -171,13 +202,14 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-shadow: 2px 2px 4px #000000;
 }
 
+/* Input fields */
 #referral-earning input, #username-setup input {
     width: 90%;
     padding: 10px;
     margin: 10px auto;
     border-radius: 5px;
     border: 2px solid #4169E1;
-    background: #333;
+    background-color: #333;
     transition: border-color 0.3s;
 }
 
@@ -185,49 +217,88 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     border-color: #00FF00;
 }
 
-.airdrop-section, .rewards-section {
-    border: 3px solid #fff;
-    border-radius: 15px;
-    padding: 15px;
-    margin: 20px auto;
+/* Tasks, Referral, and Social Share */
+#tasks-container, .task, .referral-card, #social-share {
     max-width: 90%;
-    background: rgba(0, 0, 0, 0.7);
+    margin: 20px auto;
+    text-align: center;
+    border: 3px solid #0073e6;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.task {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
     transition: all 0.3s;
 }
 
-.airdrop-section:hover, .rewards-section:hover {
-    box-shadow: 0 0 20px #00FF00;
-    transform: translateY(-5px);
+.task:hover {
+    transform: scale(1.02);
 }
 
 #wheelCanvas {
     width: 200px;
     height: 200px;
     margin: 20px auto;
+    display: block;
     border-radius: 50%;
     border: 5px solid #fff;
+}
+
+#social-share {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    text-align: center;
+}
+
+#social-share .share-button {
+    background-color: #444;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid #FFA500;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+#social-share .share-button:hover {
+    background-color: #888;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 15px #FFD700;
 }
 
 .hidden {
     display: none;
 }
 
+/* Attributes */
 #attributes-container {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 15px;
     margin: 20px 0;
+    text-align: center;
 }
 
 @media (min-width: 768px) {
-    #attributes-container { grid-template-columns: repeat(2, 1fr); }
+    #attributes-container {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for wider screens */
+    }
 }
 
 .attribute-card {
     padding: 10px;
     border: 3px solid #0073e6;
-    background: rgba(60, 60, 60, 0.8);
+    background-color: rgba(60, 60, 60, 0.8);
     border-radius: 10px;
+    text-align: center;
     color: #fff;
     transition: all 0.3s;
 }
@@ -237,6 +308,15 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     transform: scale(1.02);
 }
 
+.attribute-card h3 {
+    font-size: 14px;
+}
+
+.attribute-card p {
+    font-size: 12px;
+}
+
+/* Score Container */
 .score-container {
     display: flex;
     flex-direction: column;
@@ -246,11 +326,70 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     border-bottom: 2px dotted #7B68EE;
 }
 
+.score-left,
+.score-right {
+    text-align: center;
+    width: 100%;
+    margin: 5px 0;
+}
+
+/* Airdrop & Rewards Sections */
+.airdrop-section, .rewards-section {
+    border: 3px solid #fff;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 90%;
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: all 0.3s;
+}
+
+.airdrop-section:hover, .rewards-section:hover {
+    box-shadow: 0 0 20px #00FF00;
+    transform: translateY(-5px);
+}
+
+/* Footer with Full-width Options */
+footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+footer button {
+    width: 48%;
+    margin: 5px 0;
+}
+
+/* Mobile Specific Adjustments */
 @media (max-width: 768px) {
-    header { font-size: 16px; padding: 5px; }
-    #cr7siu-note { font-size: 10px; padding: 0 10px; }
-    nav button, .task button, .attribute-card button, #spin-button { font-size: 12px; }
-    #tap-to-earn-text, #improvements h2, #referral-earning h2 { font-size: 16px; }
-    #attributes-container { grid-template-columns: 1fr; }
-    .score-container { flex-direction: column; }
+    header {
+        font-size: 16px;
+        padding: 5px;
+    }
+
+    #cr7siu-note {
+        font-size: 10px;
+        padding: 0 10px;
+    }
+
+    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
+        font-size: 12px;
+    }
+
+    #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
+        font-size: 16px;
+    }
+
+    #attributes-container {
+        grid-template-columns: 1fr;
+    }
+
+    .score-container {
+        flex-direction: column;
+    }
+
+    footer button {
+        width: 100%;
+    }
 }
