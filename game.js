@@ -287,7 +287,7 @@ function drawWheel() {
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
 
-    const colors = ['#FF0000', '#FFFF00', '#00FF00', '#0000FF', '#FF00FF', '#800080'];
+    const colors = ['rgba(255, 0, 0, 0.7)', 'rgba(255, 255, 0, 0.7)', 'rgba(0, 255, 0, 0.7)', 'rgba(0, 0, 255, 0.7)', 'rgba(255, 0, 255, 0.7)', 'rgba(128, 0, 128, 0.7)'];
     const segments = 6; // Number of segments for the wheel
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -305,7 +305,7 @@ function drawWheel() {
     // Draw a central circle for the wheel's center
     ctx.beginPath();
     ctx.arc(canvas.width / 2, canvas.height / 2, 20, 0, Math.PI * 2);
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // Semi-transparent black for visibility over the image
     ctx.fill();
 }
 
@@ -334,7 +334,7 @@ function animateWheel() {
 
 document.addEventListener('DOMContentLoaded', () => {
     startTimer('spin-timer');
-    drawWheel(); // Draw the wheel on page load
+    drawWheel(); // Draw the wheel over the background image on page load
     updateSpinButton();
 });
 
