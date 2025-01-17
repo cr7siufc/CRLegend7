@@ -7,7 +7,8 @@ body {
     color: #f2f2f2;
     text-align: center;
     animation: bgPulse 60s infinite alternate;
-    position: relative; /* Added for canvas positioning */
+    position: relative;
+    overflow: hidden; /* Prevents stars from going outside the viewport */
 }
 
 /* New: Improved Falling Soccer Balls Animation */
@@ -405,4 +406,73 @@ footer button {
     z-index: 1;
     pointer-events: none;
     background: transparent;
+}
+
+/* Falling Stars Animation */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: #fff;
+    animation: fall linear infinite;
+    z-index: 0;  /* Ensure stars are behind other content */
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Generate stars */
+body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+body::after {
+    animation: createStars 1s infinite;
+}
+
+@keyframes createStars {
+    0% {
+        content: '';
+    }
+    100% {
+        content: '';
+        box-shadow: 
+            0 0 0 2px #fff,
+            /* Add more stars here if you want more density */
+            50px 50px 0 2px #fff,
+            100px 100px 0 2px #fff;
+    }
+}
+
+/* Adjust star animation delay */
+.star:nth-child(even) {
+    animation-delay: 1s;
+}
+
+.star:nth-child(odd) {
+    animation-delay: 2s;
+}
+
+.star:nth-child(3n) {
+    animation-delay: 3s;
 }

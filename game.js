@@ -40,6 +40,7 @@ function loadSession() {
     displayReferrals(); // Display the referral users
     updateSpinButton(); // Moved this here to enable buttons if conditions are met
     showPage('home');
+    createStars(); // Start star animation
 }
 
 function showPage(page) {
@@ -371,8 +372,24 @@ function drawMatrix() {
 // Start the Matrix rain animation
 setInterval(drawMatrix, 33);
 
+// Falling Stars Animation
+function createStars() {
+    const starCount = 20; // Number of stars
+    const body = document.body;
+    
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}vw`;
+        star.style.top = `${-Math.random() * 10}vh`; // Start off-screen
+        star.style.animationDuration = `${Math.random() * 5 + 5}s`; // Duration between 5 to 10 seconds
+        body.appendChild(star);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     startTimer('spin-timer');
     drawWheel(); // Draw the wheel over the background image on page load
     updateSpinButton();
+    createStars(); // Initialize star animation
 });
