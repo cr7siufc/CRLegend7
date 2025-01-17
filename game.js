@@ -38,7 +38,7 @@ function loadSession() {
     displayImprovements();
     displayTasks();
     displayReferrals(); // Display the referral users
-    updateSpinButton();
+    updateSpinButton(); // Moved this here to enable buttons if conditions are met
     updateRewardsLink();
     showPage('home');
 }
@@ -269,13 +269,17 @@ function updatePointsDisplay() {
 }
 
 function updateSpinButton() {
-    const now = getISTTime();
+    const now = getISTTime().getTime();
     const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
-    if (now - lastClaim >= 86400000) {
-        enableRewardButtons(); // Enable buttons if 24 hours have passed since last claim
+    const buttons = [document.getElementById('ad-claim-button'), document.getElementById('check-in-button'), document.getElementById('spin-button')];
+
+    if (now - lastClaim >= 86400000) { // 24 hours in milliseconds
+        buttons.forEach(button => button.disabled = false);
     } else {
-        disableRewardButtons();
+        buttons.forEach(button => button.disabled = true);
     }
+    // Start or update the timer
+    startTimer('spin-timer');
 }
 
 // New function for drawing the wheel

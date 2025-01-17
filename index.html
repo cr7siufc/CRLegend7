@@ -84,17 +84,18 @@
             <div id="ads-section">
                 <h2>Earn from Ads</h2>
                 <a href="https://youtu.be/byZi0lcy-jw?si=mgizMFfa7SjYugq7" target="_blank" rel="noopener">Click to Watch Ad</a>
-                <button onclick="completeAdTask()" id="ad-claim-button" disabled>Claim Ad Reward</button>
+                <button onclick="completeAdTask()" id="ad-claim-button">Claim Ad Reward</button>
             </div>
             <div id="daily-checkin">
                 <h2>Daily Check-In</h2>
-                <button onclick="completeCheckInTask()" id="check-in-button" disabled>Claim Daily Check-In Reward</button>
+                <button onclick="completeCheckInTask()" id="check-in-button">Claim Daily Check-In Reward</button>
             </div>
             <div id="spin-the-wheel">
                 <h2>Spin the Wheel</h2>
-                <button onclick="spinWheel()" id="spin-button" disabled>Spin to Win!</button>
+                <canvas id="wheelCanvas" width="200" height="200" style="position: relative;">
+                    <button onclick="spinWheel()" id="spin-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">Spin to Win!</button>
+                </canvas>
                 <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
-                <canvas id="wheelCanvas" width="200" height="200"></canvas>
                 <p id="spin-claim-time">Next claim in <span id="spin-timer">24:00:00</span></p>
             </div>
             <div id="validate-all-offers">
