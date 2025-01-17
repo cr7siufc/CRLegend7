@@ -177,41 +177,122 @@ function upgradeSkill(attribute, index, cost) {
     }
 }
 
-// ... (Other functions like getISTTime, startTimer, etc., remain as they were)
-
-// Referrals and reward system simplification
-function checkForReferral() {
-    // Implement referral link generation and checking here
-    // Example:
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('ref')) {
-        const referrer = urlParams.get('ref');
-        if (!referralUsers.includes(referrer)) {
-            referralUsers.push(referrer);
-            localStorage.setItem("referralUsers", JSON.stringify(referralUsers));
-            currentPoints += 100; // Example bonus for referred user
-            updatePointsAndLevel();
-            alert("Welcome! You've earned 100 points for using a referral link!");
-        }
+// Function to generate referral link
+function generateReferralLink() {
+    if (username) {
+        let link = `${window.location.origin}/?ref=${username}`;
+        document.getElementById('referral-link-field').value = link;
+        alert("Referral link generated. Share this to earn points!");
+    } else {
+        alert("Please set a username first!");
     }
 }
 
-function displayReferrals() {
-    const referralCount = document.getElementById("referral-count");
-    referralCount.textContent = referralUsers.length;
+// Check if user joined from a referral link
+function checkForReferral() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref && ref !== username && !referralUsers.includes(ref)) {
+        referralUsers.push(ref);
+        localStorage.setItem("referralUsers", JSON.stringify(referralUsers));
+        currentPoints += 5000; // Reward for referring
+        updatePointsAndLevel();
+        alert("Congratulations! You've earned 5000 CR7SIU Points for a successful referral!");
+    }
 }
 
-// Mobile optimization - Consider using touch events for buttons if needed
+function shareLink(platform) {
+    const link = document.getElementById('referral-link-field').value;
+    if (link) {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Join CR7SIU!',
+                text: 'Check out this cool app for Ronaldo fans!',
+                url: link
+            }).then(() => console.log('Successful share'))
+              .catch((error) => console.log('Error sharing', error));
+        } else {
+            alert(`Sharing to ${platform} isn't supported. Copy this link manually: ${link}`);
+        }
+    } else {
+        alert("Please generate a referral link first!");
+    }
+}
+
+function toggleShareOptions() {
+    var shareOptions = document.getElementById('social-share');
+    shareOptions.classList.toggle('hidden');
+}
+
+function displayReferrals() {
+    const referralList = document.getElementById("referrals-list");
+    referralList.innerHTML = referralUsers.map(user => `<div>${user}</div>`).join('');
+    document.getElementById("referral-count").textContent = referralUsers.length;
+}
+
+// Time functions for rewards
+function getISTTime() {
+    let now = new Date();
+    now.setHours(now.getHours() + 5, now.getMinutes() + 30);
+    return now;
+}
+
+function startTimer(elementId, resetTime = 86400000) { // 24 hours in milliseconds
+    let now = getISTTime();
+    let reset = new Date(now);
+    reset.setHours(0, 0, 0, 0); // Set to midnight IST
+    if (now > reset) reset.setDate(reset.getDate() + 1); // If past midnight, set for next day
+
+    let timeLeft = reset - now;
+    let el = document.getElementById(elementId);
+    let timer = setInterval(() => {
+        if (timeLeft > 0) {
+            timeLeft -= 1000;
+            let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+            clearInterval(timer);
+            el.textContent = "00:00:00";
+            enableRewardButtons();
+        }
+    }, 1000);
+}
+
+function enableRewardButtons() {
+    document.getElementById('ad-claim-button').disabled = false;
+    document.getElementById('check-in-button').disabled = false;
+    document.getElementById('spin-button').disabled = false;
+}
+
+function disableRewardButtons() {
+    document.getElementById('ad-claim-button').disabled = true;
+    document.getElementById('check-in-button').disabled = true;
+    document.getElementById('spin-button').disabled = true;
+}
+
+function updateSpinButton() {
+    const now = getISTTime().getTime();
+    const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
+    const buttons = [document.getElementById('ad-claim-button'), document.getElementById('check-in-button'), document.getElementById('spin-button')];
+
+    if (now - lastClaim >= 86400000) { // 24 hours in milliseconds
+        buttons.forEach(button => button.disabled = false);
+    } else {
+        buttons.forEach(button => button.disabled = true);
+    }
+    startTimer('spin-timer');
+}
+
+// Mobile optimization
 document.addEventListener('touchstart', function(event) {
     if (event.target.tagName === 'BUTTON') {
         event.target.click();
     }
 });
 
-// Ensure all functions for animations, timers, etc., are optimized for mobile performance
-
 document.addEventListener('DOMContentLoaded', () => {
     startTimer('spin-timer');
     updateSpinButton();
-    // Add any initial setup for animations or other visual elements here
 });

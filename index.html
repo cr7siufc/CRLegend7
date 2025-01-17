@@ -39,7 +39,7 @@
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
         <div id="tap-to-earn-container">
-            <div id="tap-to-earn" onclick="earnPoints()" style="width: 150px; height: 150px;"></div>
+            <div id="tap-to-earn" onclick="earnPoints()"></div>
             <p id="tap-to-earn-text">Tap to Earn</p>
         </div>
     </main>
@@ -57,7 +57,7 @@
             <button onclick="convertToTokens()">Convert CR7SIU Points</button>
             <div id="referral-earning">
                 <h2>Referral Earning</h2>
-                <p>Earn 10,000 CR7SIU Points for each successful referral!</p>
+                <p>Earn 5000 CR7SIU Points for each successful referral!</p>
                 <label for="referral-link">Referral Link:</label>
                 <input type="text" id="referral-link-field" readonly title="Referral link generated" placeholder="Your referral link will appear here" />
                 <button onclick="generateReferralLink()">Generate Referral Link</button>
@@ -92,7 +92,7 @@
             </div>
             <div id="spin-the-wheel">
                 <h2>Spin the Wheel</h2>
-                <canvas id="wheelCanvas" width="200" height="200" style="background-image: url('images/cr7_poster.jpg'); background-size: cover; background-position: center;"></canvas>
+                <canvas id="wheelCanvas" width="200" height="200"></canvas>
                 <button onclick="spinWheel()" id="spin-button">Spin to Win!</button>
                 <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
                 <p id="spin-claim-time">Next claim in <span id="spin-timer">24:00:00</span></p>
@@ -122,9 +122,6 @@
         <button onclick="showPage('airdrop')">Airdrop</button>
         <button onclick="showPage('rewards')">Rewards</button>
     </footer>
-
-    <!-- Removed matrix canvas for stars animation -->
-    <!-- <canvas id="matrix-canvas"></canvas> -->
 
     <script src="game.js"></script>
 </body>

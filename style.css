@@ -350,3 +350,15 @@ input:focus {
         margin: 5px 0;
     }
 }
+/* Add at the end of your existing style.css file or wherever appropriate for your styling organization */
+
+#tap-to-earn {
+    width: 150px;
+    height: 150px;
+}
+
+#wheelCanvas {
+    background-image: url('images/cr7_poster.jpg');
+    background-size: cover;
+    background-position: center;
+}
