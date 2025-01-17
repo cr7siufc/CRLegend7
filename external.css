@@ -42,3 +42,6 @@ label{font-size:16px}
     .tap-to-earn div{font-size:16px}
 }
 #wheelCanvas{background-image:url('images/cr7_poster.jpg');background-size:cover;background-position:center}
+
+/* Add these styles for inline CSS elements */
+#tap-to-earn{width:150px;height:150px}
