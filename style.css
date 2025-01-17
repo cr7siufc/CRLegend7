@@ -1,335 +1,182 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background: black; /* Changed to black for better visibility of stars */
-    margin: 0;
-    padding: 0;
-    color: #f2f2f2;
-    text-align: center;
+let username = localStorage.getItem("username") || '';
+let currentPoints = parseInt(localStorage.getItem("points")) || 0;
+let playerLevel = parseInt(localStorage.getItem("level")) || 1;
+let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
+let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
+let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
+let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
+let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
+
+if (!username) {
+    document.getElementById("username-setup").classList.remove("hidden");
+    document.getElementById("username-input").focus();
+} else {
+    loadSession();
+    checkForReferral(); 
 }
 
-/* New Falling Stars Background */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: -1;
-    background: 
-        radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%),
-        url('data:image/svg+xml,%3Csvg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M25 0L0 50L50 50Z" fill="%23fff" opacity="0.1" /%3E%3C/svg%3E');
-    animation: fallingStars 10s linear infinite;
-    background-size: 20px 20px;
-}
-
-@keyframes fallingStars {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: -100px 100px;
+function setUsername() {
+    const input = document.getElementById("username-input").value.trim();
+    if (input) {
+        localStorage.setItem("username", input);
+        username = input;
+        loadSession();
+    } else {
+        alert("Please enter a valid username.");
     }
 }
 
-/* Header Enhancements */
-header {
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.8);
-    font-size: 18px;
-    padding: 10px;
-    border-bottom: 4px solid #FF00FF;
-    animation: headerGlow 3s ease-in-out infinite alternate;
+function loadSession() {
+    document.getElementById("username-setup").classList.add("hidden");
+    document.getElementById("username-display").textContent = username;
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("tokens-display").textContent = currentTokens;
+    document.getElementById("player-level").textContent = playerLevel;
+    document.getElementById("cr7siu-points").textContent = currentPoints;
+    displayImprovements();
+    displayTasks();
+    displayReferrals();
+    updateSpinButton();
+    showPage('home');
 }
 
-@keyframes headerGlow {
-    from { border-color: #FF00FF; }
-    to { border-color: #9932CC; }
+function showPage(page) {
+    document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
+    document.getElementById(page).classList.remove("hidden");
 }
 
-#cr7siu-note {
-    font-size: 12px;
-    color: #fff;
-    margin-top: 5px;
-    padding: 0 20px;
-    font-weight: normal;
-    border-left: 3px dashed #00FF00;
+function earnPoints() {
+    currentPoints += 5;
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("cr7siu-points").textContent = currentPoints;
+    updateLevel();
 }
 
-/* Logo and Navigation */
-#cr7-logo {
-    width: 150px;
-    height: 150px;
-    background: url("images/cr7_poster6.jpg") center center no-repeat;
-    background-size: cover;
-    margin: 20px auto;
-    border: 5px solid #FFD700;
-    border-radius: 50%;
-    animation: rotate 10s linear infinite;
+function updateLevel() {
+    playerLevel = Math.floor(currentPoints / 100000) + 1;
+    document.getElementById("player-level").textContent = playerLevel;
+    localStorage.setItem("level", playerLevel);
 }
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+// ... (other functions like convertToTokens, displayTasks, etc. remain largely unchanged)
+
+function getISTTime() {
+    let now = new Date();
+    now.setHours(now.getHours() + 5, now.getMinutes() + 30);
+    return now;
 }
 
-nav {
-    background-color: rgba(0, 0, 0, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    border-bottom: 3px solid #FF4500;
-    padding: 10px 0;
+function startTimer(elementId, resetTime = 86400000) {
+    let now = getISTTime();
+    let reset = new Date(now);
+    reset.setHours(0, 0, 0, 0);
+    if (now > reset) reset.setDate(reset.getDate() + 1);
+
+    let timeLeft = reset - now;
+    let el = document.getElementById(elementId);
+    let timer = setInterval(() => {
+        if (timeLeft > 0) {
+            timeLeft -= 1000;
+            el.textContent = `${Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0')}:${Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0')}:${Math.floor((timeLeft % (1000 * 60)) / 1000).toString().padStart(2, '0')}`;
+        } else {
+            clearInterval(timer);
+            el.textContent = "00:00:00";
+            enableRewardButtons();
+        }
+    }, 1000);
 }
 
-nav ul {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    flex-wrap: wrap;
-    gap: 5px;
+function enableRewardButtons() {
+    document.getElementById('ad-claim-button').disabled = false;
+    document.getElementById('check-in-button').disabled = false;
+    document.getElementById('spin-button').disabled = false;
 }
 
-nav li {
-    margin: 0;
+function disableRewardButtons() {
+    document.getElementById('ad-claim-button').disabled = true;
+    document.getElementById('check-in-button').disabled = true;
+    document.getElementById('spin-button').disabled = true;
 }
 
-nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
-    background-color: #444;
-    color: #fff;
-    border: 2px solid #FFA500;
-    padding: 10px 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    width: 100%;
-    max-width: 150px;
-    transition: all 0.3s ease;
-    animation: buttonPulse 2s infinite;
-}
-
-@keyframes buttonPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
-    background-color: #888;
-    border-color: #FF00FF;
-    box-shadow: 0 0 10px #FFD700;
-}
-
-/* Main Content */
-.main {
-    text-align: center;
-    padding: 20px 10px;
-}
-
-#tap-to-earn {
-    width: 150px; /* Increased size */
-    height: 150px; /* Increased size */
-    border-radius: 50%;
-    background: url("images/cr7_poster6.jpg") center center no-repeat;
-    background-size: cover;
-    margin: 20px auto;
-    display: block;
-    border: 4px solid #FF1493;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.8);
-    cursor: pointer;
-    animation: bounce 1s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-#tap-to-earn-container {
-    padding-bottom: 150px;
-}
-
-#tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px #000000;
-}
-
-/* Input fields */
-#referral-earning input, #username-setup input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px auto;
-    border-radius: 5px;
-    border: 2px solid #4169E1;
-    background-color: #333;
-    transition: border-color 0.3s;
-}
-
-#referral-earning input:focus, #username-setup input:focus {
-    border-color: #00FF00;
-}
-
-/* Tasks, Referral, and Social Share */
-#tasks-container, .task, .referral-card, #social-share {
-    max-width: 90%;
-    margin: 20px auto;
-    text-align: center;
-    border: 3px solid #0073e6;
-    border-radius: 15px;
-    padding: 10px;
-}
-
-.task {
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-    transition: all 0.3s;
-}
-
-.task:hover {
-    transform: scale(1.02);
-}
-
-#wheelCanvas {
-    width: 200px;
-    height: 200px;
-    margin: 20px auto;
-    display: block;
-    border-radius: 50%;
-    border: 5px solid #fff;
-}
-
-#social-share {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    text-align: center;
-}
-
-#social-share .share-button {
-    background-color: #444;
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 2px solid #FFA500;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
-    transition: all 0.3s ease;
-    font-size: 14px;
-}
-
-#social-share .share-button:hover {
-    background-color: #888;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 0 15px #FFD700;
-}
-
-.hidden {
-    display: none;
-}
-
-/* Attributes */
-#attributes-container {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 15px;
-    margin: 20px 0;
-    text-align: center;
-}
-
-@media (min-width: 768px) {
-    #attributes-container {
-        grid-template-columns: repeat(2, 1fr); /* Two columns for wider screens */
+function completeAdTask() {
+    if (document.getElementById('ad-claim-button').disabled) {
+        alert("Rewards only offered once every 24 hours per user.");
+        return;
     }
+    currentPoints += 1000;
+    updatePointsDisplay();
+    alert("You've earned 1000 points from watching the ad!");
+    disableRewardButtons();
+    localStorage.setItem("lastRewardClaimTime", new Date().getTime());
+    startTimer('spin-timer');
 }
 
-.attribute-card {
-    padding: 10px;
-    border: 3px solid #0073e6;
-    background-color: rgba(60, 60, 60, 0.8);
-    border-radius: 10px;
-    text-align: center;
-    color: #fff;
-    transition: all 0.3s;
+function completeCheckInTask() {
+    if (document.getElementById('check-in-button').disabled) {
+        alert("Rewards only offered once every 24 hours per user.");
+        return;
+    }
+    currentPoints += 500;
+    updatePointsDisplay();
+    alert("Daily check-in reward claimed: 500 points!");
+    disableRewardButtons();
+    localStorage.setItem("lastRewardClaimTime", new Date().getTime());
+    startTimer('spin-timer');
 }
 
-.attribute-card:hover {
-    border-color: #FFD700;
-    transform: scale(1.02);
+function spinWheel() {
+    if (document.getElementById('spin-button').disabled) {
+        alert("Rewards only offered once every 24 hours per user.");
+        return;
+    }
+    let reward = Math.floor(Math.random() * 4000) + 1000; // Random between 1000 and 5000 points
+    currentPoints += reward;
+    updatePointsDisplay();
+    animateWheel();
+    alert(`You won ${reward} points from the wheel!`);
+    disableRewardButtons();
+    localStorage.setItem("lastRewardClaimTime", new Date().getTime());
+    startTimer('spin-timer');
 }
 
-.attribute-card h3 {
-    font-size: 14px;
+function updatePointsDisplay() {
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("cr7siu-points").textContent = currentPoints;
 }
 
-.attribute-card p {
-    font-size: 12px;
+function updateSpinButton() {
+    const now = getISTTime().getTime();
+    const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
+    const buttons = [document.getElementById('ad-claim-button'), document.getElementById('check-in-button'), document.getElementById('spin-button')];
+
+    if (now - lastClaim >= 86400000) { // 24 hours in milliseconds
+        buttons.forEach(button => button.disabled = false);
+    } else {
+        buttons.forEach(button => button.disabled = true);
+    }
+    startTimer('spin-timer');
 }
 
-/* Score Container */
-.score-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 10px;
-    border-bottom: 2px dotted #7B68EE;
-}
+function drawWheel() {
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
 
-.score-left,
-.score-right {
-    text-align: center;
-    width: 100%;
-    margin: 5px 0;
-}
+    const colors = ['rgba(255, 0, 0, 0.7)', 'rgba(255, 255, 0, 0.7)', 'rgba(0, 255, 0, 0.7)', 'rgba(0, 0, 255, 0.7)', 'rgba(255, 0, 255, 0.7)', 'rgba(128, 0, 128, 0.7)'];
+    const segments = 6;
 
-/* Airdrop & Rewards Sections */
-.airdrop-section, .rewards-section {
-    border: 3px solid #fff;
-    border-radius: 15px;
-    padding: 15px;
-    margin: 20px auto;
-    max-width: 90%;
-    background-color: rgba(0, 0, 0, 0.7);
-    transition: all 0.3s;
-}
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-.airdrop-section:hover, .rewards-section:hover {
-    box-shadow: 0 0 20px #00FF00;
-    transform: translateY(-5px);
-}
-
-/* Footer with Full-width Options */
-footer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-footer button {
-    width: 48%;
-    margin: 5px 0;
-}
-
-/* Mobile Specific Adjustments */
-@media (max-width: 768px) {
-    header {
-        font-size: 16px;
-        padding: 5px;
+    for (let i = 0; i < segments; i++) {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, canvas.height / 2);
+        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 
+                (i * Math.PI * 2 / segments) - Math.PI / 2, 
+                ((i + 1) * Math.PI * 2 / segments) - Math.PI / 2, false);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
     }
 
-    #cr7siu-note {
-        font-size: 10px;
-        padding: 0 10px;
-    }
-
-    nav button, .task button, .attribute-card button, #spin-button, #
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, 2
