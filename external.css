@@ -1,12 +1,44 @@
-/* Add at the end of your existing style.css file or wherever appropriate for your styling organization */
-
-#tap-to-earn {
-    width: 150px;
-    height: 150px;
+body{font-family:Arial,sans-serif;margin:0;padding:0}
+header,main{text-align:center}
+header{padding:20px}
+#cr7-logo{background-image:url('cr7_logo.png');height:50px;width:50px;background-size:cover;margin-bottom:20px}
+#cr7siu-note{margin:20px 0;color:#333;font-size:16px}
+.score-container{display:flex;justify-content:space-between;padding:0 15px;font-size:16px;margin:20px 0}
+.score-left,.score-right{width:45%}
+.score-left p,.score-right p{margin:10px 0}
+nav{background-color:#f1f1f1;padding:10px 0}
+nav ul{display:flex;justify-content:center;list-style:none;padding:0;margin:0}
+nav li{margin:0 10px}
+button{background-color:#2e87f1;color:#fff;border:none;padding:10px 20px;cursor:pointer;font-size:16px}
+button:hover{background-color:#5cacee}
+button:disabled{background-color:#ddd;cursor:not-allowed}
+.hidden{display:none}
+h1,h2,h3{font-size:24px;margin-bottom:10px}
+.tap-to-earn{margin-top:20px}
+#tap-to-earn,#tap-to-earn:hover{background-image:url('cr7_poster6.jpg');background-size:cover;height:150px;width:150px;border-radius:50%;cursor:pointer;margin-bottom:10px}
+#tap-to-earn:hover{opacity:.8}
+.tap-to-earn div{font-size:18px;color:#fff;text-shadow:1px 1px 5px rgba(0,0,0,.6)}
+input,input[type="text"],label{margin:5px 0;padding:10px;font-size:16px}
+input[type="text"]{width:100%;max-width:400px}
+button{width:200px;margin:10px}
+label{font-size:16px}
+#airdrop,#rewards,#improvements{margin-top:30px}
+#ads-section{margin-bottom:20px}
+#spin-the-wheel,#daily-checkin{margin-top:30px}
+#spin-button{background-color:#ff9900}
+#spin-button:hover{background-color:#e68900}
+.social-links ul{list-style:none;padding:0}
+.social-links li{margin:5px 0}
+.social-links a{color:#2e87f1;text-decoration:none}
+.social-links a:hover{text-decoration:underline}
+#social-share{margin-top:15px}
+#social-share button{margin:5px;background-color:#3b5998;color:#fff;padding:10px;cursor:pointer}
+#social-share button:hover{background-color:#8b9dc3}
+@media (max-width:768px){
+    .score-container{flex-direction:column;align-items:center}
+    .score-left,.score-right{width:100%;text-align:center}
+    button{width:100%}
+    .social-links ul{padding-left:20px}
+    .tap-to-earn div{font-size:16px}
 }
-
-#wheelCanvas {
-    background-image: url('images/cr7_poster.jpg');
-    background-size: cover;
-    background-position: center;
-}
+#wheelCanvas{background-image:url('images/cr7_poster.jpg');background-size:cover;background-position:center}
