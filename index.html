@@ -39,7 +39,7 @@
         <h2>Player Dashboard</h2>
         <p>Username: <span id="username-display">Not Set</span></p>
         <div id="tap-to-earn-container">
-            <div id="tap-to-earn" onclick="earnPoints()"></div>
+            <div id="tap-to-earn" onclick="earnPoints()" style="width: 150px; height: 150px;"></div>
             <p id="tap-to-earn-text">Tap to Earn</p>
         </div>
     </main>
@@ -92,9 +92,8 @@
             </div>
             <div id="spin-the-wheel">
                 <h2>Spin the Wheel</h2>
-                <canvas id="wheelCanvas" width="200" height="200" style="position: relative; background-image: url('images/cr7_poster.jpg'); background-size: cover; background-position: center;">
-                    <button onclick="spinWheel()" id="spin-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">Spin to Win!</button>
-                </canvas>
+                <canvas id="wheelCanvas" width="200" height="200" style="position: relative; background-image: url('images/cr7_poster.jpg'); background-size: cover; background-position: center;"></canvas>
+                <button onclick="spinWheel()" id="spin-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">Spin to Win!</button>
                 <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
                 <p id="spin-claim-time">Next claim in <span id="spin-timer">24:00:00</span></p>
             </div>
@@ -129,7 +128,7 @@
     <script>
         // JavaScript code implementation here
 
-        // Include updated JS from previous discussion
+        // Include updated JS from below
     </script>
 </body>
 </html>

@@ -1,16 +1,13 @@
-/* General Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background: url("images/cr7_poster12.jpg") no-repeat center center fixed;
-    background-size: cover;
+    background: black; /* Changed to black for better visibility of stars */
     margin: 0;
     padding: 0;
     color: #f2f2f2;
     text-align: center;
-    animation: bgPulse 60s infinite alternate;
 }
 
-/* New: Improved Falling Soccer Balls Animation */
+/* New Falling Stars Background */
 body::before {
     content: '';
     position: fixed;
@@ -21,40 +18,19 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        repeating-radial-gradient(circle at 0% 0%, 
-            transparent 0, 
-            transparent 20px, 
-            rgba(255, 255, 255, 0.3) 20px, 
-            rgba(255, 255, 255, 0.3) 22px),
-        repeating-radial-gradient(circle at 100% 100%, 
-            transparent 0, 
-            transparent 20px, 
-            rgba(255, 255, 255, 0.3) 20px, 
-            rgba(255, 255, 255, 0.3) 22px);
-    animation: soccerBallsFall 10s linear infinite;
-    opacity: 0.7;
+        radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%),
+        url('data:image/svg+xml,%3Csvg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M25 0L0 50L50 50Z" fill="%23fff" opacity="0.1" /%3E%3C/svg%3E');
+    animation: fallingStars 10s linear infinite;
+    background-size: 20px 20px;
 }
 
-@keyframes soccerBallsFall {
+@keyframes fallingStars {
     0% {
-        transform: translateY(-10%);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
+        background-position: 0 0;
     }
     100% {
-        transform: translateY(110%);
-        opacity: 0;
+        background-position: -100px 100px;
     }
-}
-
-@keyframes bgPulse {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
 }
 
 /* Header Enhancements */
@@ -79,24 +55,6 @@ header {
     padding: 0 20px;
     font-weight: normal;
     border-left: 3px dashed #00FF00;
-}
-
-/* Footer with Colorful Animation */
-footer {
-    background-color: black;
-    border-top: 4px solid transparent;
-    width: 100%;
-    height: auto;
-    text-align: center;
-    color: #fff;
-    padding: 10px;
-    animation: neonBorder 5s infinite linear;
-}
-
-@keyframes neonBorder {
-    0% { border-color: #00FF00; }
-    50% { border-color: #FF00FF; }
-    100% { border-color: #00FF00; }
 }
 
 /* Logo and Navigation */
@@ -173,8 +131,8 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 }
 
 #tap-to-earn {
-    width: 100px;
-    height: 100px;
+    width: 150px; /* Increased size */
+    height: 150px; /* Increased size */
     border-radius: 50%;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
@@ -244,7 +202,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     height: 200px;
     margin: 20px auto;
     display: block;
-    background-color: #333;
     border-radius: 50%;
     border: 5px solid #fff;
 }
@@ -375,23 +332,4 @@ footer button {
         padding: 0 10px;
     }
 
-    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
-        font-size: 12px;
-    }
-
-    #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
-        font-size: 16px;
-    }
-
-    #attributes-container {
-        grid-template-columns: 1fr;
-    }
-
-    .score-container {
-        flex-direction: column;
-    }
-
-    footer button {
-        width: 100%;
-    }
-}
+    nav button, .task button, .attribute-card button, #spin-button, #
