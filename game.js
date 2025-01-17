@@ -6,8 +6,6 @@ let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
 let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
 let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
-let lastSpinTime = parseInt(localStorage.getItem("lastSpinTime")) || 0;
-let spinClaimed = localStorage.getItem("spinClaimed") === "true";
 let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0; // To store last reward claim time
 
 // Show username setup if it's the user's first session
@@ -221,11 +219,13 @@ function disableRewardButtons() {
 }
 
 function completeAdTask() {
+    if (document.getElementById('ad-claim-button').disabled) {
+        alert("Rewards only offered once every 24 hours per user.");
+        return;
+    }
     // Your reward logic here
     currentPoints += 1000; // Example reward
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("cr7siu-points").textContent = currentPoints; // Updated this line
+    updatePointsDisplay();
     alert("You've earned 1000 points from watching the ad!");
     disableRewardButtons();
     localStorage.setItem("lastRewardClaimTime", new Date().getTime());
@@ -233,11 +233,13 @@ function completeAdTask() {
 }
 
 function completeCheckInTask() {
+    if (document.getElementById('check-in-button').disabled) {
+        alert("Rewards only offered once every 24 hours per user.");
+        return;
+    }
     // Your reward logic here
     currentPoints += 500; // Example daily check-in reward
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("cr7siu-points").textContent = currentPoints; // Updated this line
+    updatePointsDisplay();
     alert("Daily check-in reward claimed: 500 points!");
     disableRewardButtons();
     localStorage.setItem("lastRewardClaimTime", new Date().getTime());
@@ -245,24 +247,91 @@ function completeCheckInTask() {
 }
 
 function spinWheel() {
+    if (document.getElementById('spin-button').disabled) {
+        alert("Rewards only offered once every 24 hours per user.");
+        return;
+    }
     // Your reward logic here, e.g., random amount of points
     let reward = Math.floor(Math.random() * 5000) + 500; // Random between 500 and 5500 points
     currentPoints += reward;
-    localStorage.setItem("points", currentPoints);
-    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
-    document.getElementById("cr7siu-points").textContent = currentPoints; // Updated this line
+    updatePointsDisplay();
+    animateWheel(); // Animate the wheel
     alert(`You won ${reward} points from the wheel!`);
     disableRewardButtons();
     localStorage.setItem("lastRewardClaimTime", new Date().getTime());
     startTimer('spin-timer');
 }
 
+function updatePointsDisplay() {
+    localStorage.setItem("points", currentPoints);
+    document.getElementById("score-display").textContent = `${currentPoints} CR7SIU Points`;
+    document.getElementById("cr7siu-points").textContent = currentPoints;
+}
+
+function updateSpinButton() {
+    const now = getISTTime();
+    const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
+    if (now - lastClaim >= 86400000) {
+        enableRewardButtons(); // Enable buttons if 24 hours have passed since last claim
+    } else {
+        disableRewardButtons();
+    }
+}
+
+// New function for drawing the wheel
+function drawWheel() {
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const colors = ['#FF0000', '#FFFF00', '#00FF00', '#0000FF', '#FF00FF', '#800080'];
+    const segments = 6; // Number of segments for the wheel
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < segments; i++) {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, canvas.height / 2);
+        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 
+                (i * Math.PI * 2 / segments) - Math.PI / 2, 
+                ((i + 1) * Math.PI * 2 / segments) - Math.PI / 2, false);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+    }
+
+    // Draw a central circle for the wheel's center
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, 20, 0, Math.PI * 2);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+}
+
+function animateWheel() {
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let rotation = 0;
+    const endRotation = Math.PI * 10 + Math.random() * Math.PI * 2; // 5 full rotations + random segment stop
+
+    function rotateWheel() {
+        rotation += 0.1;
+        if (rotation <= endRotation) {
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(rotation);
+            ctx.translate(-canvas.width / 2, -canvas.height / 2);
+            drawWheel();
+            ctx.restore();
+            requestAnimationFrame(rotateWheel);
+        }
+    }
+    rotateWheel();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     startTimer('spin-timer');
-    // Check if it's a new day (after midnight IST) to re-enable buttons if necessary
-    if (getISTTime().getHours() === 0 && getISTTime().getMinutes() === 0) {
-        enableRewardButtons();
-    }
+    drawWheel(); // Draw the wheel on page load
+    updateSpinButton();
 });
 
-// ... other functions like generateReferralLink, displayReferrals, etc. remain unchanged ...
+// ... Other functions like generateReferralLink, displayReferrals, etc. remain unchanged ...
