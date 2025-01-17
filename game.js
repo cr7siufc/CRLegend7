@@ -330,17 +330,49 @@ function animateWheel() {
     rotateWheel();
 }
 
+// Matrix Rain Animation
+var matrixCanvas = document.createElement('canvas');
+matrixCanvas.id = 'matrix-canvas';
+document.body.appendChild(matrixCanvas);
+
+var ctxMatrix = matrixCanvas.getContext('2d');
+
+matrixCanvas.width = window.innerWidth;
+matrixCanvas.height = window.innerHeight;
+
+var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()'.split('');
+var fontSize = 10;
+var columns = matrixCanvas.width / fontSize;
+
+var drops = [];
+for (var i = 0; i < columns; i++) {
+    drops[i] = 1;
+}
+
+function drawMatrix() {
+    ctxMatrix.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctxMatrix.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+    
+    ctxMatrix.fillStyle = '#0F0'; // Green text
+    ctxMatrix.font = fontSize + 'px arial';
+
+    for (var i = 0; i < drops.length; i++) {
+        var text = letters[Math.floor(Math.random() * letters.length)];
+        ctxMatrix.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        // Reset drop when it reaches bottom, with some randomness
+        if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+        drops[i]++;
+    }
+}
+
+// Start the Matrix rain animation
+setInterval(drawMatrix, 33);
+
 document.addEventListener('DOMContentLoaded', () => {
     startTimer('spin-timer');
     drawWheel(); // Draw the wheel over the background image on page load
     updateSpinButton();
 });
-
-// Placeholder for other functions like generateReferralLink, displayReferrals, etc.
-function checkForReferral() {}
-function updateRewardsLink() {}
-function validateAllTasks() {}
-function generateReferralLink() {}
-function displayReferrals() {}
-function toggleShareOptions() {}
-function shareLink(platform) {}

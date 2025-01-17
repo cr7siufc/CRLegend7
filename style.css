@@ -7,6 +7,7 @@ body {
     color: #f2f2f2;
     text-align: center;
     animation: bgPulse 60s infinite alternate;
+    position: relative; /* Added for canvas positioning */
 }
 
 /* New: Improved Falling Soccer Balls Animation */
@@ -392,4 +393,16 @@ footer button {
     footer button {
         width: 100%;
     }
+}
+
+/* Matrix Rain Animation */
+#matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    background: transparent;
 }
