@@ -293,6 +293,12 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-align: center;
 }
 
+@media (min-width: 768px) {
+    #attributes-container {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for wider screens */
+    }
+}
+
 .attribute-card {
     padding: 10px;
     border: 3px solid #0073e6;
@@ -335,7 +341,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 
 /* Airdrop & Rewards Sections */
 .airdrop-section, .rewards-section {
-    border: 3px solid #fff; /* Changed to white for visibility */
+    border: 3px solid #fff;
     border-radius: 15px;
     padding: 15px;
     margin: 20px auto;
