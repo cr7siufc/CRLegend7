@@ -97,15 +97,14 @@
                 <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
                 <p id="spin-claim-time">Next claim in <span id="spin-timer">24:00:00</span></p>
             </div>
-            <div id="validate-all-offers">
-                <button onclick="validateAllTasks()">Validate All Tasks</button>
-            </div>
+            <div id="task-section"></div>
+            <button id="claim-rewards-btn" onclick="claimRewards()" disabled>Claim Rewards</button>
             <div class="social-links">
                 <h3>Subscribe and Join:</h3>
                 <ul>
                     <li><a href="https://www.youtube.com/@CR7SIUnextbigthing" target="_blank" rel="noopener">Subscribe to our Youtube Channel</a></li>
                     <li><a href="https://x.com/cr7siucoin" target="_blank" rel="noopener">Join our X Account</a></li>
-                    <li><a href="https://www.facebook.com/profile.php?id=61571519741834&mibextid=ZbWKwL" target="_blank" rel="noopener">Like and join our Facebook Page</a></li>
+                    <li><a href="https://www.facebook.com/share/18grEqdxoG/" target="_blank" rel="noopener">Like and join our Facebook Page</a></li>
                     <li><a href="https://youtu.be/byZi0lcy-jw?si=7yxJZdC_6y42Pqs1" target="_blank" rel="noopener">Watch Ad</a></li>
                 </ul>
             </div>
@@ -124,8 +123,8 @@
         <button onclick="showPage('rewards')">Rewards</button>
     </footer>
 
-    <!-- Canvas for Matrix rain effect -->
-    <canvas id="matrix-canvas"></canvas>
+    <!-- Removed matrix canvas for stars animation -->
+    <!-- <canvas id="matrix-canvas"></canvas> -->
 
     <script src="game.js"></script>
 </body>

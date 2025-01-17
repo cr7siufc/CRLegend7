@@ -9,7 +9,7 @@ body {
     animation: bgPulse 60s infinite alternate;
 }
 
-/* New: Improved Falling Soccer Balls Animation */
+/* Falling Stars Animation */
 body::before {
     content: '';
     position: fixed;
@@ -20,23 +20,19 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        repeating-radial-gradient(circle at 0% 0%, 
-            transparent 0, 
-            transparent 20px, 
-            rgba(255, 255, 255, 0.3) 20px, 
-            rgba(255, 255, 255, 0.3) 22px),
-        repeating-radial-gradient(circle at 100% 100%, 
-            transparent 0, 
-            transparent 20px, 
-            rgba(255, 255, 255, 0.3) 20px, 
-            rgba(255, 255, 255, 0.3) 22px);
-    animation: soccerBallsFall 10s linear infinite;
-    opacity: 0.7;
+        radial-gradient(circle at 0% 0%, 
+            rgba(255, 255, 255, 0.1) 0, 
+            transparent 20px),
+        radial-gradient(circle at 100% 100%, 
+            rgba(255, 255, 255, 0.1) 0, 
+            transparent 20px);
+    animation: starsFall 20s linear infinite;
+    opacity: 0.5;
 }
 
-@keyframes soccerBallsFall {
+@keyframes starsFall {
     0% {
-        transform: translateY(-10%);
+        transform: translateY(-20%);
         opacity: 0;
     }
     10% {
@@ -46,7 +42,7 @@ body::before {
         opacity: 1;
     }
     100% {
-        transform: translateY(110%);
+        transform: translateY(120%);
         opacity: 0;
     }
 }
@@ -166,14 +162,14 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 }
 
 /* Main Content */
-.main {
+main {
     text-align: center;
     padding: 20px 10px;
 }
 
 #tap-to-earn {
-    width: 150px; /* Increased size */
-    height: 150px; /* Increased size */
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
@@ -194,7 +190,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     padding-bottom: 150px;
 }
 
-#tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
+#tap-to-earn-text, h2 {
     color: #fff;
     font-size: 18px;
     font-weight: bold;
@@ -203,7 +199,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 }
 
 /* Input fields */
-#referral-earning input, #username-setup input {
+input {
     width: 90%;
     padding: 10px;
     margin: 10px auto;
@@ -213,12 +209,12 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     transition: border-color 0.3s;
 }
 
-#referral-earning input:focus, #username-setup input:focus {
+input:focus {
     border-color: #00FF00;
 }
 
 /* Tasks, Referral, and Social Share */
-#tasks-container, .task, .referral-card, #social-share {
+.task, #social-share {
     max-width: 90%;
     margin: 20px auto;
     text-align: center;
@@ -256,24 +252,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     text-align: center;
 }
 
-#social-share .share-button {
-    background-color: #444;
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 2px solid #FFA500;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
-    transition: all 0.3s ease;
-    font-size: 14px;
-}
-
-#social-share .share-button:hover {
-    background-color: #888;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 0 15px #FFD700;
-}
-
 .hidden {
     display: none;
 }
@@ -281,16 +259,10 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 /* Attributes */
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid */
     gap: 15px;
     margin: 20px 0;
     text-align: center;
-}
-
-@media (min-width: 768px) {
-    #attributes-container {
-        grid-template-columns: repeat(2, 1fr); /* Two columns for wider screens */
-    }
 }
 
 .attribute-card {
@@ -319,17 +291,16 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 /* Score Container */
 .score-container {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: space-around;
     width: 100%;
     padding: 10px;
     border-bottom: 2px dotted #7B68EE;
 }
 
-.score-left,
-.score-right {
-    text-align: center;
-    width: 100%;
+.score-left, .score-right {
+    width: calc(50% - 10px);
     margin: 5px 0;
 }
 
@@ -349,18 +320,6 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
     transform: translateY(-5px);
 }
 
-/* Footer with Full-width Options */
-footer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-footer button {
-    width: 48%;
-    margin: 5px 0;
-}
-
 /* Mobile Specific Adjustments */
 @media (max-width: 768px) {
     header {
@@ -375,21 +334,19 @@ footer button {
 
     nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
         font-size: 12px;
+        padding: 8px 12px;
     }
 
-    #tap-to-earn-text, #improvements h2, #referral-earning h2, .task a {
+    #tap-to-earn-text, h2 {
         font-size: 16px;
     }
 
-    #attributes-container {
-        grid-template-columns: 1fr;
-    }
-
-    .score-container {
-        flex-direction: column;
+    .score-left, .score-right {
+        width: 100%;
     }
 
     footer button {
         width: 100%;
+        margin: 5px 0;
     }
 }
