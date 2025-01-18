@@ -97,7 +97,24 @@
                 <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
                 <p id="spin-claim-time">Next claim in <span id="spin-timer">24:00:00</span></p>
             </div>
-            <div id="task-section"></div>
+            <div id="tasks-container">
+                <!-- Each task will be dynamically added here -->
+                <div class="task">
+                    <h3>Complete YouTube Task</h3>
+                    <p>Watch and like our latest video</p>
+                    <button onclick="completeTask('youtube')">Complete</button>
+                </div>
+                <div class="task">
+                    <h3>Complete Facebook Task</h3>
+                    <p>Share our post on your timeline</p>
+                    <button onclick="completeTask('facebook')">Complete</button>
+                </div>
+                <div class="task">
+                    <h3>Complete X Task</h3>
+                    <p>Tweet with our hashtag</p>
+                    <button onclick="completeTask('x')">Complete</button>
+                </div>
+            </div>
             <button id="claim-rewards-btn" onclick="claimRewards()" disabled>Claim Rewards</button>
             <div class="social-links">
                 <h3>Subscribe and Join:</h3>
