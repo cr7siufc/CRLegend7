@@ -216,6 +216,9 @@ input:focus {
     display: block;
     border-radius: 50%;
     border: 5px solid #fff;
+    background-image: url('images/cr7_poster.jpg'); /* Changed to use cr7_poster.jpg */
+    background-size: cover;
+    background-position: center;
 }
 
 #social-share {
@@ -279,11 +282,12 @@ input:focus {
 .airdrop-section, .rewards-section {
     border: 3px solid #fff;
     border-radius: 15px;
-    padding: 15px;
+    padding: 20px; /* Increased padding for better spacing */
     margin: 20px auto;
     max-width: 90%;
     background-color: rgba(0, 0, 0, 0.7);
     transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow for depth */
 }
 
 .airdrop-section:hover, .rewards-section:hover {
@@ -318,5 +322,9 @@ input:focus {
     footer button {
         width: 100%;
         margin: 5px 0;
+    }
+
+    #attributes-container {
+        grid-template-columns: repeat(2, 1fr); /* Ensures two attributes per row on mobile */
     }
 }
