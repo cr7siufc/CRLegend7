@@ -103,7 +103,7 @@ function enableTaskButton(task) {
 
 function completeTask(task) {
     let now = getISTTime().getTime();
-    if (now - lastRewardClaimTime >= 86400000) { // Check if 24 hours have passed since last reset
+    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) { // Allow if first claim or 24 hours have passed
         if (!tasksCompleted[task]) {
             tasksCompleted[task] = true;
             localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
@@ -134,24 +134,21 @@ function updateTaskButtons() {
 }
 
 function claimRewards() {
-    if (Object.values(tasksCompleted).every(Boolean)) {
-        let now = getISTTime().getTime();
-        if (now - lastRewardClaimTime >= 86400000) { // 24 hours in milliseconds
-            if (!localStorage.getItem("rewardsClaimed")) {
-                currentPoints += 5000;
-                updatePointsAndLevel();
-                alert("Congratulations! You earned 5000 CR7SIU Points.");
-                localStorage.setItem("rewardsClaimed", true);
-                lastRewardClaimTime = now;
-                localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
-            } else {
-                alert("Rewards already claimed for today.");
-            }
+    let now = getISTTime().getTime();
+    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) { // Allow if first claim or 24 hours have passed
+        if (Object.values(tasksCompleted).every(Boolean)) {
+            currentPoints += 5000;
+            updatePointsAndLevel();
+            alert("Congratulations! You earned 5000 CR7SIU Points.");
+            localStorage.setItem("rewardsClaimed", true);
+            lastRewardClaimTime = now;
+            localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
+            resetDailyTasks(); // Reset tasks after claim
         } else {
-            alert("You can only claim rewards once every 24 hours.");
+            alert("Complete all tasks before claiming rewards.");
         }
     } else {
-        alert("Complete all tasks before claiming rewards.");
+        alert("You can only claim rewards once every 24 hours.");
     }
 }
 
@@ -293,7 +290,7 @@ function startTimer(elementId, resetTime = 86400000) { // 24 hours in millisecon
         } else {
             clearInterval(timer);
             el.textContent = "00:00:00";
-            resetDailyTasks();
+            resetDailyTasks(); // Reset at midnight
             enableRewardButtons();
         }
     }, 1000);
@@ -331,7 +328,7 @@ function updateSpinButton() {
     const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
     const buttons = [document.getElementById('ad-claim-button'), document.getElementById('check-in-button'), document.getElementById('spin-button')];
 
-    if (now - lastClaim >= 86400000) { // 24 hours in milliseconds
+    if (now - lastClaim >= 86400000 || lastClaim === 0) { // Allow if first claim or 24 hours have passed
         buttons.forEach(button => button.disabled = false);
     } else {
         buttons.forEach(button => button.disabled = true);
