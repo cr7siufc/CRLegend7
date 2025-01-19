@@ -36,7 +36,7 @@ function loadSession() {
     document.getElementById("player-level").textContent = playerLevel;
     document.getElementById("cr7siu-points").textContent = currentPoints;
     displayImprovements();
-    resetDailyTasks();  // Reset tasks if it's a new day
+    resetDailyTasks();  // Reset tasks if it's a new day or first visit
     displayTasks();  // This will reflect the reset tasks
     displayReferrals();
     updateSpinButton();
@@ -120,14 +120,16 @@ function completeTask(task) {
 function updateTaskButtons() {
     Object.keys(tasksCompleted).forEach(task => {
         const button = document.getElementById(`validate-${task}`);
-        if (tasksCompleted[task]) {
-            button.disabled = true;
-            button.textContent = "Completed";
-            button.classList.add("completed");
-        } else {
-            button.disabled = false;
-            button.textContent = "Mark as Done";
-            button.classList.remove("completed");
+        if (button) { // Check if button exists to avoid errors
+            if (tasksCompleted[task]) {
+                button.disabled = true;
+                button.textContent = "Completed";
+                button.classList.add("completed");
+            } else {
+                button.disabled = false;
+                button.textContent = "Mark as Done";
+                button.classList.remove("completed");
+            }
         }
     });
     document.getElementById("claim-rewards-btn").disabled = !Object.values(tasksCompleted).every(Boolean);
@@ -257,13 +259,15 @@ function shareLink(platform) {
 
 function toggleShareOptions() {
     var shareOptions = document.getElementById('social-share');
-    shareOptions.classList.toggle('hidden');
+    if (shareOptions) shareOptions.classList.toggle('hidden');
 }
 
 function displayReferrals() {
     const referralList = document.getElementById("referrals-list");
-    referralList.innerHTML = referralUsers.map(user => `<div>${user}</div>`).join('');
-    document.getElementById("referral-count").textContent = referralUsers.length;
+    if (referralList) {
+        referralList.innerHTML = referralUsers.map(user => `<div>${user}</div>`).join('');
+        document.getElementById("referral-count").textContent = referralUsers.length;
+    }
 }
 
 // Time functions for rewards
@@ -281,33 +285,38 @@ function startTimer(elementId, resetTime = 86400000) { // 24 hours in millisecon
 
     let timeLeft = reset - now;
     let el = document.getElementById(elementId);
-    let timer = setInterval(() => {
-        if (timeLeft > 0) {
-            timeLeft -= 1000;
-            let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else {
-            clearInterval(timer);
-            el.textContent = "00:00:00";
-            resetDailyTasks(); // Reset at midnight
-            enableRewardButtons();
-            updateSpinButton(); // Ensure buttons are updated after reset
-        }
-    }, 1000);
+    if (el) {
+        el.textContent = "00:00:00"; // Reset timer display
+        let timer = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft -= 1000;
+                let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                clearInterval(timer);
+                el.textContent = "00:00:00";
+                resetDailyTasks(); // Reset at midnight
+                enableRewardButtons();
+                updateSpinButton(); // Ensure buttons are updated after reset
+            }
+        }, 1000);
+    }
 }
 
 function enableRewardButtons() {
-    document.getElementById('ad-claim-button').disabled = false;
-    document.getElementById('check-in-button').disabled = false;
-    document.getElementById('spin-button').disabled = false;
+    ['ad-claim-button', 'check-in-button', 'spin-button'].forEach(id => {
+        const button = document.getElementById(id);
+        if (button) button.disabled = false;
+    });
 }
 
 function disableRewardButtons() {
-    document.getElementById('ad-claim-button').disabled = true;
-    document.getElementById('check-in-button').disabled = true;
-    document.getElementById('spin-button').disabled = true;
+    ['ad-claim-button', 'check-in-button', 'spin-button'].forEach(id => {
+        const button = document.getElementById(id);
+        if (button) button.disabled = true;
+    });
 }
 
 function resetDailyTasks() {
@@ -315,33 +324,25 @@ function resetDailyTasks() {
     let resetTime = new Date(now);
     resetTime.setHours(0, 0, 0, 0); // Reset to midnight IST
     
-    if (now >= resetTime) {
-        // Reset only if it's midnight or later (i.e., new day has started)
+    if (now >= resetTime || lastRewardClaimTime === 0) {
+        // Reset only if it's midnight or later (i.e., new day has started) or if it's the first visit
         tasksCompleted = { youtube: false, xAccount: false, facebook: false };
         localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
         localStorage.removeItem("rewardsClaimed");  // Remove flag for rewards claimed
         lastRewardClaimTime = now.getTime();  // Update last claim time
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
+        enableRewardButtons(); // Enable buttons for a new day
     }
 }
 
 function updateSpinButton() {
     const now = getISTTime().getTime();
     const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
-    const buttons = [document.getElementById('ad-claim-button'), document.getElementById('check-in-button'), document.getElementById('spin-button')];
 
     if (now - lastClaim >= 86400000 || lastClaim === 0) { // Allow if first claim or 24 hours have passed
-        buttons.forEach(button => {
-            if (button) { // Check if the button exists
-                button.disabled = false;
-            }
-        });
+        enableRewardButtons();
     } else {
-        buttons.forEach(button => {
-            if (button) { // Check if the button exists
-                button.disabled = true;
-            }
-        });
+        disableRewardButtons();
     }
     startTimer('spin-timer');
 }

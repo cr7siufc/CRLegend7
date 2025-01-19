@@ -1,7 +1,7 @@
 /* Merged CSS from style.css and external.css with corrected falling stars animation */
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background: url("images/cr7_poster12.jpg") no-repeat center center fixed;
     background-size: cover;
     margin: 0;
@@ -67,55 +67,73 @@ body::after {
 header {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 18px;
-    padding: 10px;
-    border-bottom: 4px solid #FF00FF;
-    animation: headerGlow 3s ease-in-out infinite alternate;
+    font-size: 20px;
+    padding: 15px 20px;
+    border-bottom: 2px solid #FF00FF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes headerGlow {
-    from { border-color: #FF00FF; }
-    to   { border-color: #9932CC; }
+    0% { border-color: #FF00FF; }
+    100% { border-color: #9932CC; }
 }
 
 #cr7siu-note {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: normal;
-    margin-top: 5px;
-    padding: 0 20px;
-    border-left: 3px dashed #00FF00;
+    margin: 0;
+    padding: 0 0 0 20px;
+    border-left: none;
+    text-align: left;
+    max-width: 70%;
 }
 
 footer {
     background-color: #000;
-    border-top: 4px solid transparent;
+    color: #fff;
+    padding: 10px 0;
+    border-top: none;
     width: 100%;
     height: auto;
     text-align: center;
-    color: #fff;
-    padding: 10px;
-    animation: neonBorder 5s infinite linear;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
 }
 
-@keyframes neonBorder {
-    0%, 100% { border-color: #00FF00; }
-    50%      { border-color: #FF00FF; }
+footer button {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #FFA500;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin: 0 5px;
+}
+
+footer button:hover {
+    background-color: #888;
+    border-color: #FF00FF;
+    box-shadow: 0 0 5px #FFD700;
 }
 
 #cr7-logo {
-    width: 150px;
-    height: 150px;
+    width: 75px;
+    height: 75px;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
-    margin: 20px auto;
-    border: 5px solid #FFD700;
+    margin: 0 10px 0 0;
+    border: 3px solid #FFD700;
     border-radius: 50%;
     animation: rotate 10s linear infinite;
 }
 
 @keyframes rotate {
-    from { transform: rotate(0); }
-    to   { transform: rotate(360deg); }
+    0% { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
 }
 
 nav {
@@ -124,8 +142,8 @@ nav {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 5px;
-    border-bottom: 3px solid #FF4500;
+    gap: 10px;
+    border-bottom: none;
     padding: 10px 0;
 }
 
@@ -135,36 +153,25 @@ nav ul {
     margin: 0;
     padding: 0;
     flex-wrap: wrap;
-    gap: 5px;
-}
-
-nav li {
-    margin: 0;
+    gap: 10px;
 }
 
 nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
     background-color: #444;
     color: #fff;
-    border: 2px solid #FFA500;
-    padding: 10px 14px;
-    border-radius: 10px;
+    border: 1px solid #FFA500;
+    padding: 8px 12px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    width: 100%;
-    max-width: 150px;
+    width: auto;
     transition: all 0.3s ease;
-    animation: buttonPulse 2s infinite;
-}
-
-@keyframes buttonPulse {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.05); }
 }
 
 nav button:hover, .task button:hover:not(.completed), .attribute-card button:hover, #spin-button:hover, #claim-rewards-btn:hover {
     background-color: #888;
     border-color: #FF00FF;
-    box-shadow: 0 0 10px #FFD700;
+    box-shadow: 0 0 5px #FFD700;
 }
 
 main {
@@ -232,7 +239,6 @@ input:focus {
     align-items: center;
     margin-bottom: 20px;
     padding: 15px;
-    min-height: 150px;
     transition: all 0.3s;
 }
 
@@ -254,7 +260,7 @@ input:focus {
     display: block;
     border-radius: 50%;
     border: 5px solid #fff;
-    background-image: url('images/cr7_poster.jpg'); /* Changed to use cr7_poster.jpg */
+    background-image: url('images/cr7_poster.jpg'); 
     background-size: cover;
     background-position: center;
 }
@@ -335,18 +341,25 @@ input:focus {
 
 @media (max-width: 768px) {
     header {
-        font-size: 16px;
-        padding: 5px;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
     }
 
     #cr7siu-note {
-        font-size: 10px;
-        padding: 0 10px;
+        text-align: center;
+        padding: 0;
+        max-width: 100%;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        gap: 5px;
     }
 
     nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn {
         font-size: 12px;
-        padding: 8px 12px;
+        padding: 6px 10px;
     }
 
     #tap-to-earn-text, h2 {
@@ -358,8 +371,8 @@ input:focus {
     }
 
     footer button {
-        width: 100%;
         margin: 5px 0;
+        width: 100%;
     }
 
     #attributes-container {
