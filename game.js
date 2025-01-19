@@ -212,7 +212,24 @@ function shareLink(platform) {
             }).then(() => console.log('Successful share'))
               .catch((error) => console.log('Error sharing', error));
         } else {
-            alert(`Sharing to ${platform} isn't supported. Copy this link manually: ${link}`);
+            // Fallback for browsers without Web Share API
+            switch(platform) {
+                case 'facebook':
+                    window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(link));
+                    break;
+                case 'x':
+                    window.open("https://twitter.com/intent/tweet?text=Check out CR7SIU!&url=" + encodeURIComponent(link));
+                    break;
+                case 'whatsapp':
+                    window.open("whatsapp://send?text=Check out CR7SIU! " + link);
+                    break;
+                case 'telegram':
+                    window.open("https://telegram.me/share/url?url=" + encodeURIComponent(link) + "&text=Check out CR7SIU!");
+                    break;
+                case 'instagram':
+                    alert("Instagram sharing not directly supported. Share link manually.");
+                    break;
+            }
         }
     } else {
         alert("Please generate a referral link first!");
