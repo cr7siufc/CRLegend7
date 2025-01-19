@@ -140,10 +140,11 @@ function claimRewards() {
             currentPoints += 5000;
             updatePointsAndLevel();
             alert("Congratulations! You earned 5000 CR7SIU Points.");
-            localStorage.setItem("rewardsClaimed", true);
+            localStorage.setItem("rewardsClaimed", "true"); // Set to string for consistency
             lastRewardClaimTime = now;
             localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
             resetDailyTasks(); // Reset tasks after claim
+            updateSpinButton(); // Update button availability after claiming
         } else {
             alert("Complete all tasks before claiming rewards.");
         }
@@ -292,6 +293,7 @@ function startTimer(elementId, resetTime = 86400000) { // 24 hours in millisecon
             el.textContent = "00:00:00";
             resetDailyTasks(); // Reset at midnight
             enableRewardButtons();
+            updateSpinButton(); // Ensure buttons are updated after reset
         }
     }, 1000);
 }
@@ -329,9 +331,17 @@ function updateSpinButton() {
     const buttons = [document.getElementById('ad-claim-button'), document.getElementById('check-in-button'), document.getElementById('spin-button')];
 
     if (now - lastClaim >= 86400000 || lastClaim === 0) { // Allow if first claim or 24 hours have passed
-        buttons.forEach(button => button.disabled = false);
+        buttons.forEach(button => {
+            if (button) { // Check if the button exists
+                button.disabled = false;
+            }
+        });
     } else {
-        buttons.forEach(button => button.disabled = true);
+        buttons.forEach(button => {
+            if (button) { // Check if the button exists
+                button.disabled = true;
+            }
+        });
     }
     startTimer('spin-timer');
 }
