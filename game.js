@@ -86,19 +86,19 @@ function convertToTokens() {
 }
 
 function displayTasks() {
-    const tasksContainer = document.getElementById("task-section");
+    const tasksContainer = document.getElementById("tasks-container");
     tasksContainer.innerHTML = Object.keys(tasksCompleted).map(task => `
         <div class="task">
-            <a href="https://www.${task}.com" target="_blank" onclick="enableTaskButton('${task}')">Complete ${task} task</a>
-            <button id="validate-${task}" onclick="completeTask('${task}')" ${tasksCompleted[task] ? 'disabled' : ''}>Mark as Done</button>
-            ${tasksCompleted[task] ? '<span class="completed-task">Completed</span>' : ''}
+            <h3>Complete ${task.charAt(0).toUpperCase() + task.slice(1)} Task</h3>
+            <p>${task === 'youtube' ? 'Watch and like our latest video' : 
+                task === 'xAccount' ? 'Tweet with our hashtag' : 
+                'Share our post on your timeline'}</p>
+            <button onclick="completeTask('${task}')" ${tasksCompleted[task] ? 'disabled' : ''}>
+                ${tasksCompleted[task] ? 'Completed' : 'Complete'}
+            </button>
         </div>
     `).join('');
     updateTaskButtons();
-}
-
-function enableTaskButton(task) {
-    document.getElementById(`validate-${task}`).disabled = false;
 }
 
 function completeTask(task) {
@@ -107,32 +107,29 @@ function completeTask(task) {
         if (!tasksCompleted[task]) {
             tasksCompleted[task] = true;
             localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
-            alert(`Task "${task}" marked as completed!`);
             updateTaskButtons();
-        } else {
-            alert("This task has already been completed for today.");
+            checkAllTasksCompleted();
         }
     } else {
-        alert("You can only complete tasks once every 24 hours.");
+        updateRewardStatus("You can only complete tasks once every 24 hours.");
     }
 }
 
 function updateTaskButtons() {
     Object.keys(tasksCompleted).forEach(task => {
-        const button = document.getElementById(`validate-${task}`);
-        if (button) { // Check if button exists to avoid errors
-            if (tasksCompleted[task]) {
-                button.disabled = true;
-                button.textContent = "Completed";
-                button.classList.add("completed");
-            } else {
-                button.disabled = false;
-                button.textContent = "Mark as Done";
-                button.classList.remove("completed");
-            }
+        const button = document.querySelector(`#tasks-container .task button[onclick="completeTask('${task}')"]`);
+        if (button) { 
+            button.disabled = tasksCompleted[task];
+            button.textContent = tasksCompleted[task] ? "Completed" : "Complete";
         }
     });
-    document.getElementById("claim-rewards-btn").disabled = !Object.values(tasksCompleted).every(Boolean);
+}
+
+function checkAllTasksCompleted() {
+    if (Object.values(tasksCompleted).every(Boolean)) {
+        document.getElementById("claim-rewards-btn").disabled = false;
+        updateRewardStatus("All tasks completed! You can now claim your rewards.");
+    }
 }
 
 function claimRewards() {
@@ -141,17 +138,17 @@ function claimRewards() {
         if (Object.values(tasksCompleted).every(Boolean)) {
             currentPoints += 5000;
             updatePointsAndLevel();
-            alert("Congratulations! You earned 5000 CR7SIU Points.");
+            updateRewardStatus("Congratulations! You earned 5000 CR7SIU Points.");
             localStorage.setItem("rewardsClaimed", "true"); // Set to string for consistency
             lastRewardClaimTime = now;
             localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
             resetDailyTasks(); // Reset tasks after claim
             updateSpinButton(); // Update button availability after claiming
         } else {
-            alert("Complete all tasks before claiming rewards.");
+            updateRewardStatus("Complete all tasks before claiming rewards.");
         }
     } else {
-        alert("You can only claim rewards once every 24 hours.");
+        updateRewardStatus("You can only claim rewards once every 24 hours.");
     }
 }
 
@@ -190,11 +187,10 @@ function upgradeSkill(attribute, index, cost) {
         if (attributes[attribute] % 10 === 0) {
             currentPoints += 2500;
             updatePointsAndLevel();
-            alert("Level milestone achieved! Cashback of 2500 points awarded.");
+            updateRewardStatus("Level milestone achieved! Cashback of 2500 points awarded.");
         }
-        alert("Upgrade successful!");
     } else {
-        alert("Not enough points!");
+        updateRewardStatus("Not enough points!");
     }
 }
 
@@ -203,9 +199,9 @@ function generateReferralLink() {
     if (username) {
         let link = `${window.location.origin}/?ref=${username}`;
         document.getElementById('referral-link-field').value = link;
-        alert("Referral link generated. Share this to earn points!");
+        updateRewardStatus("Referral link generated. Share this to earn points!");
     } else {
-        alert("Please set a username first!");
+        updateRewardStatus("Please set a username first!");
     }
 }
 
@@ -218,7 +214,7 @@ function checkForReferral() {
         localStorage.setItem("referralUsers", JSON.stringify(referralUsers));
         currentPoints += 5000; // Reward for referring
         updatePointsAndLevel();
-        alert("Congratulations! You've earned 5000 CR7SIU Points for a successful referral!");
+        updateRewardStatus("Congratulations! You've earned 5000 CR7SIU Points for a successful referral!");
     }
 }
 
@@ -248,12 +244,12 @@ function shareLink(platform) {
                     window.open("https://telegram.me/share/url?url=" + encodeURIComponent(link) + "&text=Check out CR7SIU!");
                     break;
                 case 'instagram':
-                    alert("Instagram sharing not directly supported. Share link manually.");
+                    updateRewardStatus("Instagram sharing not directly supported. Share link manually.");
                     break;
             }
         }
     } else {
-        alert("Please generate a referral link first!");
+        updateRewardStatus("Please generate a referral link first!");
     }
 }
 
@@ -332,6 +328,7 @@ function resetDailyTasks() {
         lastRewardClaimTime = now.getTime();  // Update last claim time
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         enableRewardButtons(); // Enable buttons for a new day
+        document.getElementById("claim-rewards-btn").disabled = true; // Reset claim button
     }
 }
 
@@ -343,8 +340,40 @@ function updateSpinButton() {
         enableRewardButtons();
     } else {
         disableRewardButtons();
+        updateRewardStatus("You've already claimed your reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
     startTimer('spin-timer');
+}
+
+function completeAdTask() {
+    let now = getISTTime().getTime();
+    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) {
+        currentPoints += 100; // Example reward for watching an ad
+        updatePointsAndLevel();
+        lastRewardClaimTime = now;
+        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
+        updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
+    } else {
+        updateRewardStatus("You've already claimed your ad reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
+    }
+}
+
+function completeCheckInTask() {
+    let now = getISTTime().getTime();
+    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) {
+        currentPoints += 500; // Example reward for daily check-in
+        updatePointsAndLevel();
+        lastRewardClaimTime = now;
+        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
+        updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
+    } else {
+        updateRewardStatus("You've already checked in today. Try again in " + document.getElementById('spin-timer').textContent + ".");
+    }
+}
+
+// New function to update reward status
+function updateRewardStatus(message) {
+    document.getElementById("reward-status").innerText = message;
 }
 
 // Mobile optimization
@@ -357,4 +386,5 @@ document.addEventListener('touchstart', function(event) {
 document.addEventListener('DOMContentLoaded', () => {
     startTimer('spin-timer');
     updateSpinButton();
+    updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
 });

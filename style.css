@@ -339,6 +339,18 @@ input:focus {
     transform: translateY(-5px);
 }
 
+/* New styles for reward status */
+#reward-status {
+    font-size: 16px;
+    margin-top: 20px;
+    color: #FFD700;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    max-width: 80%;
+    margin: 0 auto;
+}
+
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -386,5 +398,10 @@ input:focus {
     .task {
         padding: 10px;
         margin-bottom: 15px;
+    }
+
+    #reward-status {
+        font-size: 14px;
+        max-width: 90%;
     }
 }
