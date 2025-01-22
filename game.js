@@ -142,7 +142,7 @@ function claimRewards() {
             lastRewardClaimTime = now;
             localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
             resetDailyTasks(); // Reset tasks after claim
-            updateSpinButton(); // Update button availability after claiming
+            disableRewardButtons(); // Disable buttons after claiming
         } else {
             updateRewardStatus("Complete all tasks before claiming rewards.");
         }
@@ -358,7 +358,7 @@ function completeAdTask() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
-        updateSpinButton(); // Update button states
+        disableRewardButtons(); // Disable buttons after claiming
     } else {
         updateRewardStatus("You've already claimed your ad reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
@@ -372,7 +372,7 @@ function completeCheckInTask() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
-        updateSpinButton(); // Update button states
+        disableRewardButtons(); // Disable buttons after claiming
     } else {
         updateRewardStatus("You've already checked in today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
@@ -388,13 +388,13 @@ function spinWheel() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
-        updateSpinButton(); // Disable the button after claiming
+        disableRewardButtons(); // Disable buttons after claiming
     } else {
         updateRewardStatus("You can only spin the wheel once every 24 hours.");
     }
 }
 
-// Update reward status function (was already included but here for completeness)
+// Update reward status function
 function updateRewardStatus(message) {
     document.getElementById("reward-status").innerText = message;
 }
