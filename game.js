@@ -79,9 +79,9 @@ function convertToTokens() {
         localStorage.setItem("points", currentPoints);
         localStorage.setItem("tokens", currentTokens);
         document.getElementById("tokens-display").textContent = currentTokens;
-        alert(`You converted ${tokens} CR7SIU tokens!`);
+        updateRewardStatus(`You converted ${tokens} CR7SIU tokens!`);
     } else {
-        alert("Not enough points.");
+        updateRewardStatus("Not enough points.");
     }
 }
 
@@ -139,7 +139,6 @@ function claimRewards() {
             currentPoints += 5000;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned 5000 CR7SIU Points.");
-            localStorage.setItem("rewardsClaimed", "true"); // Set to string for consistency
             lastRewardClaimTime = now;
             localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
             resetDailyTasks(); // Reset tasks after claim
@@ -269,7 +268,7 @@ function displayReferrals() {
 // Time functions for rewards
 function getISTTime() {
     let now = new Date();
-    now.setHours(now.getHours() + 5, now.getMinutes() + 30);
+    now.setHours(now.getHours() + 5, now.getMinutes() + 30); // IST is UTC+5:30
     return now;
 }
 
@@ -304,14 +303,20 @@ function startTimer(elementId, resetTime = 86400000) { // 24 hours in millisecon
 function enableRewardButtons() {
     ['ad-claim-button', 'check-in-button', 'spin-button'].forEach(id => {
         const button = document.getElementById(id);
-        if (button) button.disabled = false;
+        if (button) {
+            button.disabled = false;
+            button.textContent = button.id === 'spin-button' ? 'Spin to Win!' : 'Claim Reward';
+        }
     });
 }
 
 function disableRewardButtons() {
     ['ad-claim-button', 'check-in-button', 'spin-button'].forEach(id => {
         const button = document.getElementById(id);
-        if (button) button.disabled = true;
+        if (button) {
+            button.disabled = true;
+            button.textContent = 'Claimed';
+        }
     });
 }
 
@@ -353,6 +358,7 @@ function completeAdTask() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
+        updateSpinButton(); // Update button states
     } else {
         updateRewardStatus("You've already claimed your ad reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
@@ -366,12 +372,29 @@ function completeCheckInTask() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
+        updateSpinButton(); // Update button states
     } else {
         updateRewardStatus("You've already checked in today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
 }
 
-// New function to update reward status
+function spinWheel() {
+    let now = getISTTime().getTime();
+    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) { // Allow if first claim or 24 hours have passed
+        const rewards = [100, 250, 500, 1000]; // Example reward amounts
+        let reward = rewards[Math.floor(Math.random() * rewards.length)];
+        currentPoints += reward;
+        updatePointsAndLevel();
+        lastRewardClaimTime = now;
+        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
+        updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
+        updateSpinButton(); // Disable the button after claiming
+    } else {
+        updateRewardStatus("You can only spin the wheel once every 24 hours.");
+    }
+}
+
+// Update reward status function (was already included but here for completeness)
 function updateRewardStatus(message) {
     document.getElementById("reward-status").innerText = message;
 }
