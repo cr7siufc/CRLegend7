@@ -142,7 +142,7 @@ function claimRewards() {
             lastRewardClaimTime = now;
             localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
             resetDailyTasks(); // Reset tasks after claim
-            disableRewardButtons(); // Disable buttons after claiming
+            disableSpecificButton('claim-rewards-btn'); // Disable only the claim reward button
         } else {
             updateRewardStatus("Complete all tasks before claiming rewards.");
         }
@@ -293,31 +293,29 @@ function startTimer(elementId, resetTime = 86400000) { // 24 hours in millisecon
                 clearInterval(timer);
                 el.textContent = "00:00:00";
                 resetDailyTasks(); // Reset at midnight
-                enableRewardButtons();
+                enableSpecificButton('ad-claim-button');
+                enableSpecificButton('check-in-button');
+                enableSpecificButton('spin-button');
                 updateSpinButton(); // Ensure buttons are updated after reset
             }
         }, 1000);
     }
 }
 
-function enableRewardButtons() {
-    ['ad-claim-button', 'check-in-button', 'spin-button'].forEach(id => {
-        const button = document.getElementById(id);
-        if (button) {
-            button.disabled = false;
-            button.textContent = button.id === 'spin-button' ? 'Spin to Win!' : 'Claim Reward';
-        }
-    });
+function enableSpecificButton(buttonId) {
+    const button = document.getElementById(buttonId);
+    if (button) {
+        button.disabled = false;
+        button.textContent = button.id === 'spin-button' ? 'Spin to Win!' : 'Claim Reward';
+    }
 }
 
-function disableRewardButtons() {
-    ['ad-claim-button', 'check-in-button', 'spin-button'].forEach(id => {
-        const button = document.getElementById(id);
-        if (button) {
-            button.disabled = true;
-            button.textContent = 'Claimed';
-        }
-    });
+function disableSpecificButton(buttonId) {
+    const button = document.getElementById(buttonId);
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Claimed';
+    }
 }
 
 function resetDailyTasks() {
@@ -332,7 +330,9 @@ function resetDailyTasks() {
         localStorage.removeItem("rewardsClaimed");  // Remove flag for rewards claimed
         lastRewardClaimTime = now.getTime();  // Update last claim time
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
-        enableRewardButtons(); // Enable buttons for a new day
+        enableSpecificButton('ad-claim-button');
+        enableSpecificButton('check-in-button');
+        enableSpecificButton('spin-button');
         document.getElementById("claim-rewards-btn").disabled = true; // Reset claim button
     }
 }
@@ -342,9 +342,9 @@ function updateSpinButton() {
     const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
 
     if (now - lastClaim >= 86400000 || lastClaim === 0) { // Allow if first claim or 24 hours have passed
-        enableRewardButtons();
+        enableSpecificButton('spin-button');
     } else {
-        disableRewardButtons();
+        disableSpecificButton('spin-button');
         updateRewardStatus("You've already claimed your reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
     startTimer('spin-timer');
@@ -358,7 +358,7 @@ function completeAdTask() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
-        disableRewardButtons(); // Disable buttons after claiming
+        disableSpecificButton('ad-claim-button'); // Disable this button after claiming
     } else {
         updateRewardStatus("You've already claimed your ad reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
@@ -372,7 +372,7 @@ function completeCheckInTask() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
-        disableRewardButtons(); // Disable buttons after claiming
+        disableSpecificButton('check-in-button'); // Disable this button after claiming
     } else {
         updateRewardStatus("You've already checked in today. Try again in " + document.getElementById('spin-timer').textContent + ".");
     }
@@ -388,7 +388,7 @@ function spinWheel() {
         lastRewardClaimTime = now;
         localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
         updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
-        disableRewardButtons(); // Disable buttons after claiming
+        disableSpecificButton('spin-button'); // Disable this button after claiming
     } else {
         updateRewardStatus("You can only spin the wheel once every 24 hours.");
     }
