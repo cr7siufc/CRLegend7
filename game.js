@@ -109,6 +109,10 @@ function completeTask(task) {
             localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
             updateTaskButtons();
             checkAllTasksCompleted();
+            // Reward for completing each task
+            currentPoints += 5000;
+            updatePointsAndLevel();
+            updateRewardStatus(`Congratulations! You earned 5000 CR7SIU Points for completing the ${task} task.`);
         }
     } else {
         updateRewardStatus("You can only complete tasks once every 24 hours.");
@@ -128,7 +132,7 @@ function updateTaskButtons() {
 function checkAllTasksCompleted() {
     if (Object.values(tasksCompleted).every(Boolean)) {
         document.getElementById("claim-rewards-btn").disabled = false;
-        updateRewardStatus("All tasks completed! You can now claim your rewards.");
+        updateRewardStatus("All tasks completed! You can now claim additional rewards.");
     }
 }
 
@@ -136,13 +140,14 @@ function claimRewards() {
     let now = getISTTime().getTime();
     if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) { // Allow if first claim or 24 hours have passed
         if (Object.values(tasksCompleted).every(Boolean)) {
+            // Additional reward for completing all tasks
             currentPoints += 5000;
             updatePointsAndLevel();
-            updateRewardStatus("Congratulations! You earned 5000 CR7SIU Points.");
+            updateRewardStatus("Congratulations! You earned an extra 5000 CR7SIU Points for completing all tasks.");
             lastRewardClaimTime = now;
             localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
             resetDailyTasks(); // Reset tasks after claim
-            disableSpecificButton('claim-rewards-btn'); // Disable only the claim reward button
+            disableSpecificButton('claim-rewards-btn'); // Disable the claim reward button after claiming
         } else {
             updateRewardStatus("Complete all tasks before claiming rewards.");
         }
