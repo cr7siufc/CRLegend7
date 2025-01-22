@@ -6,7 +6,6 @@ let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
 let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
 let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
 let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
-let lastRewardClaimTime = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -36,10 +35,9 @@ function loadSession() {
     document.getElementById("player-level").textContent = playerLevel;
     document.getElementById("cr7siu-points").textContent = currentPoints;
     displayImprovements();
-    resetDailyTasks();  // Reset tasks if it's a new day or first visit
+    resetTasks();  // Reset tasks at the start of the session if they're all completed
     displayTasks();  // This will reflect the reset tasks
     displayReferrals();
-    updateSpinButton();
     showPage('home');
 }
 
@@ -102,20 +100,15 @@ function displayTasks() {
 }
 
 function completeTask(task) {
-    let now = getISTTime().getTime();
-    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) { // Allow if first claim or 24 hours have passed
-        if (!tasksCompleted[task]) {
-            tasksCompleted[task] = true;
-            localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
-            updateTaskButtons();
-            checkAllTasksCompleted();
-            // Reward for completing each task
-            currentPoints += 5000;
-            updatePointsAndLevel();
-            updateRewardStatus(`Congratulations! You earned 5000 CR7SIU Points for completing the ${task} task.`);
-        }
-    } else {
-        updateRewardStatus("You can only complete tasks once every 24 hours.");
+    if (!tasksCompleted[task]) {
+        tasksCompleted[task] = true;
+        localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+        updateTaskButtons();
+        checkAllTasksCompleted();
+        // Reward for completing each task
+        currentPoints += 5000;
+        updatePointsAndLevel();
+        updateRewardStatus(`Congratulations! You earned 5000 CR7SIU Points for completing the ${task} task.`);
     }
 }
 
@@ -137,22 +130,15 @@ function checkAllTasksCompleted() {
 }
 
 function claimRewards() {
-    let now = getISTTime().getTime();
-    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) { // Allow if first claim or 24 hours have passed
-        if (Object.values(tasksCompleted).every(Boolean)) {
-            // Additional reward for completing all tasks
-            currentPoints += 5000;
-            updatePointsAndLevel();
-            updateRewardStatus("Congratulations! You earned an extra 5000 CR7SIU Points for completing all tasks.");
-            lastRewardClaimTime = now;
-            localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
-            resetDailyTasks(); // Reset tasks after claim
-            disableSpecificButton('claim-rewards-btn'); // Disable the claim reward button after claiming
-        } else {
-            updateRewardStatus("Complete all tasks before claiming rewards.");
-        }
+    if (Object.values(tasksCompleted).every(Boolean)) {
+        // Additional reward for completing all tasks
+        currentPoints += 5000;
+        updatePointsAndLevel();
+        updateRewardStatus("Congratulations! You earned an extra 5000 CR7SIU Points for completing all tasks.");
+        resetTasks(); // Reset tasks after claiming all rewards
+        document.getElementById("claim-rewards-btn").disabled = true; // Disable claim button after claiming
     } else {
-        updateRewardStatus("You can only claim rewards once every 24 hours.");
+        updateRewardStatus("Complete all tasks before claiming rewards.");
     }
 }
 
@@ -270,41 +256,12 @@ function displayReferrals() {
     }
 }
 
-// Time functions for rewards
-function getISTTime() {
-    let now = new Date();
-    now.setHours(now.getHours() + 5, now.getMinutes() + 30); // IST is UTC+5:30
-    return now;
-}
-
-function startTimer(elementId, resetTime = 86400000) { // 24 hours in milliseconds
-    let now = getISTTime();
-    let reset = new Date(now);
-    reset.setHours(0, 0, 0, 0); // Set to midnight IST
-    if (now > reset) reset.setDate(reset.getDate() + 1); // If past midnight, set for next day
-
-    let timeLeft = reset - now;
-    let el = document.getElementById(elementId);
-    if (el) {
-        el.textContent = "00:00:00"; // Reset timer display
-        let timer = setInterval(() => {
-            if (timeLeft > 0) {
-                timeLeft -= 1000;
-                let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            } else {
-                clearInterval(timer);
-                el.textContent = "00:00:00";
-                resetDailyTasks(); // Reset at midnight
-                enableSpecificButton('ad-claim-button');
-                enableSpecificButton('check-in-button');
-                enableSpecificButton('spin-button');
-                updateSpinButton(); // Ensure buttons are updated after reset
-            }
-        }, 1000);
-    }
+// Reset tasks function
+function resetTasks() {
+    tasksCompleted = { youtube: false, xAccount: false, facebook: false };
+    localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+    document.getElementById("claim-rewards-btn").disabled = true;
+    updateTaskButtons();
 }
 
 function enableSpecificButton(buttonId) {
@@ -323,80 +280,27 @@ function disableSpecificButton(buttonId) {
     }
 }
 
-function resetDailyTasks() {
-    let now = getISTTime();
-    let resetTime = new Date(now);
-    resetTime.setHours(0, 0, 0, 0); // Reset to midnight IST
-    
-    if (now >= resetTime || lastRewardClaimTime === 0) {
-        // Reset only if it's midnight or later (i.e., new day has started) or if it's the first visit
-        tasksCompleted = { youtube: false, xAccount: false, facebook: false };
-        localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
-        localStorage.removeItem("rewardsClaimed");  // Remove flag for rewards claimed
-        lastRewardClaimTime = now.getTime();  // Update last claim time
-        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
-        enableSpecificButton('ad-claim-button');
-        enableSpecificButton('check-in-button');
-        enableSpecificButton('spin-button');
-        document.getElementById("claim-rewards-btn").disabled = true; // Reset claim button
-    }
-}
-
-function updateSpinButton() {
-    const now = getISTTime().getTime();
-    const lastClaim = parseInt(localStorage.getItem("lastRewardClaimTime")) || 0;
-
-    if (now - lastClaim >= 86400000 || lastClaim === 0) { // Allow if first claim or 24 hours have passed
-        enableSpecificButton('spin-button');
-    } else {
-        disableSpecificButton('spin-button');
-        updateRewardStatus("You've already claimed your reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
-    }
-    startTimer('spin-timer');
-}
-
 function completeAdTask() {
-    let now = getISTTime().getTime();
-    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) {
-        currentPoints += 100; // Example reward for watching an ad
-        updatePointsAndLevel();
-        lastRewardClaimTime = now;
-        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
-        updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
-        disableSpecificButton('ad-claim-button'); // Disable this button after claiming
-    } else {
-        updateRewardStatus("You've already claimed your ad reward today. Try again in " + document.getElementById('spin-timer').textContent + ".");
-    }
+    currentPoints += 100; // Example reward for watching an ad
+    updatePointsAndLevel();
+    updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
+    disableSpecificButton('ad-claim-button'); // Disable this button after claiming
 }
 
 function completeCheckInTask() {
-    let now = getISTTime().getTime();
-    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) {
-        currentPoints += 500; // Example reward for daily check-in
-        updatePointsAndLevel();
-        lastRewardClaimTime = now;
-        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
-        updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
-        disableSpecificButton('check-in-button'); // Disable this button after claiming
-    } else {
-        updateRewardStatus("You've already checked in today. Try again in " + document.getElementById('spin-timer').textContent + ".");
-    }
+    currentPoints += 500; // Example reward for daily check-in
+    updatePointsAndLevel();
+    updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
+    disableSpecificButton('check-in-button'); // Disable this button after claiming
 }
 
 function spinWheel() {
-    let now = getISTTime().getTime();
-    if (now - lastRewardClaimTime >= 86400000 || lastRewardClaimTime === 0) { // Allow if first claim or 24 hours have passed
-        const rewards = [100, 250, 500, 1000]; // Example reward amounts
-        let reward = rewards[Math.floor(Math.random() * rewards.length)];
-        currentPoints += reward;
-        updatePointsAndLevel();
-        lastRewardClaimTime = now;
-        localStorage.setItem("lastRewardClaimTime", lastRewardClaimTime.toString());
-        updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
-        disableSpecificButton('spin-button'); // Disable this button after claiming
-    } else {
-        updateRewardStatus("You can only spin the wheel once every 24 hours.");
-    }
+    const rewards = [100, 250, 500, 1000]; // Example reward amounts
+    let reward = rewards[Math.floor(Math.random() * rewards.length)];
+    currentPoints += reward;
+    updatePointsAndLevel();
+    updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
+    disableSpecificButton('spin-button'); // Disable this button after claiming
 }
 
 // Update reward status function
@@ -412,7 +316,8 @@ document.addEventListener('touchstart', function(event) {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    startTimer('spin-timer');
-    updateSpinButton();
     updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
+    enableSpecificButton('ad-claim-button');
+    enableSpecificButton('check-in-button');
+    enableSpecificButton('spin-button');
 });
