@@ -15,7 +15,26 @@ if (!username) {
     loadSession();
     checkForReferral(); // Check if user came from a referral link
 }
+// Add last claim times to track daily resets
+let lastAdClaim = parseInt(localStorage.getItem("lastAdClaim")) || 0;
+let lastCheckInClaim = parseInt(localStorage.getItem("lastCheckInClaim")) || 0;
+let lastSpinClaim = parseInt(localStorage.getItem("lastSpinClaim")) || 0;
 
+function isNewDay(lastClaimTime) {
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    return now - lastClaimTime >= oneDay;
+}
+
+function updateButtonStates() {
+    const now = Date.now();
+    if (isNewDay(lastAdClaim)) enableSpecificButton('ad-claim-button');
+    else disableSpecificButton('ad-claim-button');
+    if (isNewDay(lastCheckInClaim)) enableSpecificButton('check-in-button');
+    else disableSpecificButton('check-in-button');
+    if (isNewDay(lastSpinClaim)) enableSpecificButton('spin-button');
+    else disableSpecificButton('spin-button');
+}
 function setUsername() {
     const input = document.getElementById("username-input").value.trim();
     if (input) {
@@ -281,28 +300,45 @@ function disableSpecificButton(buttonId) {
 }
 
 function completeAdTask() {
-    currentPoints += 100; // Example reward for watching an ad
-    updatePointsAndLevel();
-    updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
-    disableSpecificButton('ad-claim-button'); // Disable this button after claiming
+    if (isNewDay(lastAdClaim)) {
+        currentPoints += 100;
+        updatePointsAndLevel();
+        updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
+        lastAdClaim = Date.now();
+        localStorage.setItem("lastAdClaim", lastAdClaim);
+        disableSpecificButton('ad-claim-button');
+    } else {
+        updateRewardStatus("You can only claim this reward once per day!");
+    }
 }
 
 function completeCheckInTask() {
-    currentPoints += 500; // Example reward for daily check-in
-    updatePointsAndLevel();
-    updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
-    disableSpecificButton('check-in-button'); // Disable this button after claiming
+    if (isNewDay(lastCheckInClaim)) {
+        currentPoints += 500;
+        updatePointsAndLevel();
+        updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
+        lastCheckInClaim = Date.now();
+        localStorage.setItem("lastCheckInClaim", lastCheckInClaim);
+        disableSpecificButton('check-in-button');
+    } else {
+        updateRewardStatus("You can only claim this reward once per day!");
+    }
 }
 
 function spinWheel() {
-    const rewards = [100, 250, 500, 1000]; // Example reward amounts
-    let reward = rewards[Math.floor(Math.random() * rewards.length)];
-    currentPoints += reward;
-    updatePointsAndLevel();
-    updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
-    disableSpecificButton('spin-button'); // Disable this button after claiming
+    if (isNewDay(lastSpinClaim)) {
+        const rewards = [100, 250, 500, 1000];
+        let reward = rewards[Math.floor(Math.random() * rewards.length)];
+        currentPoints += reward;
+        updatePointsAndLevel();
+        updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
+        lastSpinClaim = Date.now();
+        localStorage.setItem("lastSpinClaim", lastSpinClaim);
+        disableSpecificButton('spin-button');
+    } else {
+        updateRewardStatus("You can only spin the wheel once per day!");
+    }
 }
-
 // Update reward status function
 function updateRewardStatus(message) {
     document.getElementById("reward-status").innerText = message;
@@ -314,10 +350,7 @@ document.addEventListener('touchstart', function(event) {
         event.target.click();
     }
 });
-
 document.addEventListener('DOMContentLoaded', () => {
     updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
-    enableSpecificButton('ad-claim-button');
-    enableSpecificButton('check-in-button');
-    enableSpecificButton('spin-button');
+    updateButtonStates(); // Check button states on load
 });
