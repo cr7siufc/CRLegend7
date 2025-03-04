@@ -175,6 +175,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 }
 
 main {
+    display: block; /* Ensure visibility */
     text-align: center;
     padding: 20px 10px;
 }
@@ -199,7 +200,8 @@ main {
 }
 
 #tap-to-earn-container {
-    padding-bottom: 150px;
+    padding-bottom: 20px; /* Reduced to prevent overlap */
+    min-height: 200px; /* Ensure space for content */
 }
 
 #tap-to-earn-text, h2 {
@@ -253,12 +255,6 @@ input:focus {
     padding: 20px;
 }
 
-#spin-the-wheel {
-    position: relative;
-    margin: 20px auto;
-    text-align: center;
-}
-
 #wheel-container {
     position: relative;
     width: 300px;
@@ -271,20 +267,26 @@ input:focus {
     height: 300px;
     border-radius: 50%;
     border: 5px solid #FFD700;
-    background-color: #000; /* Base color for wheel */
+    background-color: #000;
 }
 
 #wheel-pointer {
     position: absolute;
-    top: -20px; /* Position above wheel */
+    top: -20px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 20px solid #FF00FF; /* Pointer color */
+    border-bottom: 20px solid #FF00FF;
     z-index: 2;
+}
+
+#spin-the-wheel {
+    position: relative;
+    margin: 20px auto;
+    text-align: center;
 }
 
 #spin-button {
@@ -316,22 +318,6 @@ input:focus {
     margin-top: 10px;
 }
 
-@media (max-width: 480px) {
-    #wheel-container, #wheelCanvas {
-        width: 250px;
-        height: 250px;
-    }
-
-    #wheel-pointer {
-        border-bottom: 15px solid #FF00FF;
-        top: -15px;
-    }
-
-    #spin-button {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-}
 #social-share {
     display: flex;
     justify-content: center;
@@ -345,29 +331,28 @@ input:focus {
     display: none;
 }
 
-/* Replace the existing #attributes-container and related styles */
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Slightly smaller min-width for better fit */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 15px;
-    margin: 20px auto; /* Center it with auto margins */
-    padding: 0 10px; /* Add horizontal padding to prevent edge overlap */
-    max-width: 1200px; /* Cap width on wide screens */
-    justify-items: center; /* Center cards horizontally */
-    align-items: stretch; /* Ensure cards stretch to equal height */
+    margin: 20px auto;
+    padding: 0 10px;
+    max-width: 1200px;
+    justify-items: center;
+    align-items: stretch;
 }
 
 .attribute-card {
-    padding: 15px; /* Increased padding for better touch targets */
+    padding: 15px;
     border: 3px solid #0073e6;
     background-color: rgba(60, 60, 60, 0.8);
     border-radius: 10px;
     color: #fff;
     transition: all 0.3s;
-    width: 100%; /* Ensure cards take full available width */
-    max-width: 200px; /* Cap card width for consistency */
-    box-sizing: border-box; /* Include padding/border in width */
-    text-align: center; /* Center text inside cards */
+    width: 100%;
+    max-width: 200px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .attribute-card:hover {
@@ -377,62 +362,19 @@ input:focus {
 
 .attribute-card h3 {
     font-size: 14px;
-    margin: 5px 0; /* Consistent spacing */
+    margin: 5px 0;
 }
 
 .attribute-card p {
     font-size: 12px;
-    margin: 5px 0; /* Consistent spacing */
+    margin: 5px 0;
 }
 
 .attribute-card button {
-    width: 100%; /* Full-width buttons for easier tapping */
-    margin-top: 10px; /* Space above button */
+    width: 100%;
+    margin-top: 10px;
 }
 
-/* Remove .attribute-row if it’s not needed (game.js doesn’t use it consistently) */
-.attribute-row {
-    display: contents; /* If game.js still wraps cards, this flattens it for the grid */
-}
-
-/* Update the media query for mobile */
-@media (max-width: 768px) {
-    #attributes-container {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Smaller min-width for mobile */
-        gap: 10px; /* Reduce gap for tighter fit */
-        padding: 0 5px; /* Less padding on very small screens */
-    }
-
-    .attribute-card {
-        padding: 10px; /* Slightly less padding on mobile */
-        max-width: 160px; /* Smaller cap for mobile */
-    }
-
-    .attribute-card h3 {
-        font-size: 12px; /* Slightly smaller text */
-    }
-
-    .attribute-card p {
-        font-size: 10px; /* Slightly smaller text */
-    }
-
-    .attribute-card button {
-        padding: 6px 8px; /* Smaller buttons for mobile */
-        font-size: 12px;
-    }
-}
-
-/* Extra small screens (e.g., Telegram mini-app) */
-@media (max-width: 480px) {
-    #attributes-container {
-        grid-template-columns: 1fr; /* Stack cards on very small screens */
-        gap: 8px;
-    }
-
-    .attribute-card {
-        max-width: none; /* Full width on tiny screens */
-    }
-}
 .score-container {
     display: flex;
     flex-wrap: wrap;
@@ -464,7 +406,6 @@ input:focus {
     transform: translateY(-5px);
 }
 
-/* New styles for reward status */
 #reward-status {
     font-size: 16px;
     margin-top: 20px;
@@ -513,7 +454,27 @@ input:focus {
     }
 
     #attributes-container {
-        grid-template-columns: repeat(2, 1fr); 
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        padding: 0 5px;
+    }
+
+    .attribute-card {
+        padding: 10px;
+        max-width: 160px;
+    }
+
+    .attribute-card h3 {
+        font-size: 12px;
+    }
+
+    .attribute-card p {
+        font-size: 10px;
+    }
+
+    .attribute-card button {
+        padding: 6px 8px;
+        font-size: 12px;
     }
 
     #tasks-container {
@@ -528,5 +489,31 @@ input:focus {
     #reward-status {
         font-size: 14px;
         max-width: 90%;
+    }
+
+    #wheel-container, #wheelCanvas {
+        width: 250px;
+        height: 250px;
+    }
+
+    #wheel-pointer {
+        border-bottom: 15px solid #FF00FF;
+        top: -15px;
+    }
+
+    #spin-button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    #attributes-container {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .attribute-card {
+        max-width: none;
     }
 }
