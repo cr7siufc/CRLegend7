@@ -278,21 +278,29 @@ input:focus {
     display: none;
 }
 
+/* Replace the existing #attributes-container and related styles */
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Slightly smaller min-width for better fit */
     gap: 15px;
-    margin: 20px 0;
-    text-align: center;
+    margin: 20px auto; /* Center it with auto margins */
+    padding: 0 10px; /* Add horizontal padding to prevent edge overlap */
+    max-width: 1200px; /* Cap width on wide screens */
+    justify-items: center; /* Center cards horizontally */
+    align-items: stretch; /* Ensure cards stretch to equal height */
 }
 
 .attribute-card {
-    padding: 10px;
+    padding: 15px; /* Increased padding for better touch targets */
     border: 3px solid #0073e6;
     background-color: rgba(60, 60, 60, 0.8);
     border-radius: 10px;
     color: #fff;
     transition: all 0.3s;
+    width: 100%; /* Ensure cards take full available width */
+    max-width: 200px; /* Cap card width for consistency */
+    box-sizing: border-box; /* Include padding/border in width */
+    text-align: center; /* Center text inside cards */
 }
 
 .attribute-card:hover {
@@ -302,12 +310,62 @@ input:focus {
 
 .attribute-card h3 {
     font-size: 14px;
+    margin: 5px 0; /* Consistent spacing */
 }
 
 .attribute-card p {
     font-size: 12px;
+    margin: 5px 0; /* Consistent spacing */
 }
 
+.attribute-card button {
+    width: 100%; /* Full-width buttons for easier tapping */
+    margin-top: 10px; /* Space above button */
+}
+
+/* Remove .attribute-row if it’s not needed (game.js doesn’t use it consistently) */
+.attribute-row {
+    display: contents; /* If game.js still wraps cards, this flattens it for the grid */
+}
+
+/* Update the media query for mobile */
+@media (max-width: 768px) {
+    #attributes-container {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Smaller min-width for mobile */
+        gap: 10px; /* Reduce gap for tighter fit */
+        padding: 0 5px; /* Less padding on very small screens */
+    }
+
+    .attribute-card {
+        padding: 10px; /* Slightly less padding on mobile */
+        max-width: 160px; /* Smaller cap for mobile */
+    }
+
+    .attribute-card h3 {
+        font-size: 12px; /* Slightly smaller text */
+    }
+
+    .attribute-card p {
+        font-size: 10px; /* Slightly smaller text */
+    }
+
+    .attribute-card button {
+        padding: 6px 8px; /* Smaller buttons for mobile */
+        font-size: 12px;
+    }
+}
+
+/* Extra small screens (e.g., Telegram mini-app) */
+@media (max-width: 480px) {
+    #attributes-container {
+        grid-template-columns: 1fr; /* Stack cards on very small screens */
+        gap: 8px;
+    }
+
+    .attribute-card {
+        max-width: none; /* Full width on tiny screens */
+    }
+}
 .score-container {
     display: flex;
     flex-wrap: wrap;
