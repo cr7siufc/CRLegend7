@@ -555,7 +555,8 @@ input:focus {
     height: 300px;
     border: 3px solid #FFD700;
     border-radius: 10px;
-    background-color: #000;
+    background: url("images/pitch-background.jpg") no-repeat center center;
+    background-size: cover;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     display: block;
     margin: 0 auto;
@@ -694,6 +695,11 @@ input:focus {
     .attribute-card button {
         padding: 10px;
         font-size: 14px;
+    }
+
+    #reward-status {
+        font-size: 14px;
+        max-width: 90%;
     }
 
     #reward-toast h3 {

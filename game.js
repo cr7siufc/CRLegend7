@@ -34,11 +34,32 @@ let penaltyScore = 0;
 let penaltyStreak = 0;
 let penaltyMultiplier = 1;
 let isSuddenDeath = false;
+let gameOver = false;
 let ballX, ballY, targetX, targetY;
 let goalkeeperX, goalkeeperDirection;
-let gameOver = false;
 let swipeStartX = null;
 let swipeStartY = null;
+let isShooting = false;
+let shotFrame = 0;
+let goalkeeperDiveDirection = 'center'; // 'left', 'right', or 'center'
+let playerState = 'standing'; // 'standing' or 'kicking'
+let goalkeeperState = 'center'; // 'left', 'right', or 'center'
+let feedbackMessage = '';
+let feedbackTimer = 0;
+
+// Load images for visuals
+const footballImg = new Image();
+footballImg.src = 'images/football.png';
+const goalkeeperLeftImg = new Image();
+goalkeeperLeftImg.src = 'images/goalkeeper-left.png';
+const goalkeeperRightImg = new Image();
+goalkeeperRightImg.src = 'images/goalkeeper-right.png';
+const goalkeeperCenterImg = new Image();
+goalkeeperCenterImg.src = 'images/goalkeeper-center.png';
+const playerStandingImg = new Image();
+playerStandingImg.src = 'images/player-standing.png';
+const playerKickingImg = new Image();
+playerKickingImg.src = 'images/player-kicking.png';
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -134,11 +155,18 @@ function startPenaltyShootout() {
         isSuddenDeath = false;
         gameOver = false;
         ballX = 200; // Center of canvas
-        ballY = 250; // Bottom of canvas
+        ballY = 250; // Near bottom of canvas
         targetX = ballX;
         targetY = ballY;
         goalkeeperX = 200; // Center of goal
         goalkeeperDirection = 1; // 1 for right, -1 for left
+        isShooting = false;
+        shotFrame = 0;
+        goalkeeperDiveDirection = 'center';
+        playerState = 'standing';
+        goalkeeperState = 'center';
+        feedbackMessage = '';
+        feedbackTimer = 0;
 
         const gameArea = document.getElementById("game-area");
         if (gameArea) gameArea.classList.remove("hidden");
@@ -163,7 +191,7 @@ function endPenaltyShootout() {
         if (penaltyGameActive) {
             penaltyGameActive = false;
             if (penaltyScore > 0) {
-                const pointsEarned = penaltyScore * 100;
+                const pointsEarned = penaltyScore;
                 currentPoints += pointsEarned;
                 updatePointsAndLevel();
                 showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points!`);
@@ -182,7 +210,7 @@ function endPenaltyShootout() {
 }
 
 function startSwipe(event) {
-    if (!penaltyGameActive || gameOver) return;
+    if (!penaltyGameActive || gameOver || isShooting) return;
     event.preventDefault();
     const canvas = document.getElementById("penaltyCanvas");
     const rect = canvas.getBoundingClientRect();
@@ -204,7 +232,7 @@ function updateSwipe(event) {
 }
 
 function endSwipe(event) {
-    if (!penaltyGameActive || gameOver || swipeStartX === null) return;
+    if (!penaltyGameActive || gameOver || swipeStartX === null || isShooting) return;
     event.preventDefault();
     const canvas = document.getElementById("penaltyCanvas");
     const rect = canvas.getBoundingClientRect();
@@ -216,54 +244,44 @@ function endSwipe(event) {
     // Calculate swipe direction and power
     const dx = endX - swipeStartX;
     const dy = endY - swipeStartY;
-    const power = Math.sqrt(dx * dx + dy * dy) / 100; // Normalized power
-    const angle = Math.atan2(dy, dx);
-
-    // Update ball trajectory
+    const power = Math.min(Math.sqrt(dx * dx + dy * dy) / 50, 2); // Cap power for better control
     targetX = ballX + dx * power;
     targetY = ballY + dy * power;
 
-    // Check if the shot scores
-    penaltyShotsTaken++;
-    const goalScored = checkGoal(targetX, targetY);
-    if (goalScored) {
-        penaltyScore += 100 * penaltyMultiplier;
-        penaltyStreak++;
-        updateMultiplier();
+    // Start shooting animation
+    isShooting = true;
+    playerState = 'kicking';
+    shotFrame = 0;
+
+    // AI Goalkeeper decides dive direction
+    const diveRandom = Math.random();
+    if (targetX < 180) {
+        goalkeeperDiveDirection = diveRandom < 0.5 ? 'left' : (diveRandom < 0.75 ? 'center' : 'right');
+    } else if (targetX > 220) {
+        goalkeeperDiveDirection = diveRandom < 0.5 ? 'right' : (diveRandom < 0.75 ? 'center' : 'left');
     } else {
-        penaltyStreak = 0;
-        penaltyMultiplier = 1;
+        goalkeeperDiveDirection = diveRandom < 0.4 ? 'center' : (diveRandom < 0.7 ? 'left' : 'right');
     }
 
-    // Check for Sudden Death after 5 shots
-    if (penaltyShotsTaken >= 5 && penaltyScore >= 400 && !isSuddenDeath) {
-        isSuddenDeath = true;
-        updateRewardStatus("Sudden Death Mode! Miss a shot and the game ends!");
-    }
-
-    // End game in Sudden Death if the player misses
-    if (isSuddenDeath && !goalScored) {
-        gameOver = true;
-        endPenaltyShootout();
-    }
-
-    updateGameScore();
     swipeStartX = null;
     swipeStartY = null;
-
-    // Reset ball position
-    ballX = 200;
-    ballY = 250;
-    targetX = ballX;
-    targetY = ballY;
 }
 
 function checkGoal(x, y) {
-    // Goal area: x between 150 and 250, y between 0 and 50
-    const inGoal = x >= 150 && x <= 250 && y >= 0 && y <= 50;
-    // Goalkeeper area: x within 50 units of goalkeeperX, y near the top
-    const blocked = Math.abs(x - goalkeeperX) < 50 && y < 70;
-    return inGoal && !blocked;
+    // Goal area: x between 140 and 260, y between 0 and 50
+    const inGoal = x >= 140 && x <= 260 && y >= 0 && y <= 50;
+    // Goalkeeper area: x within 40 units of center dive position, y near the top
+    let blocked = false;
+    if (goalkeeperDiveDirection === 'left') {
+        blocked = x >= 140 && x <= 180 && y <= 60; // Left side of goal
+    } else if (goalkeeperDiveDirection === 'right') {
+        blocked = x >= 220 && x <= 260 && y <= 60; // Right side of goal
+    } else {
+        blocked = x >= 180 && x <= 220 && y <= 60; // Center of goal
+    }
+    // 50% chance for goalkeeper to save if in correct position
+    const saveChance = Math.random() < 0.5;
+    return inGoal && !(blocked && saveChance);
 }
 
 function updateMultiplier() {
@@ -291,30 +309,104 @@ function gameLoop() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw goal
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(150, 0, 100, 50);
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(150, 0, 100, 50);
-
-    // Draw goalkeeper
-    goalkeeperX += goalkeeperDirection * 2;
-    if (goalkeeperX <= 150 || goalkeeperX >= 250) goalkeeperDirection *= -1;
-    ctx.fillStyle = "#ff0000";
-    ctx.fillRect(goalkeeperX - 20, 30, 40, 20);
-
-    // Draw ball
+    // Draw penalty spot
     ctx.beginPath();
-    ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+    ctx.arc(200, 250, 5, 0, Math.PI * 2);
     ctx.fillStyle = "#fff";
     ctx.fill();
     ctx.closePath();
 
-    // Animate ball towards target
-    if (Math.abs(ballX - targetX) > 1 || Math.abs(ballY - targetY) > 1) {
-        ballX += (targetX - ballX) * 0.1;
-        ballY += (targetY - ballY) * 0.1;
+    // Draw goalpost
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(140, 0, 120, 10); // Top bar
+    ctx.fillRect(140, 0, 10, 50); // Left post
+    ctx.fillRect(250, 0, 10, 50); // Right post
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fillRect(140, 10, 120, 40); // Net
+
+    // Draw player
+    const playerImg = playerState === 'standing' ? playerStandingImg : playerKickingImg;
+    ctx.drawImage(playerImg, 175, 220, 50, 50);
+
+    // Draw goalkeeper
+    let goalkeeperImg;
+    if (goalkeeperDiveDirection === 'left') {
+        goalkeeperImg = goalkeeperLeftImg;
+    } else if (goalkeeperDiveDirection === 'right') {
+        goalkeeperImg = goalkeeperRightImg;
+    } else {
+        goalkeeperImg = goalkeeperCenterImg;
+    }
+    ctx.drawImage(goalkeeperImg, 160, 10, 80, 40);
+
+    // Draw ball if not shooting or during animation
+    if (!isShooting) {
+        ctx.drawImage(footballImg, ballX - 10, ballY - 10, 20, 20);
+    } else {
+        // Animate ball towards target
+        shotFrame++;
+        const progress = Math.min(shotFrame / 20, 1);
+        ballX = ballX + (targetX - ballX) * progress;
+        ballY = ballY + (targetY - ballY) * progress;
+        ctx.drawImage(footballImg, ballX - 10, ballY - 10, 20, 20);
+
+        // Draw ball trail
+        ctx.beginPath();
+        ctx.moveTo(200, 250);
+        ctx.lineTo(ballX, ballY);
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.closePath();
+
+        if (progress === 1) {
+            // Check if the shot scores
+            penaltyShotsTaken++;
+            const goalScored = checkGoal(targetX, targetY);
+            if (goalScored) {
+                penaltyScore += 100 * penaltyMultiplier;
+                penaltyStreak++;
+                updateMultiplier();
+                feedbackMessage = "Goal!";
+            } else {
+                penaltyStreak = 0;
+                penaltyMultiplier = 1;
+                feedbackMessage = "Miss!";
+            }
+            feedbackTimer = 60; // Show feedback for ~1 second (assuming 60 FPS)
+
+            // Check for Sudden Death after 5 shots
+            if (penaltyShotsTaken >= 5 && penaltyScore >= 400 && !isSuddenDeath) {
+                isSuddenDeath = true;
+                updateRewardStatus("Sudden Death Mode! Miss a shot and the game ends!");
+            }
+
+            // End game in Sudden Death if the player misses
+            if (isSuddenDeath && !goalScored) {
+                gameOver = true;
+                endPenaltyShootout();
+            }
+
+            updateGameScore();
+            isShooting = false;
+            playerState = 'standing';
+            goalkeeperDiveDirection = 'center';
+
+            // Reset ball position
+            ballX = 200;
+            ballY = 250;
+            targetX = ballX;
+            targetY = ballY;
+        }
+    }
+
+    // Draw feedback message
+    if (feedbackTimer > 0) {
+        ctx.font = "bold 20px Roboto";
+        ctx.fillStyle = feedbackMessage === "Goal!" ? "#00FF00" : "#FF0000";
+        ctx.textAlign = "center";
+        ctx.fillText(feedbackMessage, canvas.width / 2, canvas.height / 2);
+        feedbackTimer--;
     }
 
     requestAnimationFrame(gameLoop);
