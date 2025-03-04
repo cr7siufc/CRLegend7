@@ -19,6 +19,9 @@ let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
 let lastAdClaim = parseInt(localStorage.getItem("lastAdClaim")) || 0;
 let lastCheckInClaim = parseInt(localStorage.getItem("lastCheckInClaim")) || 0;
 let lastSpinClaim = parseInt(localStorage.getItem("lastSpinClaim")) || 0;
+// New timestamps for tasks and Claim Rewards
+let lastTaskClaims = JSON.parse(localStorage.getItem("lastTaskClaims")) || { youtube: 0, xAccount: 0, facebook: 0 };
+let lastRewardsClaim = parseInt(localStorage.getItem("lastRewardsClaim")) || 0;
 
 // Wheel data
 const wheelRewards = [500, 1000, 1500, 2000, 2500, 300];
@@ -179,8 +182,8 @@ function displayTasks() {
                 <p>${task === 'youtube' ? 'Watch and like our latest video' : 
                     task === 'xAccount' ? 'Tweet with our hashtag' : 
                     'Share our post on your timeline'}</p>
-                <button onclick="completeTask('${task}')" ${tasksCompleted[task] ? 'disabled' : ''}>
-                    ${tasksCompleted[task] ? 'Completed' : 'Complete'}
+                <button id="task-${task}" onclick="completeTask('${task}')" ${lastTaskClaims[task] && !isNewDay(lastTaskClaims[task]) ? 'disabled' : ''}>
+                    ${lastTaskClaims[task] && !isNewDay(lastTaskClaims[task]) ? 'Claimed' : 'Complete'}
                 </button>
             </div>
         `).join('');
@@ -192,14 +195,24 @@ function displayTasks() {
 
 function completeTask(task) {
     try {
-        if (!tasksCompleted[task]) {
-            tasksCompleted[task] = true;
-            localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
-            updateTaskButtons();
-            checkAllTasksCompleted();
-            currentPoints += 5000;
-            updatePointsAndLevel();
-            updateRewardStatus(`Congratulations! You earned 5000 CR7SIU Points for completing the ${task} task.`);
+        if (lastTaskClaims[task] && !isNewDay(lastTaskClaims[task])) {
+            updateRewardStatus("You can only claim this task once per day!");
+            return;
+        }
+
+        tasksCompleted[task] = true;
+        lastTaskClaims[task] = Date.now();
+        localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+        localStorage.setItem("lastTaskClaims", JSON.stringify(lastTaskClaims));
+        updateTaskButtons();
+        checkAllTasksCompleted();
+        currentPoints += 5000;
+        updatePointsAndLevel();
+        updateRewardStatus(`Congratulations! You earned 5000 CR7SIU Points for completing the ${task} task.`);
+        const button = document.getElementById(`task-${task}`);
+        if (button) {
+            button.disabled = true;
+            button.textContent = "Claimed";
         }
     } catch (e) {
         console.error("Error in completeTask:", e);
@@ -209,10 +222,11 @@ function completeTask(task) {
 function updateTaskButtons() {
     try {
         Object.keys(tasksCompleted).forEach(task => {
-            const button = document.querySelector(`#tasks-container .task button[onclick="completeTask('${task}')"]`);
+            const button = document.getElementById(`task-${task}`);
             if (button) {
-                button.disabled = tasksCompleted[task];
-                button.textContent = tasksCompleted[task] ? "Completed" : "Complete";
+                const claimed = lastTaskClaims[task] && !isNewDay(lastTaskClaims[task]);
+                button.disabled = claimed;
+                button.textContent = claimed ? "Claimed" : "Complete";
             }
         });
     } catch (e) {
@@ -225,8 +239,9 @@ function checkAllTasksCompleted() {
         if (Object.values(tasksCompleted).every(Boolean)) {
             const claimButton = document.getElementById("claim-rewards-btn");
             if (claimButton) {
-                claimButton.disabled = false;
-                updateRewardStatus("All tasks completed! You can now claim additional rewards.");
+                const canClaim = isNewDay(lastRewardsClaim);
+                claimButton.disabled = !canClaim;
+                updateRewardStatus(canClaim ? "All tasks completed! You can now claim additional rewards." : "You can only claim rewards once per day!");
             }
         }
     } catch (e) {
@@ -236,13 +251,23 @@ function checkAllTasksCompleted() {
 
 function claimRewards() {
     try {
+        if (!isNewDay(lastRewardsClaim)) {
+            updateRewardStatus("You can only claim rewards once per day!");
+            return;
+        }
+
         if (Object.values(tasksCompleted).every(Boolean)) {
             currentPoints += 5000;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned an extra 5000 CR7SIU Points for completing all tasks.");
             resetTasks();
+            lastRewardsClaim = Date.now();
+            localStorage.setItem("lastRewardsClaim", lastRewardsClaim);
             const claimButton = document.getElementById("claim-rewards-btn");
-            if (claimButton) claimButton.disabled = true;
+            if (claimButton) {
+                claimButton.disabled = true;
+                claimButton.textContent = "Claimed";
+            }
         } else {
             updateRewardStatus("Complete all tasks before claiming rewards.");
         }
@@ -414,12 +439,35 @@ function isNewDay(lastClaimTime) {
 
 function updateButtonStates() {
     try {
+        // Update ad, check-in, and spin buttons
         if (isNewDay(lastAdClaim)) enableSpecificButton('ad-claim-button');
         else disableSpecificButton('ad-claim-button');
         if (isNewDay(lastCheckInClaim)) enableSpecificButton('check-in-button');
         else disableSpecificButton('check-in-button');
         if (isNewDay(lastSpinClaim)) enableSpecificButton('spin-button');
         else disableSpecificButton('spin-button');
+
+        // Update task buttons
+        Object.keys(tasksCompleted).forEach(task => {
+            const button = document.getElementById(`task-${task}`);
+            if (button) {
+                const canClaim = isNewDay(lastTaskClaims[task]);
+                if (canClaim) {
+                    tasksCompleted[task] = false; // Reset task completion
+                    localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+                }
+                button.disabled = !canClaim;
+                button.textContent = canClaim ? "Complete" : "Claimed";
+            }
+        });
+
+        // Update Claim Rewards button
+        const claimButton = document.getElementById("claim-rewards-btn");
+        if (claimButton) {
+            const canClaim = isNewDay(lastRewardsClaim);
+            claimButton.disabled = !canClaim || !Object.values(tasksCompleted).every(Boolean);
+            claimButton.textContent = canClaim ? "Claim Rewards" : "Claimed";
+        }
     } catch (e) {
         console.error("Error in updateButtonStates:", e);
     }
