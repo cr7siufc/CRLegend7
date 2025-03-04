@@ -91,15 +91,9 @@ function loadSession() {
 
 function showPage(page) {
     try {
-        // Reset justClaimedReward flag and hide popup when navigating
+        // Reset justClaimedReward flag and ensure popup is hidden when navigating
         justClaimedReward = false;
-        const popup = document.getElementById("reward-popup");
-        if (popup) {
-            popup.classList.add("hidden");
-            const messageElement = document.getElementById("reward-message");
-            if (messageElement) messageElement.textContent = ""; // Clear message
-            console.log("Popup hidden and message cleared during navigation to page:", page);
-        }
+        ensurePopupHidden();
 
         document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
         const targetPage = document.getElementById(page);
@@ -114,6 +108,21 @@ function showPage(page) {
         }
     } catch (e) {
         console.error("Error in showPage:", e);
+    }
+}
+
+// Helper function to ensure the popup is hidden
+function ensurePopupHidden() {
+    try {
+        const popup = document.getElementById("reward-popup");
+        if (popup) {
+            popup.classList.add("hidden");
+            const messageElement = document.getElementById("reward-message");
+            if (messageElement) messageElement.textContent = "";
+            console.log("Popup hidden and message cleared during ensurePopupHidden");
+        }
+    } catch (e) {
+        console.error("Error in ensurePopupHidden:", e);
     }
 }
 
@@ -705,13 +714,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         // Ensure popup is hidden on page load
         justClaimedReward = false;
-        const popup = document.getElementById("reward-popup");
-        if (popup) {
-            popup.classList.add("hidden");
-            const messageElement = document.getElementById("reward-message");
-            if (messageElement) messageElement.textContent = "";
-            console.log("Popup hidden and message cleared on page load");
-        }
+        setTimeout(() => {
+            ensurePopupHidden();
+        }, 100); // Slight delay to ensure DOM is ready
 
         updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
         updateButtonStates();
