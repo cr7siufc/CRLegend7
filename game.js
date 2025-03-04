@@ -27,9 +27,6 @@ const wheelRewards = [500, 1000, 1500, 2000, 2500, 300];
 const wheelColors = ["#FF4500", "#32CD32", "#1E90FF", "#FFD700", "#FF00FF", "#00CED1"];
 let isSpinning = false;
 
-// Track if a reward was just claimed to trigger the popup
-let justClaimedReward = false;
-
 // Show username setup if it's the user's first session
 if (!username) {
     const setupElement = document.getElementById("username-setup");
@@ -91,10 +88,6 @@ function loadSession() {
 
 function showPage(page) {
     try {
-        // Reset justClaimedReward flag and ensure popup is hidden when navigating
-        justClaimedReward = false;
-        ensurePopupHidden();
-
         document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
         const targetPage = document.getElementById(page);
         if (targetPage) {
@@ -108,21 +101,6 @@ function showPage(page) {
         }
     } catch (e) {
         console.error("Error in showPage:", e);
-    }
-}
-
-// Helper function to ensure the popup is hidden
-function ensurePopupHidden() {
-    try {
-        const popup = document.getElementById("reward-popup");
-        if (popup) {
-            popup.classList.add("hidden");
-            const messageElement = document.getElementById("reward-message");
-            if (messageElement) messageElement.textContent = "";
-            console.log("Popup hidden and message cleared during ensurePopupHidden");
-        }
-    } catch (e) {
-        console.error("Error in ensurePopupHidden:", e);
     }
 }
 
@@ -230,8 +208,7 @@ function completeTask(task) {
         checkAllTasksCompleted();
         currentPoints += 5000;
         updatePointsAndLevel();
-        justClaimedReward = true;
-        showRewardPopup(`Reward Claimed! 5000 CR7SIU Points have been credited to your account.`);
+        showRewardToast(`Reward Claimed! 5000 CR7SIU Points have been credited to your account.`);
         const button = document.getElementById(`task-${task}`);
         if (button) {
             button.disabled = true;
@@ -287,8 +264,7 @@ function claimRewards() {
         if (Object.values(tasksCompleted).every(Boolean)) {
             currentPoints += 5000;
             updatePointsAndLevel();
-            justClaimedReward = true;
-            showRewardPopup("Reward Claimed! 5000 CR7SIU Points have been credited to your account.");
+            showRewardToast("Reward Claimed! 5000 CR7SIU Points have been credited to your account.");
             resetTasks();
             lastRewardsClaim = Date.now();
             localStorage.setItem("lastRewardsClaim", lastRewardsClaim);
@@ -305,42 +281,22 @@ function claimRewards() {
     }
 }
 
-function showRewardPopup(message) {
+function showRewardToast(message) {
     try {
-        if (!justClaimedReward) {
-            console.log("Reward popup not shown: No recent claim.");
-            return;
-        }
-        // Ensure the popup is only shown on the Rewards page
-        const rewardsPage = document.getElementById("rewards");
-        if (!rewardsPage || rewardsPage.classList.contains("hidden")) {
-            console.log("Reward popup not shown: Not on Rewards page.");
-            return;
-        }
-        console.log("Showing reward popup with message:", message, new Error().stack);
-        const popup = document.getElementById("reward-popup");
+        console.log("Showing reward toast with message:", message);
+        const toast = document.getElementById("reward-toast");
         const messageElement = document.getElementById("reward-message");
-        if (popup && messageElement) {
+        if (toast && messageElement) {
             messageElement.textContent = message;
-            popup.classList.remove("hidden");
+            toast.classList.remove("hidden");
+            setTimeout(() => {
+                toast.classList.add("hidden");
+            }, 3000); // Auto-close after 3 seconds
         } else {
-            console.error("Popup or message element not found.");
-        }
-        justClaimedReward = false;
-    } catch (e) {
-        console.error("Error in showRewardPopup:", e);
-    }
-}
-
-function closeRewardPopup() {
-    try {
-        const popup = document.getElementById("reward-popup");
-        if (popup) {
-            popup.classList.add("hidden");
-            console.log("Popup closed by user.");
+            console.error("Toast or message element not found.");
         }
     } catch (e) {
-        console.error("Error in closeRewardPopup:", e);
+        console.error("Error in showRewardToast:", e);
     }
 }
 
@@ -572,8 +528,7 @@ function completeAdTask() {
             currentPoints += 100;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
-            justClaimedReward = true;
-            showRewardPopup("Reward Claimed! 100 CR7SIU Points have been credited to your account.");
+            showRewardToast("Reward Claimed! 100 CR7SIU Points have been credited to your account.");
             lastAdClaim = Date.now();
             localStorage.setItem("lastAdClaim", lastAdClaim);
             disableSpecificButton('ad-claim-button');
@@ -592,8 +547,7 @@ function completeCheckInTask() {
             currentPoints += 500;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
-            justClaimedReward = true;
-            showRewardPopup("Reward Claimed! 500 CR7SIU Points have been credited to your account.");
+            showRewardToast("Reward Claimed! 500 CR7SIU Points have been credited to your account.");
             lastCheckInClaim = Date.now();
             localStorage.setItem("lastCheckInClaim", lastCheckInClaim);
             disableSpecificButton('check-in-button');
@@ -673,8 +627,7 @@ function spinWheel() {
                     const reward = wheelRewards[randomSection];
                     currentPoints += reward;
                     updatePointsAndLevel();
-                    justClaimedReward = true;
-                    showRewardPopup(`Reward Claimed! ${reward} CR7SIU Points have been credited to your account.`);
+                    showRewardToast(`Reward Claimed! ${reward} CR7SIU Points have been credited to your account.`);
                     lastSpinClaim = Date.now();
                     localStorage.setItem("lastSpinClaim", lastSpinClaim);
                 }
@@ -712,12 +665,6 @@ document.addEventListener('touchstart', function(event) {
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // Ensure popup is hidden on page load
-        justClaimedReward = false;
-        setTimeout(() => {
-            ensurePopupHidden();
-        }, 100); // Slight delay to ensure DOM is ready
-
         updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
         updateButtonStates();
         if (document.getElementById("rewards") && !document.getElementById("rewards").classList.contains("hidden")) {
