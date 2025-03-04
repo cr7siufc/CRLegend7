@@ -419,11 +419,6 @@ function updateButtonStates() {
     if (isNewDay(lastSpinClaim)) enableSpecificButton("spin-button");
     else disableSpecificButton("spin-button");
 }
-// Update reward status function
-function updateRewardStatus(message) {
-    document.getElementById("reward-status").innerText = message;
-}
-
 // Mobile optimization
 document.addEventListener('touchstart', function(event) {
     if (event.target.tagName === 'BUTTON') {
