@@ -91,11 +91,13 @@ function loadSession() {
 
 function showPage(page) {
     try {
-        // Reset justClaimedReward flag when navigating to a new page
+        // Reset justClaimedReward flag and hide popup when navigating
         justClaimedReward = false;
-        // Ensure popup is hidden when navigating to Rewards page
         const popup = document.getElementById("reward-popup");
-        if (popup) popup.classList.add("hidden");
+        if (popup) {
+            popup.classList.add("hidden");
+            console.log("Popup hidden during navigation to page:", page);
+        }
 
         document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
         const targetPage = document.getElementById(page);
@@ -296,14 +298,14 @@ function showRewardPopup(message) {
             console.log("Reward popup not shown: No recent claim.");
             return;
         }
-        console.log("Showing reward popup with message:", message);
+        console.log("Showing reward popup with message:", message, new Error().stack);
         const popup = document.getElementById("reward-popup");
         const messageElement = document.getElementById("reward-message");
         if (popup && messageElement) {
             messageElement.textContent = message;
             popup.classList.remove("hidden");
         }
-        justClaimedReward = false; // Reset the flag after showing the popup
+        justClaimedReward = false;
     } catch (e) {
         console.error("Error in showRewardPopup:", e);
     }
@@ -685,8 +687,14 @@ document.addEventListener('touchstart', function(event) {
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // Reset justClaimedReward on page load
+        // Ensure popup is hidden on page load
         justClaimedReward = false;
+        const popup = document.getElementById("reward-popup");
+        if (popup) {
+            popup.classList.add("hidden");
+            console.log("Popup hidden on page load");
+        }
+
         updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
         updateButtonStates();
         if (document.getElementById("rewards") && !document.getElementById("rewards").classList.contains("hidden")) {
