@@ -96,7 +96,9 @@ function showPage(page) {
         const popup = document.getElementById("reward-popup");
         if (popup) {
             popup.classList.add("hidden");
-            console.log("Popup hidden during navigation to page:", page);
+            const messageElement = document.getElementById("reward-message");
+            if (messageElement) messageElement.textContent = ""; // Clear message
+            console.log("Popup hidden and message cleared during navigation to page:", page);
         }
 
         document.querySelectorAll("main").forEach(p => p.classList.add("hidden"));
@@ -205,6 +207,7 @@ function displayTasks() {
 
 function completeTask(task) {
     try {
+        console.log(`Attempting to complete task: ${task}`);
         if (lastTaskClaims[task] && !isNewDay(lastTaskClaims[task])) {
             updateRewardStatus("You can only claim this task once per day!");
             return;
@@ -266,6 +269,7 @@ function checkAllTasksCompleted() {
 
 function claimRewards() {
     try {
+        console.log("Attempting to claim rewards");
         if (!isNewDay(lastRewardsClaim)) {
             updateRewardStatus("You can only claim rewards once per day!");
             return;
@@ -298,12 +302,20 @@ function showRewardPopup(message) {
             console.log("Reward popup not shown: No recent claim.");
             return;
         }
+        // Ensure the popup is only shown on the Rewards page
+        const rewardsPage = document.getElementById("rewards");
+        if (!rewardsPage || rewardsPage.classList.contains("hidden")) {
+            console.log("Reward popup not shown: Not on Rewards page.");
+            return;
+        }
         console.log("Showing reward popup with message:", message, new Error().stack);
         const popup = document.getElementById("reward-popup");
         const messageElement = document.getElementById("reward-message");
         if (popup && messageElement) {
             messageElement.textContent = message;
             popup.classList.remove("hidden");
+        } else {
+            console.error("Popup or message element not found.");
         }
         justClaimedReward = false;
     } catch (e) {
@@ -316,6 +328,7 @@ function closeRewardPopup() {
         const popup = document.getElementById("reward-popup");
         if (popup) {
             popup.classList.add("hidden");
+            console.log("Popup closed by user.");
         }
     } catch (e) {
         console.error("Error in closeRewardPopup:", e);
@@ -545,6 +558,7 @@ function disableSpecificButton(buttonId) {
 
 function completeAdTask() {
     try {
+        console.log("Attempting to complete ad task");
         if (isNewDay(lastAdClaim)) {
             currentPoints += 100;
             updatePointsAndLevel();
@@ -564,6 +578,7 @@ function completeAdTask() {
 
 function completeCheckInTask() {
     try {
+        console.log("Attempting to complete check-in task");
         if (isNewDay(lastCheckInClaim)) {
             currentPoints += 500;
             updatePointsAndLevel();
@@ -619,6 +634,7 @@ function drawWheel(angle = 0) {
 
 function spinWheel() {
     try {
+        console.log("Attempting to spin the wheel");
         if (isSpinning || !isNewDay(lastSpinClaim)) {
             updateRewardStatus("You can only spin once per day!");
             return;
@@ -692,7 +708,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const popup = document.getElementById("reward-popup");
         if (popup) {
             popup.classList.add("hidden");
-            console.log("Popup hidden on page load");
+            const messageElement = document.getElementById("reward-message");
+            if (messageElement) messageElement.textContent = "";
+            console.log("Popup hidden and message cleared on page load");
         }
 
         updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
