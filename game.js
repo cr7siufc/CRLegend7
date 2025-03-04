@@ -27,6 +27,19 @@ const wheelRewards = [500, 1000, 1500, 2000, 2500, 300];
 const wheelColors = ["#FF4500", "#32CD32", "#1E90FF", "#FFD700", "#FF00FF", "#00CED1"];
 let isSpinning = false;
 
+// Penalty Shootout game state
+let penaltyGameActive = false;
+let penaltyShotsTaken = 0;
+let penaltyScore = 0;
+let penaltyStreak = 0;
+let penaltyMultiplier = 1;
+let isSuddenDeath = false;
+let ballX, ballY, targetX, targetY;
+let goalkeeperX, goalkeeperDirection;
+let gameOver = false;
+let swipeStartX = null;
+let swipeStartY = null;
+
 // Show username setup if it's the user's first session
 if (!username) {
     const setupElement = document.getElementById("username-setup");
@@ -99,9 +112,212 @@ function showPage(page) {
         if (page === "rewards") {
             drawWheel();
         }
+        // Reset game area visibility when navigating away from Games page
+        if (page !== "games") {
+            const gameArea = document.getElementById("game-area");
+            if (gameArea) gameArea.classList.add("hidden");
+            endPenaltyShootout();
+        }
     } catch (e) {
         console.error("Error in showPage:", e);
     }
+}
+
+// CR7 Penalty Shootout Game Logic
+function startPenaltyShootout() {
+    try {
+        penaltyGameActive = true;
+        penaltyShotsTaken = 0;
+        penaltyScore = 0;
+        penaltyStreak = 0;
+        penaltyMultiplier = 1;
+        isSuddenDeath = false;
+        gameOver = false;
+        ballX = 200; // Center of canvas
+        ballY = 250; // Bottom of canvas
+        targetX = ballX;
+        targetY = ballY;
+        goalkeeperX = 200; // Center of goal
+        goalkeeperDirection = 1; // 1 for right, -1 for left
+
+        const gameArea = document.getElementById("game-area");
+        if (gameArea) gameArea.classList.remove("hidden");
+
+        const canvas = document.getElementById("penaltyCanvas");
+        canvas.addEventListener("mousedown", startSwipe);
+        canvas.addEventListener("mousemove", updateSwipe);
+        canvas.addEventListener("mouseup", endSwipe);
+        canvas.addEventListener("touchstart", startSwipe);
+        canvas.addEventListener("touchmove", updateSwipe);
+        canvas.addEventListener("touchend", endSwipe);
+
+        updateGameScore();
+        gameLoop();
+    } catch (e) {
+        console.error("Error in startPenaltyShootout:", e);
+    }
+}
+
+function endPenaltyShootout() {
+    try {
+        if (penaltyGameActive) {
+            penaltyGameActive = false;
+            if (penaltyScore > 0) {
+                const pointsEarned = penaltyScore * 100;
+                currentPoints += pointsEarned;
+                updatePointsAndLevel();
+                showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points!`);
+            }
+            const canvas = document.getElementById("penaltyCanvas");
+            canvas.removeEventListener("mousedown", startSwipe);
+            canvas.removeEventListener("mousemove", updateSwipe);
+            canvas.removeEventListener("mouseup", endSwipe);
+            canvas.removeEventListener("touchstart", startSwipe);
+            canvas.removeEventListener("touchmove", updateSwipe);
+            canvas.removeEventListener("touchend", endSwipe);
+        }
+    } catch (e) {
+        console.error("Error in endPenaltyShootout:", e);
+    }
+}
+
+function startSwipe(event) {
+    if (!penaltyGameActive || gameOver) return;
+    event.preventDefault();
+    const canvas = document.getElementById("penaltyCanvas");
+    const rect = canvas.getBoundingClientRect();
+    const clientX = event.type.includes("touch") ? event.touches[0].clientX : event.clientX;
+    const clientY = event.type.includes("touch") ? event.touches[0].clientY : event.clientY;
+    swipeStartX = (clientX - rect.left) * (canvas.width / rect.width);
+    swipeStartY = (clientY - rect.top) * (canvas.height / rect.height);
+}
+
+function updateSwipe(event) {
+    if (!penaltyGameActive || gameOver || swipeStartX === null) return;
+    event.preventDefault();
+    const canvas = document.getElementById("penaltyCanvas");
+    const rect = canvas.getBoundingClientRect();
+    const clientX = event.type.includes("touch") ? event.touches[0].clientX : event.clientX;
+    const clientY = event.type.includes("touch") ? event.touches[0].clientY : event.clientY;
+    targetX = (clientX - rect.left) * (canvas.width / rect.width);
+    targetY = (clientY - rect.top) * (canvas.height / rect.height);
+}
+
+function endSwipe(event) {
+    if (!penaltyGameActive || gameOver || swipeStartX === null) return;
+    event.preventDefault();
+    const canvas = document.getElementById("penaltyCanvas");
+    const rect = canvas.getBoundingClientRect();
+    const clientX = event.type.includes("touch") && event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
+    const clientY = event.type.includes("touch") && event.changedTouches ? event.changedTouches[0].clientY : event.clientY;
+    const endX = (clientX - rect.left) * (canvas.width / rect.width);
+    const endY = (clientY - rect.top) * (canvas.height / rect.height);
+
+    // Calculate swipe direction and power
+    const dx = endX - swipeStartX;
+    const dy = endY - swipeStartY;
+    const power = Math.sqrt(dx * dx + dy * dy) / 100; // Normalized power
+    const angle = Math.atan2(dy, dx);
+
+    // Update ball trajectory
+    targetX = ballX + dx * power;
+    targetY = ballY + dy * power;
+
+    // Check if the shot scores
+    penaltyShotsTaken++;
+    const goalScored = checkGoal(targetX, targetY);
+    if (goalScored) {
+        penaltyScore += 100 * penaltyMultiplier;
+        penaltyStreak++;
+        updateMultiplier();
+    } else {
+        penaltyStreak = 0;
+        penaltyMultiplier = 1;
+    }
+
+    // Check for Sudden Death after 5 shots
+    if (penaltyShotsTaken >= 5 && penaltyScore >= 400 && !isSuddenDeath) {
+        isSuddenDeath = true;
+        updateRewardStatus("Sudden Death Mode! Miss a shot and the game ends!");
+    }
+
+    // End game in Sudden Death if the player misses
+    if (isSuddenDeath && !goalScored) {
+        gameOver = true;
+        endPenaltyShootout();
+    }
+
+    updateGameScore();
+    swipeStartX = null;
+    swipeStartY = null;
+
+    // Reset ball position
+    ballX = 200;
+    ballY = 250;
+    targetX = ballX;
+    targetY = ballY;
+}
+
+function checkGoal(x, y) {
+    // Goal area: x between 150 and 250, y between 0 and 50
+    const inGoal = x >= 150 && x <= 250 && y >= 0 && y <= 50;
+    // Goalkeeper area: x within 50 units of goalkeeperX, y near the top
+    const blocked = Math.abs(x - goalkeeperX) < 50 && y < 70;
+    return inGoal && !blocked;
+}
+
+function updateMultiplier() {
+    if (penaltyStreak >= 5) {
+        penaltyMultiplier = 3;
+    } else if (penaltyStreak >= 3) {
+        penaltyMultiplier = 2;
+    } else {
+        penaltyMultiplier = 1;
+    }
+}
+
+function updateGameScore() {
+    const scoreDisplay = document.getElementById("game-score");
+    if (scoreDisplay) {
+        scoreDisplay.textContent = `Score: ${penaltyScore} | Streak: ${penaltyStreak} | Multiplier: ${penaltyMultiplier}x`;
+    }
+}
+
+function gameLoop() {
+    if (!penaltyGameActive) return;
+    const canvas = document.getElementById("penaltyCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw goal
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(150, 0, 100, 50);
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(150, 0, 100, 50);
+
+    // Draw goalkeeper
+    goalkeeperX += goalkeeperDirection * 2;
+    if (goalkeeperX <= 150 || goalkeeperX >= 250) goalkeeperDirection *= -1;
+    ctx.fillStyle = "#ff0000";
+    ctx.fillRect(goalkeeperX - 20, 30, 40, 20);
+
+    // Draw ball
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff";
+    ctx.fill();
+    ctx.closePath();
+
+    // Animate ball towards target
+    if (Math.abs(ballX - targetX) > 1 || Math.abs(ballY - targetY) > 1) {
+        ballX += (targetX - ballX) * 0.1;
+        ballY += (targetY - ballY) * 0.1;
+    }
+
+    requestAnimationFrame(gameLoop);
 }
 
 function earnPoints() {
@@ -291,7 +507,7 @@ function showRewardToast(message) {
             toast.classList.remove("hidden");
             setTimeout(() => {
                 toast.classList.add("hidden");
-            }, 3000); // Auto-close after 3 seconds
+            }, 3000);
         } else {
             console.error("Toast or message element not found.");
         }

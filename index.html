@@ -32,6 +32,7 @@
             <li><button onclick="showPage('improvements')">Improvements</button></li>
             <li><button onclick="showPage('airdrop')">Airdrop</button></li>
             <li><button onclick="showPage('rewards')">Rewards</button></li>
+            <li><button onclick="showPage('games')">Games</button></li>
         </ul>
     </nav>
 
@@ -136,6 +137,26 @@
         </section>
     </main>
 
+    <!-- New Games Page -->
+    <main id="games" class="hidden">
+        <section class="games-section">
+            <h1>Games</h1>
+            <p>Play exciting CR7-themed games and earn CR7SIU Points!</p>
+            <div id="games-list">
+                <button onclick="startPenaltyShootout()">CR7 Penalty Shootout 🎯</button>
+            </div>
+            <div id="game-area" class="hidden">
+                <h2>CR7 Penalty Shootout</h2>
+                <p id="game-instructions">Tap or swipe to aim and shoot. Score consecutive goals to earn multipliers! Reach 4+ goals in 5 shots to enter Sudden Death mode.</p>
+                <canvas id="penaltyCanvas" width="400" height="300"></canvas>
+                <div id="game-controls">
+                    <p id="game-score">Score: 0 | Streak: 0 | Multiplier: 1x</p>
+                    <button onclick="endPenaltyShootout()">End Game</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <div id="username-setup" class="hidden">
         <h2>Welcome! Please enter your username to start:</h2>
         <input type="text" id="username-input" placeholder="Enter Username" title="Enter your username" />
@@ -146,6 +167,7 @@
         <button onclick="showPage('home')">Home</button>
         <button onclick="showPage('airdrop')">Airdrop</button>
         <button onclick="showPage('rewards')">Rewards</button>
+        <button onclick="showPage('games')">Games</button>
     </footer>
 
     <script src="game.js"></script>
