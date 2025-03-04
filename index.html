@@ -104,17 +104,17 @@
                 <div class="task">
                     <h3>Complete YouTube Task</h3>
                     <p>Watch and like our latest video</p>
-                    <button onclick="completeTask('youtube')">Complete</button>
+                    <button id="task-youtube" onclick="completeTask('youtube')">Complete</button>
                 </div>
                 <div class="task">
                     <h3>Complete Facebook Task</h3>
                     <p>Share our post on your timeline</p>
-                    <button onclick="completeTask('facebook')">Complete</button>
+                    <button id="task-facebook" onclick="completeTask('facebook')">Complete</button>
                 </div>
                 <div class="task">
                     <h3>Complete X Task</h3>
                     <p>Tweet with our hashtag</p>
-                    <button onclick="completeTask('x')">Complete</button>
+                    <button id="task-xAccount" onclick="completeTask('x')">Complete</button>
                 </div>
             </div>
             <button id="claim-rewards-btn" onclick="claimRewards()" disabled>Claim Rewards</button>
@@ -127,6 +127,14 @@
                     <li><a href="https://www.facebook.com/share/18grEqdxoG/" target="_blank" rel="noopener">Like and join our Facebook Page</a></li>
                     <li><a href="https://youtu.be/byZi0lcy-jw?si=7yxJZdC_6y42Pqs1" target="_blank" rel="noopener">Watch Ad</a></li>
                 </ul>
+            </div>
+            <!-- Added Popup for Reward Confirmation -->
+            <div id="reward-popup" class="hidden">
+                <div class="popup-content">
+                    <h3>Reward Claimed!</h3>
+                    <p id="reward-message"></p>
+                    <button onclick="closeRewardPopup()">Close</button>
+                </div>
             </div>
         </section>
     </main>

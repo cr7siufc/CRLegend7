@@ -19,7 +19,6 @@ let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
 let lastAdClaim = parseInt(localStorage.getItem("lastAdClaim")) || 0;
 let lastCheckInClaim = parseInt(localStorage.getItem("lastCheckInClaim")) || 0;
 let lastSpinClaim = parseInt(localStorage.getItem("lastSpinClaim")) || 0;
-// New timestamps for tasks and Claim Rewards
 let lastTaskClaims = JSON.parse(localStorage.getItem("lastTaskClaims")) || { youtube: 0, xAccount: 0, facebook: 0 };
 let lastRewardsClaim = parseInt(localStorage.getItem("lastRewardsClaim")) || 0;
 
@@ -208,7 +207,7 @@ function completeTask(task) {
         checkAllTasksCompleted();
         currentPoints += 5000;
         updatePointsAndLevel();
-        updateRewardStatus(`Congratulations! You earned 5000 CR7SIU Points for completing the ${task} task.`);
+        showRewardPopup(`Reward Claimed! 5000 CR7SIU Points have been credited to your account.`);
         const button = document.getElementById(`task-${task}`);
         if (button) {
             button.disabled = true;
@@ -259,7 +258,7 @@ function claimRewards() {
         if (Object.values(tasksCompleted).every(Boolean)) {
             currentPoints += 5000;
             updatePointsAndLevel();
-            updateRewardStatus("Congratulations! You earned an extra 5000 CR7SIU Points for completing all tasks.");
+            showRewardPopup("Reward Claimed! 5000 CR7SIU Points have been credited to your account.");
             resetTasks();
             lastRewardsClaim = Date.now();
             localStorage.setItem("lastRewardsClaim", lastRewardsClaim);
@@ -273,6 +272,31 @@ function claimRewards() {
         }
     } catch (e) {
         console.error("Error in claimRewards:", e);
+    }
+}
+
+/* New functions for reward popup */
+function showRewardPopup(message) {
+    try {
+        const popup = document.getElementById("reward-popup");
+        const messageElement = document.getElementById("reward-message");
+        if (popup && messageElement) {
+            messageElement.textContent = message;
+            popup.classList.remove("hidden");
+        }
+    } catch (e) {
+        console.error("Error in showRewardPopup:", e);
+    }
+}
+
+function closeRewardPopup() {
+    try {
+        const popup = document.getElementById("reward-popup");
+        if (popup) {
+            popup.classList.add("hidden");
+        }
+    } catch (e) {
+        console.error("Error in closeRewardPopup:", e);
     }
 }
 
@@ -453,7 +477,7 @@ function updateButtonStates() {
             if (button) {
                 const canClaim = isNewDay(lastTaskClaims[task]);
                 if (canClaim) {
-                    tasksCompleted[task] = false; // Reset task completion
+                    tasksCompleted[task] = false;
                     localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
                 }
                 button.disabled = !canClaim;
@@ -503,6 +527,7 @@ function completeAdTask() {
             currentPoints += 100;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
+            showRewardPopup("Reward Claimed! 100 CR7SIU Points have been credited to your account.");
             lastAdClaim = Date.now();
             localStorage.setItem("lastAdClaim", lastAdClaim);
             disableSpecificButton('ad-claim-button');
@@ -520,6 +545,7 @@ function completeCheckInTask() {
             currentPoints += 500;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
+            showRewardPopup("Reward Claimed! 500 CR7SIU Points have been credited to your account.");
             lastCheckInClaim = Date.now();
             localStorage.setItem("lastCheckInClaim", lastCheckInClaim);
             disableSpecificButton('check-in-button');
@@ -598,7 +624,7 @@ function spinWheel() {
                     const reward = wheelRewards[randomSection];
                     currentPoints += reward;
                     updatePointsAndLevel();
-                    updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points!`);
+                    showRewardPopup(`Reward Claimed! ${reward} CR7SIU Points have been credited to your account.`);
                     lastSpinClaim = Date.now();
                     localStorage.setItem("lastSpinClaim", lastSpinClaim);
                 }
