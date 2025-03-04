@@ -36,15 +36,15 @@ let penaltyMultiplier = 1;
 let isSuddenDeath = false;
 let gameOver = false;
 let ballX, ballY, targetX, targetY;
-let goalkeeperX, goalkeeperDirection;
-let swipeStartX = null;
-let swipeStartY = null;
+let goalkeeperX;
 let isShooting = false;
 let shotFrame = 0;
 let goalkeeperDiveDirection = 'center'; // 'left', 'right', or 'center'
 let playerState = 'standing'; // 'standing' or 'kicking'
 let feedbackMessage = '';
 let feedbackTimer = 0;
+let selectedPower = 'medium'; // 'low', 'medium', 'high'
+let shotDirection = null; // 'left', 'center', 'right'
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -140,28 +140,25 @@ function startPenaltyShootout() {
         isSuddenDeath = false;
         gameOver = false;
         ballX = 200; // Center of canvas
-        ballY = 250; // Near bottom of canvas
+        ballY = 280; // Closer to bottom for zoomed-in view
         targetX = ballX;
         targetY = ballY;
         goalkeeperX = 200; // Center of goal
-        goalkeeperDirection = 1; // 1 for right, -1 for left
         isShooting = false;
         shotFrame = 0;
         goalkeeperDiveDirection = 'center';
         playerState = 'standing';
         feedbackMessage = '';
         feedbackTimer = 0;
+        selectedPower = 'medium';
+        shotDirection = null;
 
         const gameArea = document.getElementById("game-area");
         if (gameArea) gameArea.classList.remove("hidden");
 
         const canvas = document.getElementById("penaltyCanvas");
-        canvas.addEventListener("mousedown", startSwipe);
-        canvas.addEventListener("mousemove", updateSwipe);
-        canvas.addEventListener("mouseup", endSwipe);
-        canvas.addEventListener("touchstart", startSwipe);
-        canvas.addEventListener("touchmove", updateSwipe);
-        canvas.addEventListener("touchend", endSwipe);
+        canvas.addEventListener("click", handleGoalTap);
+        canvas.addEventListener("touchstart", handleGoalTap);
 
         updateGameScore();
         gameLoop();
@@ -181,56 +178,53 @@ function endPenaltyShootout() {
                 showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points!`);
             }
             const canvas = document.getElementById("penaltyCanvas");
-            canvas.removeEventListener("mousedown", startSwipe);
-            canvas.removeEventListener("mousemove", updateSwipe);
-            canvas.removeEventListener("mouseup", endSwipe);
-            canvas.removeEventListener("touchstart", startSwipe);
-            canvas.removeEventListener("touchmove", updateSwipe);
-            canvas.removeEventListener("touchend", endSwipe);
+            canvas.removeEventListener("click", handleGoalTap);
+            canvas.removeEventListener("touchstart", handleGoalTap);
         }
     } catch (e) {
         console.error("Error in endPenaltyShootout:", e);
     }
 }
 
-function startSwipe(event) {
+function selectPower(power) {
+    selectedPower = power;
+    const buttons = document.querySelectorAll(".power-btn");
+    buttons.forEach(btn => {
+        if (btn.id === `power-${power}`) {
+            btn.style.background = "#FFD700";
+        } else {
+            btn.style.background = "linear-gradient(45deg, #444, #666)";
+        }
+    });
+}
+
+function handleGoalTap(event) {
     if (!penaltyGameActive || gameOver || isShooting) return;
     event.preventDefault();
     const canvas = document.getElementById("penaltyCanvas");
     const rect = canvas.getBoundingClientRect();
     const clientX = event.type.includes("touch") ? event.touches[0].clientX : event.clientX;
     const clientY = event.type.includes("touch") ? event.touches[0].clientY : event.clientY;
-    swipeStartX = (clientX - rect.left) * (canvas.width / rect.width);
-    swipeStartY = (clientY - rect.top) * (canvas.height / rect.height);
-}
+    const tapX = (clientX - rect.left) * (canvas.width / rect.width);
+    const tapY = (clientY - rect.top) * (canvas.height / rect.height);
 
-function updateSwipe(event) {
-    if (!penaltyGameActive || gameOver || swipeStartX === null) return;
-    event.preventDefault();
-    const canvas = document.getElementById("penaltyCanvas");
-    const rect = canvas.getBoundingClientRect();
-    const clientX = event.type.includes("touch") ? event.touches[0].clientX : event.clientX;
-    const clientY = event.type.includes("touch") ? event.touches[0].clientY : event.clientY;
-    targetX = (clientX - rect.left) * (canvas.width / rect.width);
-    targetY = (clientY - rect.top) * (canvas.height / rect.height);
-}
+    // Only execute shot if tapping on the goalpost area (y < 50)
+    if (tapY > 50) return;
 
-function endSwipe(event) {
-    if (!penaltyGameActive || gameOver || swipeStartX === null || isShooting) return;
-    event.preventDefault();
-    const canvas = document.getElementById("penaltyCanvas");
-    const rect = canvas.getBoundingClientRect();
-    const clientX = event.type.includes("touch") && event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
-    const clientY = event.type.includes("touch") && event.changedTouches ? event.changedTouches[0].clientY : event.clientY;
-    const endX = (clientX - rect.left) * (canvas.width / rect.width);
-    const endY = (clientY - rect.top) * (canvas.height / rect.height);
-
-    // Calculate swipe direction and power
-    const dx = endX - swipeStartX;
-    const dy = endY - swipeStartY;
-    const power = Math.min(Math.sqrt(dx * dx + dy * dy) / 40, 2.5); // Increased sensitivity for better control
-    targetX = ballX + dx * power;
-    targetY = ballY + dy * power;
+    // Determine shot direction based on tap position
+    if (tapX >= 120 && tapX < 173) {
+        shotDirection = 'left';
+        targetX = 146.5; // Center of left section
+    } else if (tapX >= 173 && tapX < 226) {
+        shotDirection = 'center';
+        targetX = 199.5; // Center of center section
+    } else if (tapX >= 226 && tapX <= 280) {
+        shotDirection = 'right';
+        targetX = 253; // Center of right section
+    } else {
+        return; // Tap outside goalpost area
+    }
+    targetY = 25; // Middle of goal height
 
     // Start shooting animation
     isShooting = true;
@@ -239,32 +233,32 @@ function endSwipe(event) {
 
     // AI Goalkeeper decides dive direction
     const diveRandom = Math.random();
-    if (targetX < 180) {
+    if (shotDirection === 'left') {
         goalkeeperDiveDirection = diveRandom < 0.5 ? 'left' : (diveRandom < 0.75 ? 'center' : 'right');
-    } else if (targetX > 220) {
+    } else if (shotDirection === 'right') {
         goalkeeperDiveDirection = diveRandom < 0.5 ? 'right' : (diveRandom < 0.75 ? 'center' : 'left');
     } else {
         goalkeeperDiveDirection = diveRandom < 0.4 ? 'center' : (diveRandom < 0.7 ? 'left' : 'right');
     }
-
-    swipeStartX = null;
-    swipeStartY = null;
 }
 
-function checkGoal(x, y) {
-    // Goal area: x between 130 and 270, y between 0 and 50 (widened for easier scoring)
-    const inGoal = x >= 130 && x <= 270 && y >= 0 && y <= 50;
+function checkGoal(x) {
+    // Goal area: x between 120 and 280, y between 0 and 50 (widened for easier scoring)
+    const inGoal = x >= 120 && x <= 280;
     // Goalkeeper area: x within 40 units of center dive position, y near the top
     let blocked = false;
     if (goalkeeperDiveDirection === 'left') {
-        blocked = x >= 130 && x <= 170 && y <= 60; // Left side of goal
+        blocked = x >= 120 && x <= 160; // Left side of goal
     } else if (goalkeeperDiveDirection === 'right') {
-        blocked = x >= 230 && x <= 270 && y <= 60; // Right side of goal
+        blocked = x >= 240 && x <= 280; // Right side of goal
     } else {
-        blocked = x >= 170 && x <= 230 && y <= 60; // Center of goal
+        blocked = x >= 160 && x <= 240; // Center of goal
     }
-    // 40% chance for goalkeeper to save if in correct position (reduced difficulty)
-    const saveChance = Math.random() < 0.4;
+    // 10% chance for goalkeeper to save if in correct position (reduced difficulty)
+    let saveChance = Math.random() < 0.1;
+    // Adjust save chance based on power
+    if (selectedPower === 'high') saveChance *= 0.5; // High power makes it harder for goalkeeper to save
+    else if (selectedPower === 'low') saveChance *= 1.5; // Low power makes it easier for goalkeeper to save
     return inGoal && !(blocked && saveChance);
 }
 
@@ -290,83 +284,156 @@ function gameLoop() {
     const canvas = document.getElementById("penaltyCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Clear canvas and draw pitch background
-    ctx.fillStyle = "#2E7D32"; // Green grass
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw pitch background with 3D effect
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "#1B5E20"); // Dark green at top
+    gradient.addColorStop(1, "#4CAF50"); // Light green at bottom
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // Draw penalty box lines
+
+    // Draw perspective lines for 3D effect
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 2;
-    ctx.strokeRect(100, 0, 200, 100); // Penalty box
+    // Left perspective line
     ctx.beginPath();
-    ctx.arc(200, 250, 5, 0, Math.PI * 2); // Penalty spot
+    ctx.moveTo(0, canvas.height);
+    ctx.lineTo(200, 50);
+    ctx.stroke();
+    // Right perspective line
+    ctx.beginPath();
+    ctx.moveTo(canvas.width, canvas.height);
+    ctx.lineTo(200, 50);
+    ctx.stroke();
+    // Penalty box lines
+    ctx.strokeRect(100, 50, 200, 100);
+
+    // Draw penalty spot
+    ctx.beginPath();
+    ctx.arc(200, 280, 5, 0, Math.PI * 2);
     ctx.fillStyle = "#fff";
     ctx.fill();
     ctx.closePath();
 
-    // Draw goalpost
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(130, 0, 140, 10); // Top bar
-    ctx.fillRect(130, 0, 10, 50); // Left post
-    ctx.fillRect(260, 0, 10, 50); // Right post
+    // Draw goalpost with 3D effect
+    // Main goalpost
+    ctx.fillStyle = "#B0BEC5"; // Gray for metallic look
+    ctx.fillRect(120, 0, 160, 15); // Top bar
+    ctx.fillRect(120, 0, 15, 70); // Left post
+    ctx.fillRect(265, 0, 15, 70); // Right post
+    // 3D effect with angled lines
+    ctx.beginPath();
+    ctx.moveTo(120, 0);
+    ctx.lineTo(110, 10);
+    ctx.lineTo(125, 10);
+    ctx.lineTo(135, 0);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(280, 0);
+    ctx.lineTo(290, 10);
+    ctx.lineTo(275, 10);
+    ctx.lineTo(265, 0);
+    ctx.fill();
+    // Net
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.fillRect(130, 10, 140, 40); // Net
+    ctx.fillRect(135, 15, 130, 55);
+    // Net pattern
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.lineWidth = 1;
+    for (let x = 135; x < 265; x += 10) {
+        ctx.beginPath();
+        ctx.moveTo(x, 15);
+        ctx.lineTo(x, 70);
+        ctx.stroke();
+    }
+    for (let y = 15; y < 70; y += 10) {
+        ctx.beginPath();
+        ctx.moveTo(135, y);
+        ctx.lineTo(265, y);
+        ctx.stroke();
+    }
 
-    // Draw player (red rectangle with "7")
+    // Draw clickable areas on goalpost (highlight when hovered)
+    ctx.fillStyle = "rgba(255, 215, 0, 0.3)"; // Yellow highlight
+    ctx.fillRect(120, 0, 53, 70); // Left
+    ctx.fillRect(173, 0, 53, 70); // Center
+    ctx.fillRect(226, 0, 54, 70); // Right
+
+    // Draw player (red jersey with prominent "7")
     ctx.save();
     if (playerState === 'kicking') {
-        ctx.translate(200, 245);
+        ctx.translate(200, 275);
         ctx.rotate(-15 * Math.PI / 180); // Tilt for kicking animation
         ctx.fillStyle = "#D32F2F"; // Red jersey
-        ctx.fillRect(-20, -25, 40, 50);
+        ctx.fillRect(-25, -30, 50, 60);
         ctx.fillStyle = "#fff";
-        ctx.font = "bold 20px Roboto";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+        ctx.font = "bold 30px Roboto";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("7", 0, 0);
+        ctx.strokeText("7", 0, 0);
         ctx.restore();
     } else {
         ctx.fillStyle = "#D32F2F"; // Red jersey
-        ctx.fillRect(180, 220, 40, 50);
+        ctx.fillRect(175, 245, 50, 60);
         ctx.fillStyle = "#fff";
-        ctx.font = "bold 20px Roboto";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+        ctx.font = "bold 30px Roboto";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("7", 200, 245);
+        ctx.fillText("7", 200, 275);
+        ctx.strokeText("7", 200, 275);
     }
 
     // Draw goalkeeper (colored rectangle based on dive direction)
     if (goalkeeperDiveDirection === 'left') {
         ctx.fillStyle = "#F44336"; // Red for left dive
-        ctx.fillRect(130, 10, 40, 40);
+        ctx.fillRect(120, 15, 40, 40);
     } else if (goalkeeperDiveDirection === 'right') {
         ctx.fillStyle = "#4CAF50"; // Green for right dive
-        ctx.fillRect(230, 10, 40, 40);
+        ctx.fillRect(240, 15, 40, 40);
     } else {
         ctx.fillStyle = "#2196F3"; // Blue for center
-        ctx.fillRect(180, 10, 40, 40);
+        ctx.fillRect(180, 15, 40, 40);
     }
     ctx.fillStyle = "#fff";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 1;
     ctx.font = "bold 16px Roboto";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     if (goalkeeperDiveDirection === 'left') {
-        ctx.fillText("GK", 150, 30);
+        ctx.fillText("GK", 140, 35);
+        ctx.strokeText("GK", 140, 35);
     } else if (goalkeeperDiveDirection === 'right') {
-        ctx.fillText("GK", 250, 30);
+        ctx.fillText("GK", 260, 35);
+        ctx.strokeText("GK", 260, 35);
     } else {
-        ctx.fillText("GK", 200, 30);
+        ctx.fillText("GK", 200, 35);
+        ctx.strokeText("GK", 200, 35);
     }
 
     // Draw ball (white circle with ⚽)
     if (!isShooting) {
         ctx.beginPath();
-        ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+        ctx.arc(ballX, ballY, 12, 0, Math.PI * 2);
         ctx.fillStyle = "#fff";
         ctx.fill();
         ctx.strokeStyle = "#000";
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.stroke();
+        // Add shadow for 3D effect
+        ctx.beginPath();
+        ctx.arc(ballX + 3, ballY + 3, 12, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+        ctx.fill();
         ctx.closePath();
+        // Draw ⚽
         ctx.font = "16px Roboto";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
@@ -375,17 +442,24 @@ function gameLoop() {
     } else {
         // Animate ball towards target
         shotFrame++;
-        const progress = Math.min(shotFrame / 20, 1);
+        const frames = selectedPower === 'low' ? 30 : (selectedPower === 'medium' ? 20 : 10); // More frames for slower shots
+        const progress = Math.min(shotFrame / frames, 1);
         ballX = ballX + (targetX - ballX) * progress;
         ballY = ballY + (targetY - ballY) * progress;
         ctx.beginPath();
-        ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+        ctx.arc(ballX, ballY, 12, 0, Math.PI * 2);
         ctx.fillStyle = "#fff";
         ctx.fill();
         ctx.strokeStyle = "#000";
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.stroke();
+        // Add shadow for 3D effect
+        ctx.beginPath();
+        ctx.arc(ballX + 3, ballY + 3, 12, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+        ctx.fill();
         ctx.closePath();
+        // Draw ⚽
         ctx.font = "16px Roboto";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
@@ -394,7 +468,7 @@ function gameLoop() {
 
         // Draw ball trail
         ctx.beginPath();
-        ctx.moveTo(200, 250);
+        ctx.moveTo(200, 280);
         ctx.lineTo(ballX, ballY);
         ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
         ctx.lineWidth = 2;
@@ -404,7 +478,7 @@ function gameLoop() {
         if (progress === 1) {
             // Check if the shot scores
             penaltyShotsTaken++;
-            const goalScored = checkGoal(targetX, targetY);
+            const goalScored = checkGoal(targetX);
             if (goalScored) {
                 penaltyScore += 100 * penaltyMultiplier;
                 penaltyStreak++;
@@ -433,10 +507,11 @@ function gameLoop() {
             isShooting = false;
             playerState = 'standing';
             goalkeeperDiveDirection = 'center';
+            shotDirection = null;
 
             // Reset ball position
             ballX = 200;
-            ballY = 250;
+            ballY = 280;
             targetX = ballX;
             targetY = ballY;
         }
@@ -444,10 +519,13 @@ function gameLoop() {
 
     // Draw feedback message
     if (feedbackTimer > 0) {
-        ctx.font = "bold 20px Roboto";
+        ctx.font = "bold 24px Roboto";
         ctx.fillStyle = feedbackMessage === "Goal!" ? "#00FF00" : "#FF0000";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 1;
         ctx.textAlign = "center";
         ctx.fillText(feedbackMessage, canvas.width / 2, canvas.height / 2);
+        ctx.strokeText(feedbackMessage, canvas.width / 2, canvas.height / 2);
         feedbackTimer--;
     }
 

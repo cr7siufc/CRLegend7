@@ -555,8 +555,6 @@ input:focus {
     height: 300px;
     border: 3px solid #FFD700;
     border-radius: 10px;
-    background: url("images/pitch-background.jpg") no-repeat center center;
-    background-size: cover;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     display: block;
     margin: 0 auto;
@@ -567,6 +565,41 @@ input:focus {
     color: #FFD700;
     margin: 15px 0;
     text-shadow: 1px 1px 2px #000;
+}
+
+#power-selection {
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#power-selection p {
+    font-size: 14px;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px #000;
+    margin: 0 10px 0 0;
+}
+
+.power-btn {
+    background: linear-gradient(45deg, #444, #666);
+    color: #fff;
+    border: 2px solid #FFA500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.power-btn:hover {
+    background: linear-gradient(45deg, #666, #888);
+    border-color: #FF00FF;
+    box-shadow: 0 0 15px #FFD700;
+    transform: scale(1.05);
 }
 
 #game-controls {
@@ -727,6 +760,11 @@ input:focus {
         padding: 12px 24px;
         font-size: 16px;
     }
+
+    .power-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -850,6 +888,11 @@ input:focus {
         padding: 10px 20px;
         font-size: 14px;
     }
+
+    .power-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -949,6 +992,11 @@ input:focus {
         padding: 8px 16px;
         font-size: 12px;
     }
+
+    .power-btn {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
 }
 
 /* High-DPI/Retina Displays */
@@ -962,7 +1010,7 @@ input:focus {
         background-size: cover;
     }
 
-    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn, footer button, #games-list button {
+    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn, footer button, #games-list button, .power-btn {
         border-width: 3px;
     }
 }

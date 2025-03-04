@@ -147,8 +147,14 @@
             </div>
             <div id="game-area" class="hidden">
                 <h2>CR7 Penalty Shootout</h2>
-                <p id="game-instructions">Tap or swipe to aim and shoot. Score consecutive goals to earn multipliers! Reach 4+ goals in 5 shots to enter Sudden Death mode.</p>
+                <p id="game-instructions">Tap on the left, center, or right side of the goalpost to shoot. Score consecutive goals to earn multipliers! Reach 4+ goals in 5 shots to enter Sudden Death mode.</p>
                 <canvas id="penaltyCanvas" width="400" height="300"></canvas>
+                <div id="power-selection">
+                    <p>Select Power:</p>
+                    <button id="power-low" class="power-btn" onclick="selectPower('low')">Low</button>
+                    <button id="power-medium" class="power-btn" onclick="selectPower('medium')">Medium</button>
+                    <button id="power-high" class="power-btn" onclick="selectPower('high')">High</button>
+                </div>
                 <div id="game-controls">
                     <p id="game-score">Score: 0 | Streak: 0 | Multiplier: 1x</p>
                     <button onclick="endPenaltyShootout()">End Game</button>
