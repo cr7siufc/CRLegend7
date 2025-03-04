@@ -1,4 +1,4 @@
-/* Merged CSS from style.css and external.css with corrected falling stars animation */
+/* Merged CSS from style.css with all updates */
 
 body {
     font-family: 'Roboto', sans-serif;
@@ -125,6 +125,7 @@ footer button:hover {
     height: 75px;
     background: url("images/cr7_poster2.jpg") center center no-repeat;
     background-size: cover;
+    background-color: #333; /* Fallback color if image fails */
     margin: 0 10px 0 0;
     border: 3px solid #FFD700;
     border-radius: 50%;
@@ -175,7 +176,7 @@ nav button:hover, .task button:hover:not(.completed), .attribute-card button:hov
 }
 
 main {
-    display: block; /* Ensure visibility */
+    display: block;
     text-align: center;
     padding: 20px 10px;
 }
@@ -186,6 +187,7 @@ main {
     border-radius: 50%;
     background: url("images/cr7_poster6.jpg") center center no-repeat;
     background-size: cover;
+    background-color: #444; /* Fallback color if image fails */
     margin: 20px auto;
     display: block;
     border: 4px solid #FF1493;
@@ -200,8 +202,8 @@ main {
 }
 
 #tap-to-earn-container {
-    padding-bottom: 20px; /* Reduced to prevent overlap */
-    min-height: 200px; /* Ensure space for content */
+    padding-bottom: 20px;
+    min-height: 200px;
 }
 
 #tap-to-earn-text, h2 {
