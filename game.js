@@ -43,23 +43,8 @@ let isShooting = false;
 let shotFrame = 0;
 let goalkeeperDiveDirection = 'center'; // 'left', 'right', or 'center'
 let playerState = 'standing'; // 'standing' or 'kicking'
-let goalkeeperState = 'center'; // 'left', 'right', or 'center'
 let feedbackMessage = '';
 let feedbackTimer = 0;
-
-// Load images for visuals
-const footballImg = new Image();
-footballImg.src = 'images/football.png';
-const goalkeeperLeftImg = new Image();
-goalkeeperLeftImg.src = 'images/goalkeeper-left.png';
-const goalkeeperRightImg = new Image();
-goalkeeperRightImg.src = 'images/goalkeeper-right.png';
-const goalkeeperCenterImg = new Image();
-goalkeeperCenterImg.src = 'images/goalkeeper-center.png';
-const playerStandingImg = new Image();
-playerStandingImg.src = 'images/player-standing.png';
-const playerKickingImg = new Image();
-playerKickingImg.src = 'images/player-kicking.png';
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -164,7 +149,6 @@ function startPenaltyShootout() {
         shotFrame = 0;
         goalkeeperDiveDirection = 'center';
         playerState = 'standing';
-        goalkeeperState = 'center';
         feedbackMessage = '';
         feedbackTimer = 0;
 
@@ -244,7 +228,7 @@ function endSwipe(event) {
     // Calculate swipe direction and power
     const dx = endX - swipeStartX;
     const dy = endY - swipeStartY;
-    const power = Math.min(Math.sqrt(dx * dx + dy * dy) / 50, 2); // Cap power for better control
+    const power = Math.min(Math.sqrt(dx * dx + dy * dy) / 40, 2.5); // Increased sensitivity for better control
     targetX = ballX + dx * power;
     targetY = ballY + dy * power;
 
@@ -268,19 +252,19 @@ function endSwipe(event) {
 }
 
 function checkGoal(x, y) {
-    // Goal area: x between 140 and 260, y between 0 and 50
-    const inGoal = x >= 140 && x <= 260 && y >= 0 && y <= 50;
+    // Goal area: x between 130 and 270, y between 0 and 50 (widened for easier scoring)
+    const inGoal = x >= 130 && x <= 270 && y >= 0 && y <= 50;
     // Goalkeeper area: x within 40 units of center dive position, y near the top
     let blocked = false;
     if (goalkeeperDiveDirection === 'left') {
-        blocked = x >= 140 && x <= 180 && y <= 60; // Left side of goal
+        blocked = x >= 130 && x <= 170 && y <= 60; // Left side of goal
     } else if (goalkeeperDiveDirection === 'right') {
-        blocked = x >= 220 && x <= 260 && y <= 60; // Right side of goal
+        blocked = x >= 230 && x <= 270 && y <= 60; // Right side of goal
     } else {
-        blocked = x >= 180 && x <= 220 && y <= 60; // Center of goal
+        blocked = x >= 170 && x <= 230 && y <= 60; // Center of goal
     }
-    // 50% chance for goalkeeper to save if in correct position
-    const saveChance = Math.random() < 0.5;
+    // 40% chance for goalkeeper to save if in correct position (reduced difficulty)
+    const saveChance = Math.random() < 0.4;
     return inGoal && !(blocked && saveChance);
 }
 
@@ -306,49 +290,107 @@ function gameLoop() {
     const canvas = document.getElementById("penaltyCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw penalty spot
+    // Clear canvas and draw pitch background
+    ctx.fillStyle = "#2E7D32"; // Green grass
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Draw penalty box lines
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(100, 0, 200, 100); // Penalty box
     ctx.beginPath();
-    ctx.arc(200, 250, 5, 0, Math.PI * 2);
+    ctx.arc(200, 250, 5, 0, Math.PI * 2); // Penalty spot
     ctx.fillStyle = "#fff";
     ctx.fill();
     ctx.closePath();
 
     // Draw goalpost
     ctx.fillStyle = "#fff";
-    ctx.fillRect(140, 0, 120, 10); // Top bar
-    ctx.fillRect(140, 0, 10, 50); // Left post
-    ctx.fillRect(250, 0, 10, 50); // Right post
+    ctx.fillRect(130, 0, 140, 10); // Top bar
+    ctx.fillRect(130, 0, 10, 50); // Left post
+    ctx.fillRect(260, 0, 10, 50); // Right post
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.fillRect(140, 10, 120, 40); // Net
+    ctx.fillRect(130, 10, 140, 40); // Net
 
-    // Draw player
-    const playerImg = playerState === 'standing' ? playerStandingImg : playerKickingImg;
-    ctx.drawImage(playerImg, 175, 220, 50, 50);
-
-    // Draw goalkeeper
-    let goalkeeperImg;
-    if (goalkeeperDiveDirection === 'left') {
-        goalkeeperImg = goalkeeperLeftImg;
-    } else if (goalkeeperDiveDirection === 'right') {
-        goalkeeperImg = goalkeeperRightImg;
+    // Draw player (red rectangle with "7")
+    ctx.save();
+    if (playerState === 'kicking') {
+        ctx.translate(200, 245);
+        ctx.rotate(-15 * Math.PI / 180); // Tilt for kicking animation
+        ctx.fillStyle = "#D32F2F"; // Red jersey
+        ctx.fillRect(-20, -25, 40, 50);
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 20px Roboto";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("7", 0, 0);
+        ctx.restore();
     } else {
-        goalkeeperImg = goalkeeperCenterImg;
+        ctx.fillStyle = "#D32F2F"; // Red jersey
+        ctx.fillRect(180, 220, 40, 50);
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 20px Roboto";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("7", 200, 245);
     }
-    ctx.drawImage(goalkeeperImg, 160, 10, 80, 40);
 
-    // Draw ball if not shooting or during animation
+    // Draw goalkeeper (colored rectangle based on dive direction)
+    if (goalkeeperDiveDirection === 'left') {
+        ctx.fillStyle = "#F44336"; // Red for left dive
+        ctx.fillRect(130, 10, 40, 40);
+    } else if (goalkeeperDiveDirection === 'right') {
+        ctx.fillStyle = "#4CAF50"; // Green for right dive
+        ctx.fillRect(230, 10, 40, 40);
+    } else {
+        ctx.fillStyle = "#2196F3"; // Blue for center
+        ctx.fillRect(180, 10, 40, 40);
+    }
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 16px Roboto";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    if (goalkeeperDiveDirection === 'left') {
+        ctx.fillText("GK", 150, 30);
+    } else if (goalkeeperDiveDirection === 'right') {
+        ctx.fillText("GK", 250, 30);
+    } else {
+        ctx.fillText("GK", 200, 30);
+    }
+
+    // Draw ball (white circle with ⚽)
     if (!isShooting) {
-        ctx.drawImage(footballImg, ballX - 10, ballY - 10, 20, 20);
+        ctx.beginPath();
+        ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.closePath();
+        ctx.font = "16px Roboto";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("⚽", ballX, ballY);
     } else {
         // Animate ball towards target
         shotFrame++;
         const progress = Math.min(shotFrame / 20, 1);
         ballX = ballX + (targetX - ballX) * progress;
         ballY = ballY + (targetY - ballY) * progress;
-        ctx.drawImage(footballImg, ballX - 10, ballY - 10, 20, 20);
+        ctx.beginPath();
+        ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.closePath();
+        ctx.font = "16px Roboto";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("⚽", ballX, ballY);
 
         // Draw ball trail
         ctx.beginPath();
