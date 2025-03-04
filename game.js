@@ -325,19 +325,99 @@ function completeCheckInTask() {
     }
 }
 
-function spinWheel() {
-    if (isNewDay(lastSpinClaim)) {
-        const rewards = [100, 250, 500, 1000];
-        let reward = rewards[Math.floor(Math.random() * rewards.length)];
-        currentPoints += reward;
-        updatePointsAndLevel();
-        updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points from the wheel!`);
-        lastSpinClaim = Date.now();
-        localStorage.setItem("lastSpinClaim", lastSpinClaim);
-        disableSpecificButton('spin-button');
-    } else {
-        updateRewardStatus("You can only spin the wheel once per day!");
+// Wheel data
+const wheelRewards = [500, 1000, 1500, 2000, 2500, 300];
+const wheelColors = ["#FF4500", "#32CD32", "#1E90FF", "#FFD700", "#FF00FF", "#00CED1"]; // Colors for each section
+let isSpinning = false;
+let lastSpinClaim = parseInt(localStorage.getItem("lastSpinClaim")) || 0;
+
+// Draw the wheel
+function drawWheel(angle = 0) {
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    const sections = 6;
+    const arc = (2 * Math.PI) / sections;
+    const radius = canvas.width / 2;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.translate(radius, radius); // Center the wheel
+    ctx.rotate(angle); // Apply rotation
+
+    for (let i = 0; i < sections; i++) {
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, i * arc, (i + 1) * arc);
+        ctx.lineTo(0, 0);
+        ctx.fillStyle = wheelColors[i];
+        ctx.fill();
+        ctx.save();
+
+        // Add reward text
+        ctx.fillStyle = "#FFF";
+        ctx.font = "bold 20px Roboto";
+        ctx.textAlign = "center";
+        ctx.rotate(i * arc + arc / 2); // Rotate to center of section
+        ctx.fillText(wheelRewards[i], radius * 0.6, 0);
+        ctx.restore();
     }
+
+    ctx.rotate(-angle); // Reset rotation
+    ctx.translate(-radius, -radius); // Reset translation
+}
+
+// Initial draw
+document.addEventListener("DOMContentLoaded", () => {
+    drawWheel();
+    updateButtonStates(); // From earlier daily reset logic
+});
+
+function spinWheel() {
+    if (isSpinning || !isNewDay(lastSpinClaim)) {
+        updateRewardStatus("You can only spin once per day!");
+        return;
+    }
+
+    isSpinning = true;
+    disableSpecificButton("spin-button");
+
+    const spins = 5 + Math.random() * 5; // 5-10 full rotations
+    const randomSection = Math.floor(Math.random() * 6); // Random section (0-5)
+    const targetAngle = (2 * Math.PI * spins) + (randomSection * (2 * Math.PI / 6));
+    let currentAngle = 0;
+    const duration = 3000; // 3 seconds
+    const startTime = performance.now();
+
+    function animateWheel(time) {
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        currentAngle = targetAngle * (1 - Math.pow(1 - progress, 2)); // Ease-out effect
+        drawWheel(currentAngle);
+
+        if (progress < 1) {
+            requestAnimationFrame(animateWheel);
+        } else {
+            isSpinning = false;
+            const reward = wheelRewards[randomSection];
+            currentPoints += reward;
+            updatePointsAndLevel();
+            updateRewardStatus(`Congratulations! You won ${reward} CR7SIU Points!`);
+            lastSpinClaim = Date.now();
+            localStorage.setItem("lastSpinClaim", lastSpinClaim);
+        }
+    }
+
+    requestAnimationFrame(animateWheel);
+}
+
+// Reuse daily reset logic (from earlier suggestion)
+function isNewDay(lastClaimTime) {
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    return now - lastClaimTime >= oneDay;
+}
+
+function updateButtonStates() {
+    if (isNewDay(lastSpinClaim)) enableSpecificButton("spin-button");
+    else disableSpecificButton("spin-button");
 }
 // Update reward status function
 function updateRewardStatus(message) {

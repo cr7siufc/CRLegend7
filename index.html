@@ -92,7 +92,10 @@
             </div>
             <div id="spin-the-wheel">
                 <h2>Spin the Wheel</h2>
-                <canvas id="wheelCanvas" width="200" height="200"></canvas>
+                <div id="wheel-container">
+                    <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                    <div id="wheel-pointer"></div> <!-- Pointer to indicate the winning section -->
+                </div>
                 <button onclick="spinWheel()" id="spin-button">Spin to Win!</button>
                 <p>Click to spin the wheel for a chance to win CR7SIU Points!</p>
                 <p id="spin-claim-time">Next claim in <span id="spin-timer">24:00:00</span></p>
