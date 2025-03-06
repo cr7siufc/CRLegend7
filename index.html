@@ -4,7 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CR7SIU</title>
-    <link rel="stylesheet" href="/style.css">
+    <!-- Inline critical styles as fallback -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #111 url("/images/cr7_poster15.jpg") no-repeat center center fixed;
+            background-size: cover;
+            color: #f2f2f2;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 0;
+        }
+        body.no-bg {
+            background: #111;
+        }
+        header {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.85);
+            font-size: 20px;
+            padding: 20px;
+            border-bottom: 2px solid #FF00FF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #cr7siu-note {
+            font-size: 16px;
+            font-weight: 400;
+            margin: 0;
+            padding: 0 0 0 20px;
+            text-align: left;
+            max-width: 60%;
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+        #cr7-logo {
+            width: 80px;
+            height: 80px;
+            background: #333 url("/images/cr7_poster2.jpg") center center no-repeat;
+            background-size: cover;
+            margin: 0 15px 0 0;
+            border: 4px solid #FFD700;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0); }
+            100% { transform: rotate(360deg); }
+        }
+        nav {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.95));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 15px 0;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        nav button {
+            background: linear-gradient(45deg, #444, #666);
+            color: #fff;
+            border: 2px solid #FFA500;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        nav button:hover {
+            background: linear-gradient(45deg, #666, #888);
+            border-color: #FF00FF;
+            box-shadow: 0 0 15px #FFD700;
+            transform: scale(1.05);
+        }
+        nav button:active {
+            transform: scale(0.95);
+        }
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+            margin-top: auto;
+        }
+        footer button {
+            background: linear-gradient(45deg, #444, #666);
+            color: #fff;
+            border: 2px solid #FFA500;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px;
+            min-width: 120px;
+        }
+        footer button:hover {
+            background: linear-gradient(45deg, #666, #888);
+            border-color: #FF00FF;
+            box-shadow: 0 0 15px #FFD700;
+            transform: scale(1.05);
+        }
+        footer button:active {
+            transform: scale(0.95);
+        }
+    </style>
+    <!-- Link to external stylesheet with cache-busting -->
+    <link rel="stylesheet" href="/style.css?v=3">
 </head>
 <body>
     <div id="cr7-logo"></div>
