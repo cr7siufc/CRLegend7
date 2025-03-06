@@ -1,16 +1,18 @@
 {
-  "name": "cr7siu-backend",
+  "name": "crlegend7",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "CR7SIU Frontend with Backend",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "build": "echo 'Static site with serverless backend, no build step needed'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "express": "^4.21.2",
-    "sqlite3": "^5.1.7"
-  }
+    "axios": "^1.6.8",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "sqlite3": "^5.1.6"
+  },
+  "author": "Your Name",
+  "license": "ISC"
 }

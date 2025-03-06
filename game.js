@@ -1,7 +1,5 @@
-// Add this to your HTML <head> or before </body>:
-// <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-const API_URL = 'https://crlegend7.vercel.app';
+// Note: Remove the CDN Axios line from index.html and ensure axios is in package.json
+const API_URL = 'https://crlegend7.vercel.app/api'; // Update to your Vercel URL
 
 // Player data (initially empty, loaded from server or migrated from localStorage)
 let username = '';
@@ -44,13 +42,15 @@ let ballRotation = 0;
 let crowdCheer = true;
 let celebrationTimer = 0;
 
-// Migration function
+// Migration function with improved logging and error handling
 function migrateLocalStorageData() {
     const localUsername = localStorage.getItem("username");
     const isMigrated = localStorage.getItem("migrated");
 
+    console.log("Migration check - Local Username:", localUsername, "Is Migrated:", isMigrated);
+
     if (localUsername && !isMigrated) {
-        // Existing user with localStorage data, migrate to server
+        console.log("Migrating existing user data for:", localUsername);
         username = localUsername;
         currentPoints = parseInt(localStorage.getItem("points")) || 0;
         playerLevel = parseInt(localStorage.getItem("level")) || 1;
@@ -79,23 +79,34 @@ function migrateLocalStorageData() {
             lastRewardsClaim
         };
 
+        console.log("Saving migrated data to server:", playerData);
+
         axios.post(`${API_URL}/save`, playerData)
             .then(response => {
                 console.log("Migration successful:", response.data.message);
                 localStorage.setItem("migrated", "true");
-                localStorage.clear();
-                loadFromServer(username, loadSession);
+                localStorage.clear(); // Clear localStorage after migration
+                localStorage.setItem("username", username); // Keep username for future checks
+                localStorage.setItem("migrated", "true");
+                loadFromServer(username, () => {
+                    loadSession();
+                    loadScores(); // Load scores after migration
+                });
             })
             .catch(error => {
-                console.error("Migration failed:", error);
-                showUsernameSetup(); // Fallback to username setup if migration fails
+                console.error("Migration failed:", error.message);
+                alert("Failed to migrate your data. Please set a new username.");
+                showUsernameSetup(); // Fallback to username setup
             });
     } else if (localUsername && isMigrated) {
-        // Already migrated, load from server
+        console.log("User already migrated, loading from server for:", localUsername);
         username = localUsername;
-        loadFromServer(username, loadSession);
+        loadFromServer(localUsername, () => {
+            loadSession();
+            loadScores(); // Load scores after loading session
+        });
     } else {
-        // No local username or not migrated, show username setup
+        console.log("No local username found, showing username setup");
         showUsernameSetup();
     }
 }
@@ -107,6 +118,8 @@ function showUsernameSetup() {
         setupElement.classList.remove("hidden");
         const inputElement = document.getElementById("username-input");
         if (inputElement) inputElement.focus();
+    } else {
+        console.error("Username setup element not found in DOM");
     }
 }
 
@@ -126,17 +139,22 @@ function saveToServer() {
         lastTaskClaims: JSON.stringify(lastTaskClaims),
         lastRewardsClaim
     };
+    console.log("Saving to server:", playerData);
     axios.post(`${API_URL}/save`, playerData)
-        .then(response => console.log(response.data.message))
-        .catch(error => console.error('Error saving to server:', error));
+        .then(response => {
+            console.log("Save successful:", response.data.message);
+            loadScores(); // Refresh scores after saving
+        })
+        .catch(error => console.error('Error saving to server:', error.message));
 }
 
 // Load player data from server
 function loadFromServer(username, callback) {
+    console.log("Loading data from server for:", username);
     axios.get(`${API_URL}/player/${username}`)
         .then(response => {
             if (response.data.error) {
-                console.log('New player or no server data, starting fresh');
+                console.log('New player or no server data, starting fresh for:', username);
                 currentPoints = 0;
                 playerLevel = 1;
                 currentTokens = 0;
@@ -162,13 +180,44 @@ function loadFromServer(username, callback) {
                 lastSpinClaim = parseInt(response.data.lastSpinClaim) || 0;
                 lastTaskClaims = response.data.lastTaskClaims ? JSON.parse(response.data.lastTaskClaims) : { youtube: 0, xAccount: 0, facebook: 0 };
                 lastRewardsClaim = parseInt(response.data.lastRewardsClaim) || 0;
+                console.log("Loaded from server:", { username, points: currentPoints, level: playerLevel, tokens: currentTokens });
             }
-            console.log("Loaded from server:", { username, points: currentPoints, level: playerLevel, tokens: currentTokens });
             if (callback) callback();
         })
         .catch(error => {
-            console.error('Error loading from server:', error);
-            showUsernameSetup(); // Fallback to username setup if server fails
+            console.error('Error loading from server:', error.message);
+            alert("Failed to load data from server. Please try setting your username again.");
+            showUsernameSetup();
+        });
+}
+
+// Load and display scores (leaderboard)
+function loadScores() {
+    console.log("Fetching scores from server...");
+    axios.get(`${API_URL}/scores`)
+        .then(response => {
+            const scores = response.data;
+            console.log("Scores fetched:", scores);
+            const scoresContainer = document.getElementById("scores-container");
+            if (scoresContainer) {
+                if (scores.length === 0) {
+                    scoresContainer.innerHTML = "<p>No scores available yet.</p>";
+                } else {
+                    scoresContainer.innerHTML = scores
+                        .sort((a, b) => b.points - a.points) // Sort by points descending
+                        .map((player, index) => `<div>${index + 1}. ${player.username}: ${player.points} CR7SIU Points</div>`)
+                        .join('');
+                }
+            } else {
+                console.error("Scores container element not found in DOM");
+            }
+        })
+        .catch(error => {
+            console.error('Error loading scores:', error.message);
+            const scoresContainer = document.getElementById("scores-container");
+            if (scoresContainer) {
+                scoresContainer.innerHTML = "<p>Failed to load scores.</p>";
+            }
         });
 }
 
@@ -177,9 +226,11 @@ function setUsername() {
         const input = document.getElementById("username-input").value.trim();
         if (input) {
             username = input;
+            localStorage.setItem("username", username); // Store username for future checks
             loadFromServer(username, () => {
                 saveToServer();
                 loadSession();
+                loadScores();
             });
         } else {
             alert("Please enter a valid username.");
@@ -424,7 +475,7 @@ function gameLoop() {
     ctx.lineTo(200, 50);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(canvas.width, canvas.height);
+    ctx.lineTo(canvas.width, canvas.height);
     ctx.lineTo(200, 50);
     ctx.stroke();
     ctx.strokeRect(100, 50, 200, 100);
