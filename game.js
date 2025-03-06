@@ -1,7 +1,7 @@
 // Add this to your HTML <head> or before </body>:
 // <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-const API_URL = 'http://localhost:3000'; // Change to your deployed URL later
+const API_URL = 'https://cr7siu-backend.onrender.com'; // Update to your deployed backend URL (e.g., Render URL)
 
 // Player data (initially empty, loaded from server or migrated from localStorage)
 let username = '';
@@ -47,7 +47,10 @@ let celebrationTimer = 0;
 // Migration function
 function migrateLocalStorageData() {
     const localUsername = localStorage.getItem("username");
-    if (localUsername && !localStorage.getItem("migrated")) { // Only migrate if username exists and not migrated yet
+    const isMigrated = localStorage.getItem("migrated");
+
+    if (localUsername && !isMigrated) {
+        // Existing user with localStorage data, migrate to server
         username = localUsername;
         currentPoints = parseInt(localStorage.getItem("points")) || 0;
         playerLevel = parseInt(localStorage.getItem("level")) || 1;
@@ -61,7 +64,6 @@ function migrateLocalStorageData() {
         lastTaskClaims = JSON.parse(localStorage.getItem("lastTaskClaims")) || { youtube: 0, xAccount: 0, facebook: 0 };
         lastRewardsClaim = parseInt(localStorage.getItem("lastRewardsClaim")) || 0;
 
-        // Save to server
         const playerData = {
             username,
             points: currentPoints,
@@ -76,27 +78,35 @@ function migrateLocalStorageData() {
             lastTaskClaims: JSON.stringify(lastTaskClaims),
             lastRewardsClaim
         };
+
         axios.post(`${API_URL}/save`, playerData)
             .then(response => {
                 console.log("Migration successful:", response.data.message);
-                // Mark as migrated and clear localStorage
                 localStorage.setItem("migrated", "true");
                 localStorage.clear();
                 loadFromServer(username, loadSession);
             })
-            .catch(error => console.error("Migration failed:", error));
-    } else if (localUsername) {
-        // Already migrated, clear localStorage and load from server
-        localStorage.clear();
-        loadFromServer(localUsername, loadSession);
+            .catch(error => {
+                console.error("Migration failed:", error);
+                showUsernameSetup(); // Fallback to username setup if migration fails
+            });
+    } else if (localUsername && isMigrated) {
+        // Already migrated, load from server
+        username = localUsername;
+        loadFromServer(username, loadSession);
     } else {
-        // New user, show username setup
-        const setupElement = document.getElementById("username-setup");
-        if (setupElement) {
-            setupElement.classList.remove("hidden");
-            const inputElement = document.getElementById("username-input");
-            if (inputElement) inputElement.focus();
-        }
+        // No local username or not migrated, show username setup
+        showUsernameSetup();
+    }
+}
+
+// Helper function to show username setup screen
+function showUsernameSetup() {
+    const setupElement = document.getElementById("username-setup");
+    if (setupElement) {
+        setupElement.classList.remove("hidden");
+        const inputElement = document.getElementById("username-input");
+        if (inputElement) inputElement.focus();
     }
 }
 
@@ -156,7 +166,10 @@ function loadFromServer(username, callback) {
             console.log("Loaded from server:", { username, points: currentPoints, level: playerLevel, tokens: currentTokens });
             if (callback) callback();
         })
-        .catch(error => console.error('Error loading from server:', error));
+        .catch(error => {
+            console.error('Error loading from server:', error);
+            showUsernameSetup(); // Fallback to username setup if server fails
+        });
 }
 
 function setUsername() {
@@ -182,7 +195,7 @@ function loadSession() {
         if (setupElement) setupElement.classList.add("hidden");
 
         const usernameDisplay = document.getElementById("username-display");
-        if (usernameDisplay) usernameDisplay.textContent = username;
+        if (usernameDisplay) usernameDisplay.textContent = username || "Not Set";
 
         const scoreDisplay = document.getElementById("score-display");
         if (scoreDisplay) scoreDisplay.textContent = `${currentPoints} CR7SIU Points`;
@@ -229,7 +242,7 @@ function showPage(page) {
     }
 }
 
-// Penalty Shootout Game Logic (unchanged except for saving points)
+// Penalty Shootout Game Logic
 function startPenaltyShootout() {
     try {
         penaltyGameActive = true;
