@@ -1,7 +1,7 @@
 // Add this to your HTML <head> or before </body>:
 // <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-const API_URL = 'https://cr7siu-backend.onrender.com'; // Update to your deployed backend URL (e.g., Render URL)
+const API_URL = 'https://github.com/cr7siufc/CRLegend7.git'; // Update to your deployed backend URL (e.g., Render URL)
 
 // Player data (initially empty, loaded from server or migrated from localStorage)
 let username = '';
