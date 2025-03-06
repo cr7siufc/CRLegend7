@@ -9,7 +9,6 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    /* Use a fallback color if the image fails to load */
     background: #111 url("/images/cr7_poster15.jpg") no-repeat center center fixed;
     background-size: cover;
     color: #f2f2f2;
@@ -18,12 +17,10 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    /* Ensure background is visible */
     position: relative;
     z-index: 0;
 }
 
-/* Fallback background if image fails */
 body.no-bg {
     background: #111;
 }
