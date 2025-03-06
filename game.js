@@ -1,19 +1,26 @@
-// Note: Remove the CDN Axios line from index.html and ensure axios is in package.json
-const API_URL = 'https://crlegend7.vercel.app/api'; // Update to your Vercel URL
+// Log localStorage values for debugging
+console.log("Initial localStorage values:", {
+    username: localStorage.getItem("username"),
+    points: localStorage.getItem("points"),
+    level: localStorage.getItem("level"),
+    tokens: localStorage.getItem("tokens")
+});
 
-// Player data (initially empty, loaded from server or migrated from localStorage)
-let username = '';
-let currentPoints = 0;
-let playerLevel = 1;
-let currentTokens = 0;
-let attributes = {};
-let tasksCompleted = { youtube: false, xAccount: false, facebook: false };
-let referralUsers = [];
-let lastAdClaim = 0;
-let lastCheckInClaim = 0;
-let lastSpinClaim = 0;
-let lastTaskClaims = { youtube: 0, xAccount: 0, facebook: 0 };
-let lastRewardsClaim = 0;
+// Store user data in localStorage
+let username = localStorage.getItem("username") || '';
+let currentPoints = parseInt(localStorage.getItem("points")) || 0;
+let playerLevel = parseInt(localStorage.getItem("level")) || 1;
+let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
+let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
+let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
+let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
+
+// Daily reset tracking
+let lastAdClaim = parseInt(localStorage.getItem("lastAdClaim")) || 0;
+let lastCheckInClaim = parseInt(localStorage.getItem("lastCheckInClaim")) || 0;
+let lastSpinClaim = parseInt(localStorage.getItem("lastSpinClaim")) || 0;
+let lastTaskClaims = JSON.parse(localStorage.getItem("lastTaskClaims")) || { youtube: 0, xAccount: 0, facebook: 0 };
+let lastRewardsClaim = parseInt(localStorage.getItem("lastRewardsClaim")) || 0;
 
 // Wheel data
 const wheelRewards = [500, 1000, 1500, 2000, 2500, 300];
@@ -32,206 +39,37 @@ let ballX, ballY, targetX, targetY;
 let goalkeeperX;
 let isShooting = false;
 let shotFrame = 0;
-let goalkeeperDiveDirection = 'center';
-let playerState = 'standing';
+let goalkeeperDiveDirection = 'center'; // 'left', 'right', or 'center'
+let playerState = 'standing'; // 'standing' or 'kicking'
 let feedbackMessage = '';
 let feedbackTimer = 0;
-let selectedPower = 'medium';
-let shotDirection = null;
-let ballRotation = 0;
-let crowdCheer = true;
-let celebrationTimer = 0;
+let selectedPower = 'medium'; // 'low', 'medium', 'high'
+let shotDirection = null; // 'left', 'center', 'right'
+let ballRotation = 0; // For spinning ball animation
+let crowdCheer = true; // Toggle for crowd animation
+let celebrationTimer = 0; // For goal celebration
 
-// Migration function with improved logging and error handling
-function migrateLocalStorageData() {
-    const localUsername = localStorage.getItem("username");
-    const isMigrated = localStorage.getItem("migrated");
-
-    console.log("Migration check - Local Username:", localUsername, "Is Migrated:", isMigrated);
-
-    if (localUsername && !isMigrated) {
-        console.log("Migrating existing user data for:", localUsername);
-        username = localUsername;
-        currentPoints = parseInt(localStorage.getItem("points")) || 0;
-        playerLevel = parseInt(localStorage.getItem("level")) || 1;
-        currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
-        attributes = JSON.parse(localStorage.getItem("attributes")) || {};
-        tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
-        referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
-        lastAdClaim = parseInt(localStorage.getItem("lastAdClaim")) || 0;
-        lastCheckInClaim = parseInt(localStorage.getItem("lastCheckInClaim")) || 0;
-        lastSpinClaim = parseInt(localStorage.getItem("lastSpinClaim")) || 0;
-        lastTaskClaims = JSON.parse(localStorage.getItem("lastTaskClaims")) || { youtube: 0, xAccount: 0, facebook: 0 };
-        lastRewardsClaim = parseInt(localStorage.getItem("lastRewardsClaim")) || 0;
-
-        const playerData = {
-            username,
-            points: currentPoints,
-            level: playerLevel,
-            tokens: currentTokens,
-            attributes: JSON.stringify(attributes),
-            tasksCompleted: JSON.stringify(tasksCompleted),
-            referralUsers: JSON.stringify(referralUsers),
-            lastAdClaim,
-            lastCheckInClaim,
-            lastSpinClaim,
-            lastTaskClaims: JSON.stringify(lastTaskClaims),
-            lastRewardsClaim
-        };
-
-        console.log("Saving migrated data to server:", playerData);
-
-        axios.post(`${API_URL}/save`, playerData)
-            .then(response => {
-                console.log("Migration successful:", response.data.message);
-                localStorage.setItem("migrated", "true");
-                localStorage.clear(); // Clear localStorage after migration
-                localStorage.setItem("username", username); // Keep username for future checks
-                localStorage.setItem("migrated", "true");
-                loadFromServer(username, () => {
-                    loadSession();
-                    loadScores(); // Load scores after migration
-                });
-            })
-            .catch(error => {
-                console.error("Migration failed:", error.message);
-                alert("Failed to migrate your data. Please set a new username.");
-                showUsernameSetup(); // Fallback to username setup
-            });
-    } else if (localUsername && isMigrated) {
-        console.log("User already migrated, loading from server for:", localUsername);
-        username = localUsername;
-        loadFromServer(localUsername, () => {
-            loadSession();
-            loadScores(); // Load scores after loading session
-        });
-    } else {
-        console.log("No local username found, showing username setup");
-        showUsernameSetup();
-    }
-}
-
-// Helper function to show username setup screen
-function showUsernameSetup() {
+// Show username setup if it's the user's first session
+if (!username) {
     const setupElement = document.getElementById("username-setup");
     if (setupElement) {
         setupElement.classList.remove("hidden");
         const inputElement = document.getElementById("username-input");
         if (inputElement) inputElement.focus();
-    } else {
-        console.error("Username setup element not found in DOM");
     }
-}
-
-// Save all player data to server
-function saveToServer() {
-    const playerData = {
-        username,
-        points: currentPoints,
-        level: playerLevel,
-        tokens: currentTokens,
-        attributes: JSON.stringify(attributes),
-        tasksCompleted: JSON.stringify(tasksCompleted),
-        referralUsers: JSON.stringify(referralUsers),
-        lastAdClaim,
-        lastCheckInClaim,
-        lastSpinClaim,
-        lastTaskClaims: JSON.stringify(lastTaskClaims),
-        lastRewardsClaim
-    };
-    console.log("Saving to server:", playerData);
-    axios.post(`${API_URL}/save`, playerData)
-        .then(response => {
-            console.log("Save successful:", response.data.message);
-            loadScores(); // Refresh scores after saving
-        })
-        .catch(error => console.error('Error saving to server:', error.message));
-}
-
-// Load player data from server
-function loadFromServer(username, callback) {
-    console.log("Loading data from server for:", username);
-    axios.get(`${API_URL}/player/${username}`)
-        .then(response => {
-            if (response.data.error) {
-                console.log('New player or no server data, starting fresh for:', username);
-                currentPoints = 0;
-                playerLevel = 1;
-                currentTokens = 0;
-                attributes = {};
-                tasksCompleted = { youtube: false, xAccount: false, facebook: false };
-                referralUsers = [];
-                lastAdClaim = 0;
-                lastCheckInClaim = 0;
-                lastSpinClaim = 0;
-                lastTaskClaims = { youtube: 0, xAccount: 0, facebook: 0 };
-                lastRewardsClaim = 0;
-                saveToServer(); // Save initial data
-            } else {
-                username = response.data.username;
-                currentPoints = parseInt(response.data.points) || 0;
-                playerLevel = parseInt(response.data.level) || 1;
-                currentTokens = parseInt(response.data.tokens) || 0;
-                attributes = response.data.attributes ? JSON.parse(response.data.attributes) : {};
-                tasksCompleted = response.data.tasksCompleted ? JSON.parse(response.data.tasksCompleted) : { youtube: false, xAccount: false, facebook: false };
-                referralUsers = response.data.referralUsers ? JSON.parse(response.data.referralUsers) : [];
-                lastAdClaim = parseInt(response.data.lastAdClaim) || 0;
-                lastCheckInClaim = parseInt(response.data.lastCheckInClaim) || 0;
-                lastSpinClaim = parseInt(response.data.lastSpinClaim) || 0;
-                lastTaskClaims = response.data.lastTaskClaims ? JSON.parse(response.data.lastTaskClaims) : { youtube: 0, xAccount: 0, facebook: 0 };
-                lastRewardsClaim = parseInt(response.data.lastRewardsClaim) || 0;
-                console.log("Loaded from server:", { username, points: currentPoints, level: playerLevel, tokens: currentTokens });
-            }
-            if (callback) callback();
-        })
-        .catch(error => {
-            console.error('Error loading from server:', error.message);
-            alert("Failed to load data from server. Please try setting your username again.");
-            showUsernameSetup();
-        });
-}
-
-// Load and display scores (leaderboard)
-function loadScores() {
-    console.log("Fetching scores from server...");
-    axios.get(`${API_URL}/scores`)
-        .then(response => {
-            const scores = response.data;
-            console.log("Scores fetched:", scores);
-            const scoresContainer = document.getElementById("scores-container");
-            if (scoresContainer) {
-                if (scores.length === 0) {
-                    scoresContainer.innerHTML = "<p>No scores available yet.</p>";
-                } else {
-                    scoresContainer.innerHTML = scores
-                        .sort((a, b) => b.points - a.points) // Sort by points descending
-                        .map((player, index) => `<div>${index + 1}. ${player.username}: ${player.points} CR7SIU Points</div>`)
-                        .join('');
-                }
-            } else {
-                console.error("Scores container element not found in DOM");
-            }
-        })
-        .catch(error => {
-            console.error('Error loading scores:', error.message);
-            const scoresContainer = document.getElementById("scores-container");
-            if (scoresContainer) {
-                scoresContainer.innerHTML = "<p>Failed to load scores.</p>";
-            }
-        });
+} else {
+    loadSession();
+    checkForReferral();
 }
 
 function setUsername() {
     try {
         const input = document.getElementById("username-input").value.trim();
         if (input) {
+            localStorage.setItem("username", input);
             username = input;
-            localStorage.setItem("username", username); // Store username for future checks
-            loadFromServer(username, () => {
-                saveToServer();
-                loadSession();
-                loadScores();
-            });
+            console.log("Username set to:", input);
+            loadSession();
         } else {
             alert("Please enter a valid username.");
         }
@@ -246,7 +84,7 @@ function loadSession() {
         if (setupElement) setupElement.classList.add("hidden");
 
         const usernameDisplay = document.getElementById("username-display");
-        if (usernameDisplay) usernameDisplay.textContent = username || "Not Set";
+        if (usernameDisplay) usernameDisplay.textContent = username;
 
         const scoreDisplay = document.getElementById("score-display");
         if (scoreDisplay) scoreDisplay.textContent = `${currentPoints} CR7SIU Points`;
@@ -283,6 +121,7 @@ function showPage(page) {
         if (page === "rewards") {
             drawWheel();
         }
+        // Reset game area visibility when navigating away from Games page
         if (page !== "games") {
             const gameArea = document.getElementById("game-area");
             if (gameArea) gameArea.classList.add("hidden");
@@ -293,7 +132,7 @@ function showPage(page) {
     }
 }
 
-// Penalty Shootout Game Logic
+// CR7 Penalty Shootout Game Logic
 function startPenaltyShootout() {
     try {
         penaltyGameActive = true;
@@ -303,11 +142,11 @@ function startPenaltyShootout() {
         penaltyMultiplier = 1;
         isSuddenDeath = false;
         gameOver = false;
-        ballX = 200;
-        ballY = 280;
+        ballX = 200; // Center of canvas
+        ballY = 280; // Closer to bottom for zoomed-in view
         targetX = ballX;
         targetY = ballY;
-        goalkeeperX = 200;
+        goalkeeperX = 200; // Center of goal
         isShooting = false;
         shotFrame = 0;
         goalkeeperDiveDirection = 'center';
@@ -375,26 +214,30 @@ function handleGoalTap(event) {
     const tapX = (clientX - rect.left) * (canvas.width / rect.width);
     const tapY = (clientY - rect.top) * (canvas.height / rect.height);
 
+    // Only execute shot if tapping on the goalpost area (y < 70)
     if (tapY > 70) return;
 
+    // Determine shot direction based on tap position
     if (tapX >= 120 && tapX < 173) {
         shotDirection = 'left';
-        targetX = 146.5;
+        targetX = 146.5; // Center of left section
     } else if (tapX >= 173 && tapX < 226) {
         shotDirection = 'center';
-        targetX = 199.5;
+        targetX = 199.5; // Center of center section
     } else if (tapX >= 226 && tapX <= 280) {
         shotDirection = 'right';
-        targetX = 253;
+        targetX = 253; // Center of right section
     } else {
-        return;
+        return; // Tap outside goalpost area
     }
-    targetY = 25;
+    targetY = 25; // Middle of goal height
 
+    // Start shooting animation
     isShooting = true;
     playerState = 'kicking';
     shotFrame = 0;
 
+    // AI Goalkeeper decides dive direction
     const diveRandom = Math.random();
     if (shotDirection === 'left') {
         goalkeeperDiveDirection = diveRandom < 0.5 ? 'left' : (diveRandom < 0.75 ? 'center' : 'right');
@@ -406,6 +249,8 @@ function handleGoalTap(event) {
 }
 
 function checkGoal() {
+    // If the goalkeeper's dive direction matches the shot direction, it's a miss
+    // Otherwise, it's a goal
     return shotDirection !== goalkeeperDiveDirection;
 }
 
@@ -431,11 +276,14 @@ function gameLoop() {
     const canvas = document.getElementById("penaltyCanvas");
     const ctx = canvas.getContext("2d");
 
+    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#1C2526";
+    // Draw stadium background
+    ctx.fillStyle = "#1C2526"; // Dark gray for stadium
     ctx.fillRect(0, 0, canvas.width, 50);
-    ctx.fillStyle = crowdCheer ? "#4A4A4A" : "#5A5A5A";
+    // Crowd silhouette
+    ctx.fillStyle = crowdCheer ? "#4A4A4A" : "#5A5A5A"; // Alternating colors for cheering
     crowdCheer = !crowdCheer;
     ctx.beginPath();
     ctx.moveTo(0, 50);
@@ -444,23 +292,27 @@ function gameLoop() {
     ctx.lineTo(400, 50);
     ctx.closePath();
     ctx.fill();
+    // Crowd details
     for (let x = 0; x < canvas.width; x += 10) {
         ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
         ctx.fillRect(x, 5, 5, 5);
     }
 
+    // Draw spotlight effect
     const spotlight = ctx.createRadialGradient(200, 150, 50, 200, 150, 200);
     spotlight.addColorStop(0, "rgba(255, 255, 255, 0.3)");
     spotlight.addColorStop(1, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = spotlight;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    // Draw pitch background with 3D effect
     const pitchGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    pitchGradient.addColorStop(0, "#1B5E20");
-    pitchGradient.addColorStop(1, "#4CAF50");
+    pitchGradient.addColorStop(0, "#1B5E20"); // Dark green at top
+    pitchGradient.addColorStop(1, "#4CAF50"); // Light green at bottom
     ctx.fillStyle = pitchGradient;
     ctx.fillRect(0, 50, canvas.width, canvas.height - 50);
 
+    // Draw grass texture
     ctx.fillStyle = "rgba(0, 100, 0, 0.3)";
     for (let i = 0; i < 100; i++) {
         const x = Math.random() * canvas.width;
@@ -468,31 +320,39 @@ function gameLoop() {
         ctx.fillRect(x, y, 2, 2);
     }
 
+    // Draw perspective lines for 3D effect
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 2;
+    // Left perspective line
     ctx.beginPath();
     ctx.moveTo(0, canvas.height);
     ctx.lineTo(200, 50);
     ctx.stroke();
+    // Right perspective line
     ctx.beginPath();
-    ctx.lineTo(canvas.width, canvas.height);
+    ctx.moveTo(canvas.width, canvas.height);
     ctx.lineTo(200, 50);
     ctx.stroke();
+    // Penalty box lines
     ctx.strokeRect(100, 50, 200, 100);
 
+    // Draw penalty spot
     ctx.beginPath();
     ctx.arc(200, 280, 5, 0, Math.PI * 2);
     ctx.fillStyle = "#fff";
     ctx.fill();
     ctx.closePath();
 
+    // Draw goalpost with enhanced 3D effect
+    // Main goalpost with metallic gradient
     const goalGradient = ctx.createLinearGradient(120, 0, 280, 0);
     goalGradient.addColorStop(0, "#B0BEC5");
     goalGradient.addColorStop(1, "#ECEFF1");
     ctx.fillStyle = goalGradient;
-    ctx.fillRect(120, 0, 160, 15);
-    ctx.fillRect(120, 0, 15, 70);
-    ctx.fillRect(265, 0, 15, 70);
+    ctx.fillRect(120, 0, 160, 15); // Top bar
+    ctx.fillRect(120, 0, 15, 70); // Left post
+    ctx.fillRect(265, 0, 15, 70); // Right post
+    // 3D effect with angled lines
     ctx.beginPath();
     ctx.moveTo(120, 0);
     ctx.lineTo(110, 10);
@@ -505,10 +365,13 @@ function gameLoop() {
     ctx.lineTo(275, 10);
     ctx.lineTo(265, 0);
     ctx.fill();
+    // Goalpost shadow
     ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
     ctx.fillRect(110, 10, 180, 5);
+    // Net
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
     ctx.fillRect(135, 15, 130, 55);
+    // Net pattern
     ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
     ctx.lineWidth = 1;
     for (let x = 135; x < 265; x += 10) {
@@ -524,17 +387,21 @@ function gameLoop() {
         ctx.stroke();
     }
 
-    ctx.fillStyle = "rgba(255, 215, 0, 0.3)";
-    ctx.fillRect(120, 0, 53, 70);
-    ctx.fillRect(173, 0, 53, 70);
-    ctx.fillRect(226, 0, 54, 70);
+    // Draw clickable areas on goalpost (highlight when hovered)
+    ctx.fillStyle = "rgba(255, 215, 0, 0.3)"; // Yellow highlight
+    ctx.fillRect(120, 0, 53, 70); // Left
+    ctx.fillRect(173, 0, 53, 70); // Center
+    ctx.fillRect(226, 0, 54, 70); // Right
 
+    // Draw player with 3D effect (layered model)
     ctx.save();
     if (playerState === 'kicking') {
         ctx.translate(200, 275);
-        ctx.rotate(-15 * Math.PI / 180);
-        ctx.fillStyle = "#D32F2F";
+        ctx.rotate(-15 * Math.PI / 180); // Tilt for kicking animation
+        // Torso (red jersey)
+        ctx.fillStyle = "#D32F2F"; // Red jersey
         ctx.fillRect(-20, -30, 40, 40);
+        // Jersey number
         ctx.fillStyle = "#fff";
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
@@ -543,13 +410,16 @@ function gameLoop() {
         ctx.textBaseline = "middle";
         ctx.fillText("7", 0, -5);
         ctx.strokeText("7", 0, -5);
+        // Legs (kicking pose)
         ctx.fillStyle = "#000";
-        ctx.fillRect(-15, 10, 10, 30);
-        ctx.fillRect(5, 10, 10, 30);
+        ctx.fillRect(-15, 10, 10, 30); // Left leg (stationary)
+        ctx.fillRect(5, 10, 10, 30); // Right leg (kicking forward)
         ctx.restore();
     } else {
-        ctx.fillStyle = "#D32F2F";
+        // Torso (red jersey)
+        ctx.fillStyle = "#D32F2F"; // Red jersey
         ctx.fillRect(180, 245, 40, 40);
+        // Jersey number
         ctx.fillStyle = "#fff";
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
@@ -558,17 +428,19 @@ function gameLoop() {
         ctx.textBaseline = "middle";
         ctx.fillText("7", 200, 265);
         ctx.strokeText("7", 200, 265);
+        // Legs (standing pose)
         ctx.fillStyle = "#000";
-        ctx.fillRect(185, 285, 10, 20);
-        ctx.fillRect(205, 285, 10, 20);
+        ctx.fillRect(185, 285, 10, 20); // Left leg
+        ctx.fillRect(205, 285, 10, 20); // Right leg
     }
 
+    // Draw goalkeeper with diving animation
     if (isShooting) {
         if (goalkeeperDiveDirection === 'left') {
             ctx.save();
             ctx.translate(140, 35);
-            ctx.rotate(-15 * Math.PI / 180);
-            ctx.fillStyle = "#F44336";
+            ctx.rotate(-15 * Math.PI / 180); // Tilt for diving left
+            ctx.fillStyle = "#F44336"; // Red for left dive
             ctx.fillRect(-20, -20, 40, 40);
             ctx.fillStyle = "#fff";
             ctx.strokeStyle = "#000";
@@ -582,8 +454,8 @@ function gameLoop() {
         } else if (goalkeeperDiveDirection === 'right') {
             ctx.save();
             ctx.translate(260, 35);
-            ctx.rotate(15 * Math.PI / 180);
-            ctx.fillStyle = "#4CAF50";
+            ctx.rotate(15 * Math.PI / 180); // Tilt for diving right
+            ctx.fillStyle = "#4CAF50"; // Green for right dive
             ctx.fillRect(-20, -20, 40, 40);
             ctx.fillStyle = "#fff";
             ctx.strokeStyle = "#000";
@@ -595,7 +467,7 @@ function gameLoop() {
             ctx.strokeText("GK", 0, 0);
             ctx.restore();
         } else {
-            ctx.fillStyle = "#2196F3";
+            ctx.fillStyle = "#2196F3"; // Blue for center
             ctx.fillRect(180, 15, 40, 40);
             ctx.fillStyle = "#fff";
             ctx.strokeStyle = "#000";
@@ -607,7 +479,7 @@ function gameLoop() {
             ctx.strokeText("GK", 200, 35);
         }
     } else {
-        ctx.fillStyle = "#2196F3";
+        ctx.fillStyle = "#2196F3"; // Blue for center (default position)
         ctx.fillRect(180, 15, 40, 40);
         ctx.fillStyle = "#fff";
         ctx.strokeStyle = "#000";
@@ -619,6 +491,7 @@ function gameLoop() {
         ctx.strokeText("GK", 200, 35);
     }
 
+    // Draw ball with spinning animation
     if (!isShooting) {
         ctx.save();
         ctx.translate(ballX, ballY);
@@ -630,11 +503,13 @@ function gameLoop() {
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
         ctx.stroke();
+        // Add shadow for 3D effect
         ctx.beginPath();
         ctx.arc(3, 3, 12, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
         ctx.fill();
         ctx.closePath();
+        // Draw ⚽
         ctx.fillStyle = "#000";
         ctx.font = "16px Roboto";
         ctx.textAlign = "center";
@@ -642,12 +517,13 @@ function gameLoop() {
         ctx.fillText("⚽", 0, 0);
         ctx.restore();
     } else {
+        // Animate ball towards target
         shotFrame++;
-        const frames = selectedPower === 'low' ? 30 : (selectedPower === 'medium' ? 20 : 10);
+        const frames = selectedPower === 'low' ? 30 : (selectedPower === 'medium' ? 20 : 10); // More frames for slower shots
         const progress = Math.min(shotFrame / frames, 1);
         ballX = ballX + (targetX - ballX) * progress;
         ballY = ballY + (targetY - ballY) * progress;
-        ballRotation += 0.2;
+        ballRotation += 0.2; // Rotate ball for spinning effect
         ctx.save();
         ctx.translate(ballX, ballY);
         ctx.rotate(ballRotation);
@@ -658,11 +534,13 @@ function gameLoop() {
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
         ctx.stroke();
+        // Add shadow for 3D effect
         ctx.beginPath();
         ctx.arc(3, 3, 12, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
         ctx.fill();
         ctx.closePath();
+        // Draw ⚽
         ctx.fillStyle = "#000";
         ctx.font = "16px Roboto";
         ctx.textAlign = "center";
@@ -670,6 +548,7 @@ function gameLoop() {
         ctx.fillText("⚽", 0, 0);
         ctx.restore();
 
+        // Draw ball trail
         ctx.beginPath();
         ctx.moveTo(200, 280);
         ctx.lineTo(ballX, ballY);
@@ -679,6 +558,7 @@ function gameLoop() {
         ctx.closePath();
 
         if (progress === 1) {
+            // Check if the shot scores
             penaltyShotsTaken++;
             const goalScored = checkGoal();
             if (goalScored) {
@@ -686,19 +566,21 @@ function gameLoop() {
                 penaltyStreak++;
                 updateMultiplier();
                 feedbackMessage = "Goal!";
-                celebrationTimer = 60;
+                celebrationTimer = 60; // Trigger celebration for 1 second
             } else {
                 penaltyStreak = 0;
                 penaltyMultiplier = 1;
                 feedbackMessage = "Miss!";
             }
-            feedbackTimer = 60;
+            feedbackTimer = 60; // Show feedback for ~1 second (assuming 60 FPS)
 
+            // Check for Sudden Death after 5 shots
             if (penaltyShotsTaken >= 5 && penaltyScore >= 400 && !isSuddenDeath) {
                 isSuddenDeath = true;
                 updateRewardStatus("Sudden Death Mode! Miss a shot and the game ends!");
             }
 
+            // End game in Sudden Death if the player misses
             if (isSuddenDeath && !goalScored) {
                 gameOver = true;
                 endPenaltyShootout();
@@ -709,6 +591,8 @@ function gameLoop() {
             playerState = 'standing';
             goalkeeperDiveDirection = 'center';
             shotDirection = null;
+
+            // Reset ball position
             ballX = 200;
             ballY = 280;
             targetX = ballX;
@@ -716,6 +600,7 @@ function gameLoop() {
         }
     }
 
+    // Draw feedback message
     if (feedbackTimer > 0) {
         ctx.font = "bold 24px Roboto";
         ctx.fillStyle = feedbackMessage === "Goal!" ? "#00FF00" : "#FF0000";
@@ -727,11 +612,13 @@ function gameLoop() {
         feedbackTimer--;
     }
 
+    // Draw goal celebration effect
     if (celebrationTimer > 0) {
+        // Flashing lights around goalpost
         ctx.fillStyle = celebrationTimer % 10 < 5 ? "#FFFF00" : "#FFFFFF";
-        ctx.fillRect(110, 0, 10, 70);
-        ctx.fillRect(280, 0, 10, 70);
-        ctx.fillRect(120, 0, 160, 5);
+        ctx.fillRect(110, 0, 10, 70); // Left side
+        ctx.fillRect(280, 0, 10, 70); // Right side
+        ctx.fillRect(120, 0, 160, 5); // Top
         celebrationTimer--;
     }
 
@@ -749,6 +636,10 @@ function earnPoints() {
 
 function updatePointsAndLevel() {
     try {
+        localStorage.setItem("points", currentPoints);
+        localStorage.setItem("tokens", currentTokens);
+        localStorage.setItem("level", playerLevel);
+        console.log("Updated localStorage:", { points: currentPoints, tokens: currentTokens, level: playerLevel });
         const scoreDisplay = document.getElementById("score-display");
         if (scoreDisplay) scoreDisplay.textContent = `${currentPoints} CR7SIU Points`;
         const pointsDisplay = document.getElementById("cr7siu-points");
@@ -756,7 +647,6 @@ function updatePointsAndLevel() {
         const tokensDisplay = document.getElementById("tokens-display");
         if (tokensDisplay) tokensDisplay.textContent = currentTokens;
         updateLevel();
-        saveToServer();
     } catch (e) {
         console.error("Error in updatePointsAndLevel:", e);
     }
@@ -767,6 +657,7 @@ function updateLevel() {
         playerLevel = Math.floor(currentPoints / 100000) + 1;
         const playerLevelDisplay = document.getElementById("player-level");
         if (playerLevelDisplay) playerLevelDisplay.textContent = playerLevel;
+        localStorage.setItem("level", playerLevel);
     } catch (e) {
         console.error("Error in updateLevel:", e);
     }
@@ -787,6 +678,8 @@ function convertToTokens() {
         if (tokens > 0) {
             currentPoints -= tokens * 5000;
             currentTokens += tokens;
+            localStorage.setItem("points", currentPoints);
+            localStorage.setItem("tokens", currentTokens);
             const tokensDisplay = document.getElementById("tokens-display");
             if (tokensDisplay) tokensDisplay.textContent = currentTokens;
             updateRewardStatus(`You converted ${tokens} CR7SIU tokens!`);
@@ -822,6 +715,7 @@ function displayTasks() {
 
 function completeTask(task) {
     try {
+        console.log(`Attempting to complete task: ${task}`);
         if (lastTaskClaims[task] && !isNewDay(lastTaskClaims[task])) {
             updateRewardStatus("You can only claim this task once per day!");
             return;
@@ -829,6 +723,8 @@ function completeTask(task) {
 
         tasksCompleted[task] = true;
         lastTaskClaims[task] = Date.now();
+        localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+        localStorage.setItem("lastTaskClaims", JSON.stringify(lastTaskClaims));
         updateTaskButtons();
         checkAllTasksCompleted();
         currentPoints += 5000;
@@ -850,12 +746,14 @@ function updateTaskButtons() {
             const button = document.getElementById(`task-${task}`);
             if (button) {
                 const canClaim = isNewDay(lastTaskClaims[task]);
-                if (canClaim) tasksCompleted[task] = false;
+                if (canClaim) {
+                    tasksCompleted[task] = false;
+                    localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+                }
                 button.disabled = !canClaim;
                 button.textContent = canClaim ? "Complete" : "Claimed";
             }
         });
-        saveToServer();
     } catch (e) {
         console.error("Error in updateTaskButtons:", e);
     }
@@ -878,6 +776,7 @@ function checkAllTasksCompleted() {
 
 function claimRewards() {
     try {
+        console.log("Attempting to claim rewards");
         if (!isNewDay(lastRewardsClaim)) {
             updateRewardStatus("You can only claim rewards once per day!");
             return;
@@ -889,6 +788,7 @@ function claimRewards() {
             showRewardToast("Reward Claimed! 5000 CR7SIU Points have been credited to your account.");
             resetTasks();
             lastRewardsClaim = Date.now();
+            localStorage.setItem("lastRewardsClaim", lastRewardsClaim);
             const claimButton = document.getElementById("claim-rewards-btn");
             if (claimButton) {
                 claimButton.disabled = true;
@@ -904,12 +804,17 @@ function claimRewards() {
 
 function showRewardToast(message) {
     try {
+        console.log("Showing reward toast with message:", message);
         const toast = document.getElementById("reward-toast");
         const messageElement = document.getElementById("reward-message");
         if (toast && messageElement) {
             messageElement.textContent = message;
             toast.classList.remove("hidden");
-            setTimeout(() => toast.classList.add("hidden"), 3000);
+            setTimeout(() => {
+                toast.classList.add("hidden");
+            }, 3000);
+        } else {
+            console.error("Toast or message element not found.");
         }
     } catch (e) {
         console.error("Error in showRewardToast:", e);
@@ -947,6 +852,7 @@ function upgradeSkill(attribute, index, cost) {
             currentPoints -= cost;
             attributes[attribute] = level + 1;
             updatePointsAndLevel();
+            localStorage.setItem("attributes", JSON.stringify(attributes));
             const levelDisplay = document.getElementById(`attribute-level-${index}`);
             if (levelDisplay) levelDisplay.textContent = attributes[attribute];
             if (attributes[attribute] % 10 === 0) {
@@ -983,6 +889,7 @@ function checkForReferral() {
         const ref = urlParams.get('ref');
         if (ref && ref !== username && !referralUsers.includes(ref)) {
             referralUsers.push(ref);
+            localStorage.setItem("referralUsers", JSON.stringify(referralUsers));
             currentPoints += 5000;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You've earned 5000 CR7SIU Points for a successful referral!");
@@ -1002,7 +909,7 @@ function shareLink(platform) {
                     text: 'Check out this cool app for Ronaldo fans!',
                     url: link
                 }).then(() => console.log('Successful share'))
-                  .catch(error => console.log('Error sharing', error));
+                  .catch((error) => console.log('Error sharing', error));
             } else {
                 switch(platform) {
                     case 'facebook':
@@ -1055,6 +962,7 @@ function displayReferrals() {
 function resetTasks() {
     try {
         tasksCompleted = { youtube: false, xAccount: false, facebook: false };
+        localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
         const claimButton = document.getElementById("claim-rewards-btn");
         if (claimButton) claimButton.disabled = true;
         updateTaskButtons();
@@ -1076,6 +984,7 @@ function isNewDay(lastClaimTime) {
 
 function updateButtonStates() {
     try {
+        // Update ad, check-in, and spin buttons
         if (isNewDay(lastAdClaim)) enableSpecificButton('ad-claim-button');
         else disableSpecificButton('ad-claim-button');
         if (isNewDay(lastCheckInClaim)) enableSpecificButton('check-in-button');
@@ -1083,23 +992,27 @@ function updateButtonStates() {
         if (isNewDay(lastSpinClaim)) enableSpecificButton('spin-button');
         else disableSpecificButton('spin-button');
 
+        // Update task buttons
         Object.keys(tasksCompleted).forEach(task => {
             const button = document.getElementById(`task-${task}`);
             if (button) {
                 const canClaim = isNewDay(lastTaskClaims[task]);
-                if (canClaim) tasksCompleted[task] = false;
+                if (canClaim) {
+                    tasksCompleted[task] = false;
+                    localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+                }
                 button.disabled = !canClaim;
                 button.textContent = canClaim ? "Complete" : "Claimed";
             }
         });
 
+        // Update Claim Rewards button
         const claimButton = document.getElementById("claim-rewards-btn");
         if (claimButton) {
             const canClaim = isNewDay(lastRewardsClaim);
             claimButton.disabled = !canClaim || !Object.values(tasksCompleted).every(Boolean);
             claimButton.textContent = canClaim ? "Claim Rewards" : "Claimed";
         }
-        saveToServer();
     } catch (e) {
         console.error("Error in updateButtonStates:", e);
     }
@@ -1131,12 +1044,14 @@ function disableSpecificButton(buttonId) {
 
 function completeAdTask() {
     try {
+        console.log("Attempting to complete ad task");
         if (isNewDay(lastAdClaim)) {
             currentPoints += 100;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
             showRewardToast("Reward Claimed! 100 CR7SIU Points have been credited to your account.");
             lastAdClaim = Date.now();
+            localStorage.setItem("lastAdClaim", lastAdClaim);
             disableSpecificButton('ad-claim-button');
         } else {
             updateRewardStatus("You can only claim this reward once per day!");
@@ -1148,12 +1063,14 @@ function completeAdTask() {
 
 function completeCheckInTask() {
     try {
+        console.log("Attempting to complete check-in task");
         if (isNewDay(lastCheckInClaim)) {
             currentPoints += 500;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
             showRewardToast("Reward Claimed! 500 CR7SIU Points have been credited to your account.");
             lastCheckInClaim = Date.now();
+            localStorage.setItem("lastCheckInClaim", lastCheckInClaim);
             disableSpecificButton('check-in-button');
         } else {
             updateRewardStatus("You can only claim this reward once per day!");
@@ -1201,6 +1118,7 @@ function drawWheel(angle = 0) {
 
 function spinWheel() {
     try {
+        console.log("Attempting to spin the wheel");
         if (isSpinning || !isNewDay(lastSpinClaim)) {
             updateRewardStatus("You can only spin once per day!");
             return;
@@ -1232,6 +1150,7 @@ function spinWheel() {
                     updatePointsAndLevel();
                     showRewardToast(`Reward Claimed! ${reward} CR7SIU Points have been credited to your account.`);
                     lastSpinClaim = Date.now();
+                    localStorage.setItem("lastSpinClaim", lastSpinClaim);
                 }
             } catch (e) {
                 console.error("Error in animateWheel:", e);
@@ -1247,7 +1166,9 @@ function spinWheel() {
 function updateRewardStatus(message) {
     try {
         const statusElement = document.getElementById("reward-status");
-        if (statusElement) statusElement.innerText = message;
+        if (statusElement) {
+            statusElement.innerText = message;
+        }
     } catch (e) {
         console.error("Error in updateRewardStatus:", e);
     }
@@ -1255,7 +1176,9 @@ function updateRewardStatus(message) {
 
 document.addEventListener('touchstart', function(event) {
     try {
-        if (event.target.tagName === 'BUTTON') event.target.click();
+        if (event.target.tagName === 'BUTTON') {
+            event.target.click();
+        }
     } catch (e) {
         console.error("Error in touchstart listener:", e);
     }
@@ -1263,7 +1186,6 @@ document.addEventListener('touchstart', function(event) {
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        migrateLocalStorageData(); // Start migration process
         updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
         updateButtonStates();
         if (document.getElementById("rewards") && !document.getElementById("rewards").classList.contains("hidden")) {
