@@ -1,7 +1,7 @@
 // Add this to your HTML <head> or before </body>:
 // <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-const API_URL = 'crlegend7-kmlch1j3a-argha-mukherjees-projects.vercel.app'; // Update to your deployed backend URL (e.g., Render URL)
+const API_URL = 'https://crlegend7.vercel.app';
 
 // Player data (initially empty, loaded from server or migrated from localStorage)
 let username = '';
