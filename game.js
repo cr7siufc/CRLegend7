@@ -132,12 +132,6 @@ function saveToServer() {
 }
 
 // Load player data from server
-axios.get(`${API_URL}/scores`)
-  .then(response => {
-    console.log('All player scores:', response.data);
-    // Display or process the data as needed
-  })
-  .catch(error => console.error('Error fetching scores:', error));
 function loadFromServer(username, callback) {
     axios.get(`${API_URL}/player/${username}`)
         .then(response => {
