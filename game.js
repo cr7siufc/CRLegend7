@@ -23,7 +23,7 @@ let lastTaskClaims = JSON.parse(localStorage.getItem("lastTaskClaims")) || { you
 let lastRewardsClaim = parseInt(localStorage.getItem("lastRewardsClaim")) || 0;
 
 // Wheel data
-const wheelRewards = [500, 1000, 1500, 2000, 2500, 300];
+const wheelRewards = [500, 1000, 1500, 2000, 2500, 3000];
 const wheelColors = ["#FF4500", "#32CD32", "#1E90FF", "#FFD700", "#FF00FF", "#00CED1"];
 let isSpinning = false;
 
@@ -35,8 +35,8 @@ let penaltyStreak = 0;
 let penaltyMultiplier = 1;
 let isSuddenDeath = false;
 let gameOver = false;
-let ballX, ballY, targetX, targetY;
-let goalkeeperX;
+let ballX = 200, ballY = 280, targetX, targetY;
+let goalkeeperX = 200;
 let isShooting = false;
 let shotFrame = 0;
 let goalkeeperDiveDirection = 'center';
@@ -65,6 +65,8 @@ let isPaused = false;
 let juggleGameActive = false;
 let juggleCount = 0;
 let juggleTimer = null;
+let juggleWindow = 1000; // Initial time window in ms
+let lastJuggleTime = 0;
 
 // CR7 Trivia Quiz game state
 let triviaGameActive = false;
@@ -72,9 +74,21 @@ let triviaScore = 0;
 let triviaStreak = 0;
 let currentQuestionIndex = 0;
 const triviaQuestions = [
-    { question: "How many Ballon d'Or awards has Cristiano Ronaldo won?", options: ["4", "5", "6", "3"], answer: "5" },
+    { question: "How many Ballon d'Or awards has Cristiano Ronaldo won as of 2025?", options: ["4", "5", "6", "7"], answer: "5" },
     { question: "Which club did Ronaldo join in 2009?", options: ["Barcelona", "Real Madrid", "Manchester United", "Juventus"], answer: "Real Madrid" },
-    { question: "What is Ronaldo's jersey number?", options: ["7", "10", "9", "11"], answer: "7" }
+    { question: "What is Ronaldo's jersey number?", options: ["7", "10", "9", "11"], answer: "7" },
+    { question: "In which year did Ronaldo win his first Champions League title?", options: ["2008", "2010", "2006", "2014"], answer: "2008" },
+    { question: "Which country does Ronaldo represent internationally?", options: ["Spain", "Brazil", "Portugal", "Argentina"], answer: "Portugal" },
+    { question: "How many goals did Ronaldo score for Real Madrid?", options: ["350", "400", "450", "500"], answer: "450" },
+    { question: "Which club did Ronaldo join after leaving Real Madrid in 2018?", options: ["Juventus", "PSG", "Manchester United", "Bayern Munich"], answer: "Juventus" },
+    { question: "What is the name of Ronaldo's famous celebration?", options: ["Siuuu", "Dab", "Heart", "Dance"], answer: "Siuuu" },
+    { question: "How many European Championships has Ronaldo won with Portugal?", options: ["0", "1", "2", "3"], answer: "1" },
+    { question: "Which club did Ronaldo start his professional career with?", options: ["Sporting CP", "Benfica", "Porto", "Braga"], answer: "Sporting CP" },
+    { question: "In which year did Ronaldo return to Manchester United?", options: ["2019", "2020", "2021", "2022"], answer: "2021" },
+    { question: "Which league did Ronaldo join after Juventus?", options: ["Premier League", "La Liga", "Serie A", "Saudi Pro League"], answer: "Premier League" },
+    { question: "What is Ronaldo's current club as of 2025?", options: ["Al-Nassr", "Manchester United", "Real Madrid", "Juventus"], answer: "Al-Nassr" },
+    { question: "How many World Cup goals has Ronaldo scored as of 2025?", options: ["5", "7", "8", "10"], answer: "8" },
+    { question: "Which brand is Ronaldo most associated with for his boots?", options: ["Adidas", "Nike", "Puma", "Under Armour"], answer: "Nike" }
 ];
 let selectedAnswer = null;
 
@@ -129,7 +143,7 @@ function loadSession() {
 
         displayImprovements();
         resetTasks();
-        displayTasks();
+        updateTaskButtons();
         displayReferrals();
         showPage('home');
     } catch (e) {
@@ -149,17 +163,10 @@ function showPage(page) {
         }
         if (page === "rewards") {
             drawWheel();
+            updateSpinTimer();
         }
-        // Reset all game areas when navigating away
+        // Reset all game states when navigating away from the games page
         if (page !== "games") {
-            const gameArea = document.getElementById("game-area");
-            if (gameArea) gameArea.classList.add("hidden");
-            const siuuuArea = document.getElementById("siuuu-game-area");
-            if (siuuuArea) siuuuArea.classList.add("hidden");
-            const juggleArea = document.getElementById("juggle-game-area");
-            if (juggleArea) juggleArea.classList.add("hidden");
-            const triviaArea = document.getElementById("trivia-game-area");
-            if (triviaArea) triviaArea.classList.add("hidden");
             endPenaltyShootout();
             endSiuuuReactionTap();
             endTapToJuggle();
@@ -197,15 +204,10 @@ function startPenaltyShootout() {
         crowdCheer = true;
         celebrationTimer = 0;
 
-        const gameArea = document.getElementById("game-area");
-        if (gameArea) gameArea.classList.remove("hidden");
-
-        const siuuuArea = document.getElementById("siuuu-game-area");
-        if (siuuuArea) siuuuArea.classList.add("hidden");
-        const juggleArea = document.getElementById("juggle-game-area");
-        if (juggleArea) juggleArea.classList.add("hidden");
-        const triviaArea = document.getElementById("trivia-game-area");
-        if (triviaArea) triviaArea.classList.add("hidden");
+        document.getElementById("game-area").classList.remove("hidden");
+        document.getElementById("siuuu-game-area").classList.add("hidden");
+        document.getElementById("juggle-game-area").classList.add("hidden");
+        document.getElementById("trivia-game-area").classList.add("hidden");
 
         const canvas = document.getElementById("penaltyCanvas");
         canvas.addEventListener("click", handleGoalTap);
@@ -228,7 +230,7 @@ function endPenaltyShootout() {
                 canvas.removeEventListener("touchstart", handleGoalTap);
             }
             if (penaltyScore > 0) {
-                currentPoints += penaltyScore; // Add points to total
+                currentPoints += penaltyScore;
                 updatePointsAndLevel();
                 showRewardToast(`Game Over! You earned ${penaltyScore} CR7SIU Points!`);
             }
@@ -269,10 +271,8 @@ function handleGoalTap(event) {
     const tapX = (clientX - rect.left) * (canvas.width / rect.width);
     const tapY = (clientY - rect.top) * (canvas.height / rect.height);
 
-    // Only execute shot if tapping on the goalpost area (y < 70)
     if (tapY > 70) return;
 
-    // Determine shot direction based on tap position
     if (tapX >= 120 && tapX < 173) {
         shotDirection = 'left';
         targetX = 146.5;
@@ -287,12 +287,10 @@ function handleGoalTap(event) {
     }
     targetY = 25;
 
-    // Start shooting animation
     isShooting = true;
     playerState = 'kicking';
     shotFrame = 0;
 
-    // AI Goalkeeper decides dive direction
     const diveRandom = Math.random();
     if (shotDirection === 'left') {
         goalkeeperDiveDirection = diveRandom < 0.5 ? 'left' : (diveRandom < 0.75 ? 'center' : 'right');
@@ -304,17 +302,20 @@ function handleGoalTap(event) {
 }
 
 function checkGoal() {
-    return shotDirection !== goalkeeperDiveDirection;
+    const goalScored = shotDirection !== goalkeeperDiveDirection;
+    if (goalScored) {
+        penaltyStreak++;
+        penaltyMultiplier = penaltyStreak >= 3 ? 2 : 1;
+        penaltyScore += 100 * penaltyMultiplier;
+    } else {
+        penaltyStreak = 0;
+        penaltyMultiplier = 1;
+    }
+    return goalScored;
 }
 
 function updateMultiplier() {
-    if (penaltyStreak >= 5) {
-        penaltyMultiplier = 3;
-    } else if (penaltyStreak >= 3) {
-        penaltyMultiplier = 2;
-    } else {
-        penaltyMultiplier = 1;
-    }
+    penaltyMultiplier = penaltyStreak >= 5 ? 3 : penaltyStreak >= 3 ? 2 : 1;
 }
 
 function updateGameScore() {
@@ -329,7 +330,6 @@ function gameLoop() {
     const canvas = document.getElementById("penaltyCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw stadium background
@@ -553,7 +553,7 @@ function gameLoop() {
         ctx.restore();
     } else {
         shotFrame++;
-        const frames = selectedPower === 'low' ? 30 : (selectedPower === 'medium' ? 20 : 10);
+        const frames = selectedPower === 'low' ? 30 : selectedPower === 'medium' ? 20 : 10;
         const progress = Math.min(shotFrame / frames, 1);
         ballX = ballX + (targetX - ballX) * progress;
         ballY = ballY + (targetY - ballY) * progress;
@@ -592,9 +592,9 @@ function gameLoop() {
             penaltyShotsTaken++;
             const goalScored = checkGoal();
             if (goalScored) {
-                penaltyScore += 100 * penaltyMultiplier;
                 penaltyStreak++;
                 updateMultiplier();
+                penaltyScore += 100 * penaltyMultiplier;
                 feedbackMessage = "Goal!";
                 celebrationTimer = 60;
             } else {
@@ -651,7 +651,7 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// SIUUU Reaction Tap Game Logic (With Enhancements)
+// SIUUU Reaction Tap Game Logic
 function startSiuuuReactionTap() {
     try {
         console.log("Starting SIUUU Reaction Tap");
@@ -659,19 +659,13 @@ function startSiuuuReactionTap() {
         siuuuScore = 0;
         siuuuStreak = 0;
         siuuuMultiplier = 1;
-        siuuuTimeLeft = Math.max(0.5, 2 - (playerLevel - 1) * 0.15); // Difficulty scaling
+        siuuuTimeLeft = Math.max(0.5, 2 - (playerLevel - 1) * 0.15); // Difficulty scales with level
         isPaused = false;
 
-        const gameArea = document.getElementById("game-area");
-        if (gameArea) gameArea.classList.add("hidden");
-        const siuuuArea = document.getElementById("siuuu-game-area");
-        if (siuuuArea) siuuuArea.classList.remove("hidden");
-        else console.error("siuuu-game-area not found");
-
-        const juggleArea = document.getElementById("juggle-game-area");
-        if (juggleArea) juggleArea.classList.add("hidden");
-        const triviaArea = document.getElementById("trivia-game-area");
-        if (triviaArea) triviaArea.classList.add("hidden");
+        document.getElementById("game-area").classList.add("hidden");
+        document.getElementById("siuuu-game-area").classList.remove("hidden");
+        document.getElementById("juggle-game-area").classList.add("hidden");
+        document.getElementById("trivia-game-area").classList.add("hidden");
 
         updateSiuuuScore();
         updateSiuuuStreak();
@@ -779,9 +773,7 @@ function updateSiuuuStreak() {
 }
 
 function updateSiuuuMultiplier() {
-    if (siuuuStreak >= 10) siuuuMultiplier = 3;
-    else if (siuuuStreak >= 5) siuuuMultiplier = 2;
-    else siuuuMultiplier = 1;
+    siuuuMultiplier = siuuuStreak >= 10 ? 3 : siuuuStreak >= 5 ? 2 : 1;
 }
 
 function updateSiuuuHighScore() {
@@ -801,7 +793,7 @@ function endSiuuuReactionTap() {
                 updateSiuuuHighScore();
             }
             if (siuuuScore > 0) {
-                currentPoints += siuuuScore; // Add points to total
+                currentPoints += siuuuScore;
                 updatePointsAndLevel();
                 showRewardToast(`Game Over! You earned ${siuuuScore} CR7SIU Points with a ${siuuuStreak} streak!`);
             }
@@ -844,25 +836,15 @@ function startTapToJuggle() {
         console.log("Starting Tap-to-Juggle Challenge");
         juggleGameActive = true;
         juggleCount = 0;
+        juggleWindow = 1000;
+        lastJuggleTime = Date.now();
 
-        const juggleArea = document.getElementById("juggle-game-area");
-        if (juggleArea) juggleArea.classList.remove("hidden");
-        else console.error("juggle-game-area not found");
-
-        const gameAreas = ["game-area", "siuuu-game-area", "trivia-game-area"];
-        gameAreas.forEach(id => {
-            const area = document.getElementById(id);
-            if (area) area.classList.add("hidden");
-        });
+        document.getElementById("juggle-game-area").classList.remove("hidden");
+        document.getElementById("game-area").classList.add("hidden");
+        document.getElementById("siuuu-game-area").classList.add("hidden");
+        document.getElementById("trivia-game-area").classList.add("hidden");
 
         updateJuggleCounter();
-        juggleTimer = setInterval(() => {
-            if (juggleGameActive) {
-                juggleCount++;
-                updateJuggleCounter();
-                animateJuggle();
-            }
-        }, 500);
     } catch (e) {
         console.error("Error in startTapToJuggle:", e);
     }
@@ -872,9 +854,16 @@ function handleJuggleTap() {
     try {
         if (!juggleGameActive) startTapToJuggle();
         if (juggleGameActive) {
-            juggleCount++;
-            updateJuggleCounter();
-            animateJuggle();
+            const currentTime = Date.now();
+            if (currentTime - lastJuggleTime <= juggleWindow) {
+                juggleCount++;
+                juggleWindow = Math.max(500, juggleWindow - 50); // Increase difficulty
+                lastJuggleTime = currentTime;
+                animateJuggle();
+                updateJuggleCounter();
+            } else {
+                endTapToJuggle();
+            }
         }
     } catch (e) {
         console.error("Error in handleJuggleTap:", e);
@@ -898,9 +887,8 @@ function endTapToJuggle() {
     try {
         if (juggleGameActive) {
             juggleGameActive = false;
-            clearInterval(juggleTimer);
-            if (juggleCount > 0) {
-                const pointsEarned = juggleCount * 5; // 5 points per juggle
+            const pointsEarned = juggleCount * 5;
+            if (pointsEarned > 0) {
                 currentPoints += pointsEarned;
                 updatePointsAndLevel();
                 showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points with ${juggleCount} juggles!`);
@@ -930,15 +918,10 @@ function startCr7Trivia() {
         currentQuestionIndex = 0;
         selectedAnswer = null;
 
-        const triviaArea = document.getElementById("trivia-game-area");
-        if (triviaArea) triviaArea.classList.remove("hidden");
-        else console.error("trivia-game-area not found");
-
-        const gameAreas = ["game-area", "siuuu-game-area", "juggle-game-area"];
-        gameAreas.forEach(id => {
-            const area = document.getElementById(id);
-            if (area) area.classList.add("hidden");
-        });
+        document.getElementById("trivia-game-area").classList.remove("hidden");
+        document.getElementById("game-area").classList.add("hidden");
+        document.getElementById("siuuu-game-area").classList.add("hidden");
+        document.getElementById("juggle-game-area").classList.add("hidden");
 
         nextTriviaQuestion();
     } catch (e) {
@@ -976,7 +959,7 @@ function selectTriviaAnswer(selected, correct) {
 
         if (selected === correct) {
             triviaStreak++;
-            triviaScore += 10 * (triviaStreak >= 5 ? 2 : 1); // Double points after 5 correct
+            triviaScore += 20 * (triviaStreak >= 5 ? 2 : 1);
             const questionDisplay = document.getElementById("trivia-question");
             if (questionDisplay) questionDisplay.classList.add("correct-answer");
             setTimeout(() => questionDisplay.classList.remove("correct-answer"), 300);
@@ -989,6 +972,8 @@ function selectTriviaAnswer(selected, correct) {
 
         updateTriviaScore();
         document.getElementById("next-trivia-btn").disabled = false;
+        currentQuestionIndex++;
+        nextTriviaQuestion();
     } catch (e) {
         console.error("Error in selectTriviaAnswer:", e);
     }
@@ -1004,7 +989,7 @@ function endCr7Trivia() {
         if (triviaGameActive) {
             triviaGameActive = false;
             if (triviaScore > 0) {
-                currentPoints += triviaScore; // Add points to total
+                currentPoints += triviaScore;
                 updatePointsAndLevel();
                 showRewardToast(`Quiz Over! You earned ${triviaScore} CR7SIU Points with a ${triviaStreak} streak!`);
             }
@@ -1052,21 +1037,12 @@ function updatePointsAndLevel() {
 
 function updateLevel() {
     try {
-        playerLevel = Math.floor(currentPoints / 100000) + 1;
+        playerLevel = Math.floor(currentPoints / 1000) + 1; // Adjusted to 1000 points per level
         const playerLevelDisplay = document.getElementById("player-level");
         if (playerLevelDisplay) playerLevelDisplay.textContent = playerLevel;
         localStorage.setItem("level", playerLevel);
     } catch (e) {
         console.error("Error in updateLevel:", e);
-    }
-}
-
-function buyPoints() {
-    try {
-        currentPoints += 1000;
-        updatePointsAndLevel();
-    } catch (e) {
-        console.error("Error in buyPoints:", e);
     }
 }
 
@@ -1080,10 +1056,10 @@ function convertToTokens() {
             localStorage.setItem("tokens", currentTokens);
             const tokensDisplay = document.getElementById("tokens-display");
             if (tokensDisplay) tokensDisplay.textContent = currentTokens;
-            updateRewardStatus(`You converted ${tokens} CR7SIU tokens!`);
+            showRewardToast(`You converted ${tokens} CR7SIU Tokens!`);
             updatePointsAndLevel();
         } else {
-            updateRewardStatus("Not enough points.");
+            alert("Not enough points to convert to tokens (5000 points = 1 token).");
         }
     } catch (e) {
         console.error("Error in convertToTokens:", e);
@@ -1123,16 +1099,10 @@ function completeTask(task) {
         lastTaskClaims[task] = Date.now();
         localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
         localStorage.setItem("lastTaskClaims", JSON.stringify(lastTaskClaims));
-        updateTaskButtons();
-        checkAllTasksCompleted();
-        currentPoints += 5000;
+        currentPoints += 100; // Adjusted to 100 points per task
         updatePointsAndLevel();
-        showRewardToast(`Reward Claimed! 5000 CR7SIU Points have been credited to your account.`);
-        const button = document.getElementById(`task-${task}`);
-        if (button) {
-            button.disabled = true;
-            button.textContent = "Claimed";
-        }
+        showRewardToast(`Task Completed! You earned 100 CR7SIU Points!`);
+        updateTaskButtons();
     } catch (e) {
         console.error("Error in completeTask:", e);
     }
@@ -1152,23 +1122,12 @@ function updateTaskButtons() {
                 button.textContent = canClaim ? "Complete" : "Claimed";
             }
         });
-    } catch (e) {
-        console.error("Error in updateTaskButtons:", e);
-    }
-}
-
-function checkAllTasksCompleted() {
-    try {
-        if (Object.values(tasksCompleted).every(Boolean)) {
-            const claimButton = document.getElementById("claim-rewards-btn");
-            if (claimButton) {
-                const canClaim = isNewDay(lastRewardsClaim);
-                claimButton.disabled = !canClaim;
-                updateRewardStatus(canClaim ? "All tasks completed! You can now claim additional rewards." : "You can only claim rewards once per day!");
-            }
+        const claimButton = document.getElementById("claim-rewards-btn");
+        if (claimButton) {
+            claimButton.disabled = !Object.values(tasksCompleted).some(task => task) || !isNewDay(lastRewardsClaim);
         }
     } catch (e) {
-        console.error("Error in checkAllTasksCompleted:", e);
+        console.error("Error in updateTaskButtons:", e);
     }
 }
 
@@ -1180,20 +1139,18 @@ function claimRewards() {
             return;
         }
 
-        if (Object.values(tasksCompleted).every(Boolean)) {
-            currentPoints += 5000;
+        if (Object.values(tasksCompleted).some(task => task)) {
+            const totalReward = Object.values(tasksCompleted).filter(task => task).length * 100;
+            currentPoints += totalReward;
             updatePointsAndLevel();
-            showRewardToast("Reward Claimed! 5000 CR7SIU Points have been credited to your account.");
-            resetTasks();
+            showRewardToast(`Claimed ${totalReward} CR7SIU Points!`);
+            tasksCompleted = { youtube: false, xAccount: false, facebook: false };
             lastRewardsClaim = Date.now();
+            localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
             localStorage.setItem("lastRewardsClaim", lastRewardsClaim);
-            const claimButton = document.getElementById("claim-rewards-btn");
-            if (claimButton) {
-                claimButton.disabled = true;
-                claimButton.textContent = "Claimed";
-            }
+            updateTaskButtons();
         } else {
-            updateRewardStatus("Complete all tasks before claiming rewards.");
+            updateRewardStatus("Complete some tasks to claim rewards!");
         }
     } catch (e) {
         console.error("Error in claimRewards:", e);
@@ -1221,29 +1178,27 @@ function showRewardToast(message) {
 
 function displayImprovements() {
     try {
-        const improvements = ['Stamina', 'Strength', 'Dribbling', 'Shooting Power', 'Speed', 'Passing', 'Defending', 'Crossing', 'Finishing', 'Heading', 'Control', 'Creativity', 'Leadership', 'Tackling', 'Positioning', 'Composure', 'Vision', 'Shot Power', 'Ball Handling', 'Acceleration'];
+        const improvements = [
+            { name: "Speed", level: attributes.speed || 1, cost: 1000 * (attributes.speed || 1) },
+            { name: "Power", level: attributes.power || 1, cost: 1000 * (attributes.power || 1) },
+            { name: "Stamina", level: attributes.stamina || 1, cost: 1000 * (attributes.stamina || 1) }
+        ];
         const container = document.getElementById("attributes-container");
         if (!container) return;
-        let html = '';
-        improvements.forEach((attr, index) => {
-            const level = attributes[attr] || 1;
-            const cost = 500 + 250 * (level - 1);
-            html += `
-                <div class="attribute-card">
-                    <h3>${attr}</h3>
-                    <p>Upgrade Cost: ${cost} points</p>
-                    <p>Level: <span id="attribute-level-${index}">${level}</span></p>
-                    <button onclick="upgradeSkill('${attr}', ${index}, ${cost})">Upgrade</button>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
+        container.innerHTML = improvements.map(attr => `
+            <div class="attribute-card">
+                <h3>${attr.name}</h3>
+                <p>Level: ${attr.level}</p>
+                <p>Cost to Upgrade: ${attr.cost} CR7SIU Points</p>
+                <button onclick="upgradeAttribute('${attr.name.toLowerCase()}', ${attr.cost})">Upgrade</button>
+            </div>
+        `).join('');
     } catch (e) {
         console.error("Error in displayImprovements:", e);
     }
 }
 
-function upgradeSkill(attribute, index, cost) {
+function upgradeAttribute(attribute, cost) {
     try {
         const level = attributes[attribute] || 1;
         if (currentPoints >= cost) {
@@ -1251,27 +1206,22 @@ function upgradeSkill(attribute, index, cost) {
             attributes[attribute] = level + 1;
             updatePointsAndLevel();
             localStorage.setItem("attributes", JSON.stringify(attributes));
-            const levelDisplay = document.getElementById(`attribute-level-${index}`);
-            if (levelDisplay) levelDisplay.textContent = attributes[attribute];
-            if (attributes[attribute] % 10 === 0) {
-                currentPoints += 2500;
-                updatePointsAndLevel();
-                updateRewardStatus("Level milestone achieved! Cashback of 2500 points awarded.");
-            }
+            displayImprovements();
+            showRewardToast(`${attribute.charAt(0).toUpperCase() + attribute.slice(1)} upgraded to Level ${attributes[attribute]}!`);
         } else {
-            updateRewardStatus("Not enough points!");
+            updateRewardStatus("Not enough CR7SIU Points to upgrade!");
         }
     } catch (e) {
-        console.error("Error in upgradeSkill:", e);
+        console.error("Error in upgradeAttribute:", e);
     }
 }
 
 function generateReferralLink() {
     try {
         if (username) {
-            let link = `${window.location.origin}/?ref=${username}`;
+            const referralLink = `${window.location.origin}/?ref=${encodeURIComponent(username)}`;
             const referralField = document.getElementById('referral-link-field');
-            if (referralField) referralField.value = link;
+            if (referralField) referralField.value = referralLink;
             updateRewardStatus("Referral link generated. Share this to earn points!");
         } else {
             updateRewardStatus("Please set a username first!");
@@ -1291,6 +1241,7 @@ function checkForReferral() {
             currentPoints += 5000;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You've earned 5000 CR7SIU Points for a successful referral!");
+            displayReferrals();
         }
     } catch (e) {
         console.error("Error in checkForReferral:", e);
@@ -1405,7 +1356,7 @@ function updateButtonStates() {
         const claimButton = document.getElementById("claim-rewards-btn");
         if (claimButton) {
             const canClaim = isNewDay(lastRewardsClaim);
-            claimButton.disabled = !canClaim || !Object.values(tasksCompleted).every(Boolean);
+            claimButton.disabled = !canClaim || !Object.values(tasksCompleted).some(Boolean);
             claimButton.textContent = canClaim ? "Claim Rewards" : "Claimed";
         }
     } catch (e) {
@@ -1418,7 +1369,7 @@ function enableSpecificButton(buttonId) {
         const button = document.getElementById(buttonId);
         if (button) {
             button.disabled = false;
-            button.textContent = button.id === 'spin-button' ? 'Spin to Win!' : 'Claim Reward';
+            button.textContent = buttonId === 'spin-button' ? 'Spin to Win!' : 'Claim Reward';
         }
     } catch (e) {
         console.error("Error in enableSpecificButton:", e);
@@ -1441,10 +1392,10 @@ function completeAdTask() {
     try {
         console.log("Attempting to complete ad task");
         if (isNewDay(lastAdClaim)) {
-            currentPoints += 100;
+            currentPoints += 200;
             updatePointsAndLevel();
-            updateRewardStatus("Congratulations! You earned 100 CR7SIU Points from the ad reward.");
-            showRewardToast("Reward Claimed! 100 CR7SIU Points have been credited to your account.");
+            updateRewardStatus("Congratulations! You earned 200 CR7SIU Points from the ad reward.");
+            showRewardToast("Reward Claimed! 200 CR7SIU Points have been credited to your account.");
             lastAdClaim = Date.now();
             localStorage.setItem("lastAdClaim", lastAdClaim);
             disableSpecificButton('ad-claim-button');
@@ -1460,10 +1411,10 @@ function completeCheckInTask() {
     try {
         console.log("Attempting to complete check-in task");
         if (isNewDay(lastCheckInClaim)) {
-            currentPoints += 500;
+            currentPoints += 50;
             updatePointsAndLevel();
-            updateRewardStatus("Congratulations! You earned 500 CR7SIU Points for your daily check-in.");
-            showRewardToast("Reward Claimed! 500 CR7SIU Points have been credited to your account.");
+            updateRewardStatus("Congratulations! You earned 50 CR7SIU Points for your daily check-in.");
+            showRewardToast("Reward Claimed! 50 CR7SIU Points have been credited to your account.");
             lastCheckInClaim = Date.now();
             localStorage.setItem("lastCheckInClaim", lastCheckInClaim);
             disableSpecificButton('check-in-button');
@@ -1546,6 +1497,7 @@ function spinWheel() {
                     showRewardToast(`Reward Claimed! ${reward} CR7SIU Points have been credited to your account.`);
                     lastSpinClaim = Date.now();
                     localStorage.setItem("lastSpinClaim", lastSpinClaim);
+                    enableSpecificButton('spin-button');
                 }
             } catch (e) {
                 console.error("Error in animateWheel:", e);
@@ -1569,11 +1521,35 @@ function updateRewardStatus(message) {
     }
 }
 
+function updateSpinTimer() {
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    const timeLeft = oneDay - (now - lastSpinClaim);
+    if (timeLeft <= 0) {
+        document.getElementById("spin-button").disabled = false;
+        document.getElementById("spin-timer").textContent = "00:00:00";
+    } else {
+        document.getElementById("spin-button").disabled = true;
+        const timer = setInterval(() => {
+            const remaining = Math.max(0, oneDay - (Date.now() - lastSpinClaim));
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            document.getElementById("spin-timer").textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            if (remaining === 0) {
+                clearInterval(timer);
+                document.getElementById("spin-button").disabled = false;
+            }
+        }, 1000);
+    }
+}
+
 document.addEventListener('touchstart', function(event) {
     try {
-        if (event.target.id === "juggle-counter") {
+        if (event.target.id === "juggle-counter" || event.target.id === "tap-to-earn") {
             event.target.click();
-            handleJuggleTap();
+            if (event.target.id === "juggle-counter") handleJuggleTap();
+            else if (event.target.id === "tap-to-earn") earnPoints();
         } else if (event.target.tagName === 'BUTTON') {
             event.target.click();
         }
@@ -1586,6 +1562,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         updateRewardStatus("Welcome back! Complete your daily tasks to claim rewards.");
         updateButtonStates();
+        updateSpinTimer();
         if (document.getElementById("rewards") && !document.getElementById("rewards").classList.contains("hidden")) {
             drawWheel();
         }
