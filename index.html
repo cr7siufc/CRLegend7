@@ -140,36 +140,83 @@
     <!-- Games Page -->
     <main id="games" class="hidden">
         <section class="games-section">
-            <h1>Games</h1>
-            <p>Play exciting CR7-themed games and earn CR7SIU Points!</p>
-            <div id="games-list">
-                <button onclick="startPenaltyShootout()">CR7 Penalty Shootout 🎯</button>
-                <button onclick="startSiuuuReactionTap()">SIUUU Reaction Tap 🔥</button>
+            <h1 class="game-title">Games</h1>
+            <p class="game-subtitle">Play exciting CR7-themed games and earn CR7SIU Points!</p>
+            <div class="game-menu">
+                <div class="game-card" onclick="startPenaltyShootout()">
+                    <h3>CR7 Penalty Shootout 🎯</h3>
+                    <p>Test your shooting skills with Ronaldo's precision!</p>
+                </div>
+                <div class="game-card" onclick="startSiuuuReactionTap()">
+                    <h3>SIUUU Reaction Tap 🔥</h3>
+                    <p>Tap 'Siuuu!' to score like a pro—speed is key!</p>
+                </div>
+                <div class="game-card" onclick="startTapToJuggle()">
+                    <h3>Tap-to-Juggle Challenge ⚽</h3>
+                    <p>Keep the ball in the air with rapid taps!</p>
+                </div>
+                <div class="game-card" onclick="startCr7Trivia()">
+                    <h3>CR7 Trivia Quiz 🧠</h3>
+                    <p>Answer football trivia to earn points!</p>
+                </div>
             </div>
+
+            <!-- CR7 Penalty Shootout -->
             <div id="game-area" class="hidden">
-                <h2>CR7 Penalty Shootout</h2>
-                <p id="game-instructions">Tap on the left, center, or right side of the goalpost to shoot. Score consecutive goals to earn multipliers! Reach 4+ goals in 5 shots to enter Sudden Death mode.</p>
+                <h2 class="game-header">CR7 Penalty Shootout</h2>
+                <p id="game-instructions" class="game-instruction">Tap on the left, center, or right side of the goalpost to shoot. Score consecutive goals to earn multipliers! Reach 4+ goals in 5 shots to enter Sudden Death mode.</p>
                 <canvas id="penaltyCanvas" width="400" height="300"></canvas>
-                <div id="power-selection">
-                    <p>Select Power:</p>
+                <div id="power-selection" class="game-controls">
+                    <p class="control-label">Select Power:</p>
                     <button id="power-low" class="power-btn" onclick="selectPower('low')">Low</button>
                     <button id="power-medium" class="power-btn" onclick="selectPower('medium')">Medium</button>
                     <button id="power-high" class="power-btn" onclick="selectPower('high')">High</button>
                 </div>
-                <div id="game-controls">
-                    <p id="game-score">Score: 0 | Streak: 0 | Multiplier: 1x</p>
-                    <button onclick="endPenaltyShootout()">End Game</button>
+                <div id="game-controls" class="game-controls">
+                    <p id="game-score" class="game-score">Score: 0 | Streak: 0 | Multiplier: 1x</p>
+                    <button onclick="endPenaltyShootout()" class="end-btn">End Game</button>
                 </div>
             </div>
+
+            <!-- SIUUU Reaction Tap -->
             <div id="siuuu-game-area" class="hidden">
-                <h2>SIUUU Reaction Tap 🔥</h2>
-                <p id="siuuu-instructions">Tap only when "Siuuu!" appears! Test your speed like CR7 and earn points. Wrong tap ends the game.</p>
+                <h2 class="game-header">SIUUU Reaction Tap</h2>
+                <p id="siuuu-instructions" class="game-instruction">Tap only when "Siuuu!" appears! Test your speed like CR7 and earn points. Wrong tap ends the game.</p>
+                <div id="siuuu-high-score" class="game-stat">High Score: 0 CR7SIU Points</div>
+                <div id="siuuu-score" class="game-stat">Score: 0 CR7SIU Points</div>
+                <div id="siuuu-timer" class="game-stat">Time Left: 2.0s</div>
+                <div id="timer-progress-bar-container">
+                    <div id="timer-progress-bar"></div>
+                </div>
                 <div id="siuuu-word-display" class="tap-area" onclick="handleSiuuuTap()">Tap to Start!</div>
-                <div id="siuuu-score">Score: 0 CR7SIU Points</div>
-                <div id="siuuu-timer">Time Left: 2.0s</div>
-                <div id="siuuu-streak">Streak: 0 | Multiplier: 1x</div>
-                <div id="siuuu-controls">
-                    <button onclick="endSiuuuReactionTap()">End Game</button>
+                <div id="siuuu-streak" class="game-stat">Streak: 0 | Multiplier: 1x</div>
+                <div id="siuuu-controls" class="game-controls">
+                    <button id="pause-siuuu-btn" onclick="pauseSiuuuGame()" class="control-btn">Pause</button>
+                    <button onclick="endSiuuuReactionTap()" class="end-btn">End Game</button>
+                </div>
+            </div>
+
+            <!-- Tap-to-Juggle Challenge -->
+            <div id="juggle-game-area" class="hidden">
+                <h2 class="game-header">Tap-to-Juggle Challenge</h2>
+                <p id="juggle-instructions" class="game-instruction">Tap repeatedly to keep the ball in the air! Miss a tap and the game ends.</p>
+                <div id="juggle-counter" class="game-stat">Juggles: 0 ⚽</div>
+                <div id="juggle-controls" class="game-controls">
+                    <button onclick="startTapToJuggle()" id="start-juggle-btn" class="control-btn">Start</button>
+                    <button onclick="endTapToJuggle()" class="end-btn">End Game</button>
+                </div>
+            </div>
+
+            <!-- CR7 Trivia Quiz -->
+            <div id="trivia-game-area" class="hidden">
+                <h2 class="game-header">CR7 Trivia Quiz</h2>
+                <p id="trivia-instructions" class="game-instruction">Answer the questions to earn points! Get streaks for consecutive correct answers.</p>
+                <div id="trivia-question" class="game-stat"></div>
+                <div id="trivia-options" class="game-options"></div>
+                <div id="trivia-score" class="game-stat">Score: 0 CR7SIU Points | Streak: 0</div>
+                <div id="trivia-controls" class="game-controls">
+                    <button onclick="nextTriviaQuestion()" id="next-trivia-btn" class="control-btn" disabled>Next Question</button>
+                    <button onclick="endCr7Trivia()" class="end-btn">End Game</button>
                 </div>
             </div>
         </section>

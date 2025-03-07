@@ -39,25 +39,44 @@ let ballX, ballY, targetX, targetY;
 let goalkeeperX;
 let isShooting = false;
 let shotFrame = 0;
-let goalkeeperDiveDirection = 'center'; // 'left', 'right', or 'center'
-let playerState = 'standing'; // 'standing' or 'kicking'
+let goalkeeperDiveDirection = 'center';
+let playerState = 'standing';
 let feedbackMessage = '';
 let feedbackTimer = 0;
-let selectedPower = 'medium'; // 'low', 'medium', 'high'
-let shotDirection = null; // 'left', 'center', 'right'
-let ballRotation = 0; // For spinning ball animation
-let crowdCheer = true; // Toggle for crowd animation
-let celebrationTimer = 0; // For goal celebration
+let selectedPower = 'medium';
+let shotDirection = null;
+let ballRotation = 0;
+let crowdCheer = true;
+let celebrationTimer = 0;
 
 // SIUUU Reaction Tap game state
 let siuuuGameActive = false;
 let siuuuScore = 0;
 let siuuuStreak = 0;
 let siuuuMultiplier = 1;
-let siuuuTimeLeft = 2; // 2-second timer per word
+let siuuuTimeLeft = 2;
 let siuuuTimerInterval = null;
+let siuuuHighScore = parseInt(localStorage.getItem("siuuuHighScore")) || 0;
 const siuuuWords = ["Siuuu!", "Ronaldo!", "Goal!", "Miss!", "CR7!"];
 let currentSiuuuWord = "";
+let isPaused = false;
+
+// Tap-to-Juggle Challenge game state
+let juggleGameActive = false;
+let juggleCount = 0;
+let juggleTimer = null;
+
+// CR7 Trivia Quiz game state
+let triviaGameActive = false;
+let triviaScore = 0;
+let triviaStreak = 0;
+let currentQuestionIndex = 0;
+const triviaQuestions = [
+    { question: "How many Ballon d'Or awards has Cristiano Ronaldo won?", options: ["4", "5", "6", "3"], answer: "5" },
+    { question: "Which club did Ronaldo join in 2009?", options: ["Barcelona", "Real Madrid", "Manchester United", "Juventus"], answer: "Real Madrid" },
+    { question: "What is Ronaldo's jersey number?", options: ["7", "10", "9", "11"], answer: "7" }
+];
+let selectedAnswer = null;
 
 // Show username setup if it's the user's first session
 if (!username) {
@@ -131,14 +150,20 @@ function showPage(page) {
         if (page === "rewards") {
             drawWheel();
         }
-        // Reset game area visibility when navigating away from Games page
+        // Reset all game areas when navigating away
         if (page !== "games") {
             const gameArea = document.getElementById("game-area");
             if (gameArea) gameArea.classList.add("hidden");
             const siuuuArea = document.getElementById("siuuu-game-area");
             if (siuuuArea) siuuuArea.classList.add("hidden");
+            const juggleArea = document.getElementById("juggle-game-area");
+            if (juggleArea) juggleArea.classList.add("hidden");
+            const triviaArea = document.getElementById("trivia-game-area");
+            if (triviaArea) triviaArea.classList.add("hidden");
             endPenaltyShootout();
             endSiuuuReactionTap();
+            endTapToJuggle();
+            endCr7Trivia();
         }
     } catch (e) {
         console.error("Error in showPage:", e);
@@ -155,11 +180,11 @@ function startPenaltyShootout() {
         penaltyMultiplier = 1;
         isSuddenDeath = false;
         gameOver = false;
-        ballX = 200; // Center of canvas
-        ballY = 280; // Closer to bottom for zoomed-in view
+        ballX = 200;
+        ballY = 280;
         targetX = ballX;
         targetY = ballY;
-        goalkeeperX = 200; // Center of goal
+        goalkeeperX = 200;
         isShooting = false;
         shotFrame = 0;
         goalkeeperDiveDirection = 'center';
@@ -174,6 +199,13 @@ function startPenaltyShootout() {
 
         const gameArea = document.getElementById("game-area");
         if (gameArea) gameArea.classList.remove("hidden");
+
+        const siuuuArea = document.getElementById("siuuu-game-area");
+        if (siuuuArea) siuuuArea.classList.add("hidden");
+        const juggleArea = document.getElementById("juggle-game-area");
+        if (juggleArea) juggleArea.classList.add("hidden");
+        const triviaArea = document.getElementById("trivia-game-area");
+        if (triviaArea) triviaArea.classList.add("hidden");
 
         const canvas = document.getElementById("penaltyCanvas");
         canvas.addEventListener("click", handleGoalTap);
@@ -190,15 +222,25 @@ function endPenaltyShootout() {
     try {
         if (penaltyGameActive) {
             penaltyGameActive = false;
-            if (penaltyScore > 0) {
-                const pointsEarned = penaltyScore;
-                currentPoints += pointsEarned;
-                updatePointsAndLevel();
-                showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points!`);
-            }
             const canvas = document.getElementById("penaltyCanvas");
-            canvas.removeEventListener("click", handleGoalTap);
-            canvas.removeEventListener("touchstart", handleGoalTap);
+            if (canvas) {
+                canvas.removeEventListener("click", handleGoalTap);
+                canvas.removeEventListener("touchstart", handleGoalTap);
+            }
+            if (penaltyScore > 0) {
+                currentPoints += penaltyScore; // Add points to total
+                updatePointsAndLevel();
+                showRewardToast(`Game Over! You earned ${penaltyScore} CR7SIU Points!`);
+            }
+            const gameArea = document.getElementById("game-area");
+            if (gameArea) {
+                gameArea.classList.add("game-over");
+                setTimeout(() => {
+                    gameArea.classList.add("hidden");
+                    gameArea.classList.remove("game-over");
+                    showPage("games");
+                }, 1000);
+            }
         }
     } catch (e) {
         console.error("Error in endPenaltyShootout:", e);
@@ -233,17 +275,17 @@ function handleGoalTap(event) {
     // Determine shot direction based on tap position
     if (tapX >= 120 && tapX < 173) {
         shotDirection = 'left';
-        targetX = 146.5; // Center of left section
+        targetX = 146.5;
     } else if (tapX >= 173 && tapX < 226) {
         shotDirection = 'center';
-        targetX = 199.5; // Center of center section
+        targetX = 199.5;
     } else if (tapX >= 226 && tapX <= 280) {
         shotDirection = 'right';
-        targetX = 253; // Center of right section
+        targetX = 253;
     } else {
-        return; // Tap outside goalpost area
+        return;
     }
-    targetY = 25; // Middle of goal height
+    targetY = 25;
 
     // Start shooting animation
     isShooting = true;
@@ -262,8 +304,6 @@ function handleGoalTap(event) {
 }
 
 function checkGoal() {
-    // If the goalkeeper's dive direction matches the shot direction, it's a miss
-    // Otherwise, it's a goal
     return shotDirection !== goalkeeperDiveDirection;
 }
 
@@ -293,10 +333,9 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw stadium background
-    ctx.fillStyle = "#1C2526"; // Dark gray for stadium
+    ctx.fillStyle = "#1C2526";
     ctx.fillRect(0, 0, canvas.width, 50);
-    // Crowd silhouette
-    ctx.fillStyle = crowdCheer ? "#4A4A4A" : "#5A5A5A"; // Alternating colors for cheering
+    ctx.fillStyle = crowdCheer ? "#4A4A4A" : "#5A5A5A";
     crowdCheer = !crowdCheer;
     ctx.beginPath();
     ctx.moveTo(0, 50);
@@ -305,7 +344,6 @@ function gameLoop() {
     ctx.lineTo(400, 50);
     ctx.closePath();
     ctx.fill();
-    // Crowd details
     for (let x = 0; x < canvas.width; x += 10) {
         ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
         ctx.fillRect(x, 5, 5, 5);
@@ -320,8 +358,8 @@ function gameLoop() {
 
     // Draw pitch background with 3D effect
     const pitchGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    pitchGradient.addColorStop(0, "#1B5E20"); // Dark green at top
-    pitchGradient.addColorStop(1, "#4CAF50"); // Light green at bottom
+    pitchGradient.addColorStop(0, "#1B5E20");
+    pitchGradient.addColorStop(1, "#4CAF50");
     ctx.fillStyle = pitchGradient;
     ctx.fillRect(0, 50, canvas.width, canvas.height - 50);
 
@@ -336,17 +374,14 @@ function gameLoop() {
     // Draw perspective lines for 3D effect
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 2;
-    // Left perspective line
     ctx.beginPath();
     ctx.moveTo(0, canvas.height);
     ctx.lineTo(200, 50);
     ctx.stroke();
-    // Right perspective line
     ctx.beginPath();
     ctx.moveTo(canvas.width, canvas.height);
     ctx.lineTo(200, 50);
     ctx.stroke();
-    // Penalty box lines
     ctx.strokeRect(100, 50, 200, 100);
 
     // Draw penalty spot
@@ -356,16 +391,14 @@ function gameLoop() {
     ctx.fill();
     ctx.closePath();
 
-    // Draw goalpost with enhanced 3D effect
-    // Main goalpost with metallic gradient
+    // Draw goalpost with 3D effect
     const goalGradient = ctx.createLinearGradient(120, 0, 280, 0);
     goalGradient.addColorStop(0, "#B0BEC5");
     goalGradient.addColorStop(1, "#ECEFF1");
     ctx.fillStyle = goalGradient;
-    ctx.fillRect(120, 0, 160, 15); // Top bar
-    ctx.fillRect(120, 0, 15, 70); // Left post
-    ctx.fillRect(265, 0, 15, 70); // Right post
-    // 3D effect with angled lines
+    ctx.fillRect(120, 0, 160, 15);
+    ctx.fillRect(120, 0, 15, 70);
+    ctx.fillRect(265, 0, 15, 70);
     ctx.beginPath();
     ctx.moveTo(120, 0);
     ctx.lineTo(110, 10);
@@ -378,13 +411,10 @@ function gameLoop() {
     ctx.lineTo(275, 10);
     ctx.lineTo(265, 0);
     ctx.fill();
-    // Goalpost shadow
     ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
     ctx.fillRect(110, 10, 180, 5);
-    // Net
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
     ctx.fillRect(135, 15, 130, 55);
-    // Net pattern
     ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
     ctx.lineWidth = 1;
     for (let x = 135; x < 265; x += 10) {
@@ -400,21 +430,19 @@ function gameLoop() {
         ctx.stroke();
     }
 
-    // Draw clickable areas on goalpost (highlight when hovered)
-    ctx.fillStyle = "rgba(255, 215, 0, 0.3)"; // Yellow highlight
-    ctx.fillRect(120, 0, 53, 70); // Left
-    ctx.fillRect(173, 0, 53, 70); // Center
-    ctx.fillRect(226, 0, 54, 70); // Right
+    // Draw clickable areas on goalpost
+    ctx.fillStyle = "rgba(255, 215, 0, 0.3)";
+    ctx.fillRect(120, 0, 53, 70);
+    ctx.fillRect(173, 0, 53, 70);
+    ctx.fillRect(226, 0, 54, 70);
 
-    // Draw player with 3D effect (layered model)
+    // Draw player with 3D effect
     ctx.save();
     if (playerState === 'kicking') {
         ctx.translate(200, 275);
-        ctx.rotate(-15 * Math.PI / 180); // Tilt for kicking animation
-        // Torso (red jersey)
-        ctx.fillStyle = "#D32F2F"; // Red jersey
+        ctx.rotate(-15 * Math.PI / 180);
+        ctx.fillStyle = "#D32F2F";
         ctx.fillRect(-20, -30, 40, 40);
-        // Jersey number
         ctx.fillStyle = "#fff";
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
@@ -423,16 +451,13 @@ function gameLoop() {
         ctx.textBaseline = "middle";
         ctx.fillText("7", 0, -5);
         ctx.strokeText("7", 0, -5);
-        // Legs (kicking pose)
         ctx.fillStyle = "#000";
-        ctx.fillRect(-15, 10, 10, 30); // Left leg (stationary)
-        ctx.fillRect(5, 10, 10, 30); // Right leg (kicking forward)
+        ctx.fillRect(-15, 10, 10, 30);
+        ctx.fillRect(5, 10, 10, 30);
         ctx.restore();
     } else {
-        // Torso (red jersey)
-        ctx.fillStyle = "#D32F2F"; // Red jersey
+        ctx.fillStyle = "#D32F2F";
         ctx.fillRect(180, 245, 40, 40);
-        // Jersey number
         ctx.fillStyle = "#fff";
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
@@ -441,10 +466,9 @@ function gameLoop() {
         ctx.textBaseline = "middle";
         ctx.fillText("7", 200, 265);
         ctx.strokeText("7", 200, 265);
-        // Legs (standing pose)
         ctx.fillStyle = "#000";
-        ctx.fillRect(185, 285, 10, 20); // Left leg
-        ctx.fillRect(205, 285, 10, 20); // Right leg
+        ctx.fillRect(185, 285, 10, 20);
+        ctx.fillRect(205, 285, 10, 20);
     }
 
     // Draw goalkeeper with diving animation
@@ -452,8 +476,8 @@ function gameLoop() {
         if (goalkeeperDiveDirection === 'left') {
             ctx.save();
             ctx.translate(140, 35);
-            ctx.rotate(-15 * Math.PI / 180); // Tilt for diving left
-            ctx.fillStyle = "#F44336"; // Red for left dive
+            ctx.rotate(-15 * Math.PI / 180);
+            ctx.fillStyle = "#F44336";
             ctx.fillRect(-20, -20, 40, 40);
             ctx.fillStyle = "#fff";
             ctx.strokeStyle = "#000";
@@ -467,8 +491,8 @@ function gameLoop() {
         } else if (goalkeeperDiveDirection === 'right') {
             ctx.save();
             ctx.translate(260, 35);
-            ctx.rotate(15 * Math.PI / 180); // Tilt for diving right
-            ctx.fillStyle = "#4CAF50"; // Green for right dive
+            ctx.rotate(15 * Math.PI / 180);
+            ctx.fillStyle = "#4CAF50";
             ctx.fillRect(-20, -20, 40, 40);
             ctx.fillStyle = "#fff";
             ctx.strokeStyle = "#000";
@@ -480,7 +504,7 @@ function gameLoop() {
             ctx.strokeText("GK", 0, 0);
             ctx.restore();
         } else {
-            ctx.fillStyle = "#2196F3"; // Blue for center
+            ctx.fillStyle = "#2196F3";
             ctx.fillRect(180, 15, 40, 40);
             ctx.fillStyle = "#fff";
             ctx.strokeStyle = "#000";
@@ -492,7 +516,7 @@ function gameLoop() {
             ctx.strokeText("GK", 200, 35);
         }
     } else {
-        ctx.fillStyle = "#2196F3"; // Blue for center (default position)
+        ctx.fillStyle = "#2196F3";
         ctx.fillRect(180, 15, 40, 40);
         ctx.fillStyle = "#fff";
         ctx.strokeStyle = "#000";
@@ -516,13 +540,11 @@ function gameLoop() {
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
         ctx.stroke();
-        // Add shadow for 3D effect
         ctx.beginPath();
         ctx.arc(3, 3, 12, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
         ctx.fill();
         ctx.closePath();
-        // Draw ⚽
         ctx.fillStyle = "#000";
         ctx.font = "16px Roboto";
         ctx.textAlign = "center";
@@ -530,13 +552,12 @@ function gameLoop() {
         ctx.fillText("⚽", 0, 0);
         ctx.restore();
     } else {
-        // Animate ball towards target
         shotFrame++;
-        const frames = selectedPower === 'low' ? 30 : (selectedPower === 'medium' ? 20 : 10); // More frames for slower shots
+        const frames = selectedPower === 'low' ? 30 : (selectedPower === 'medium' ? 20 : 10);
         const progress = Math.min(shotFrame / frames, 1);
         ballX = ballX + (targetX - ballX) * progress;
         ballY = ballY + (targetY - ballY) * progress;
-        ballRotation += 0.2; // Rotate ball for spinning effect
+        ballRotation += 0.2;
         ctx.save();
         ctx.translate(ballX, ballY);
         ctx.rotate(ballRotation);
@@ -547,13 +568,11 @@ function gameLoop() {
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
         ctx.stroke();
-        // Add shadow for 3D effect
         ctx.beginPath();
         ctx.arc(3, 3, 12, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
         ctx.fill();
         ctx.closePath();
-        // Draw ⚽
         ctx.fillStyle = "#000";
         ctx.font = "16px Roboto";
         ctx.textAlign = "center";
@@ -561,7 +580,6 @@ function gameLoop() {
         ctx.fillText("⚽", 0, 0);
         ctx.restore();
 
-        // Draw ball trail
         ctx.beginPath();
         ctx.moveTo(200, 280);
         ctx.lineTo(ballX, ballY);
@@ -571,7 +589,6 @@ function gameLoop() {
         ctx.closePath();
 
         if (progress === 1) {
-            // Check if the shot scores
             penaltyShotsTaken++;
             const goalScored = checkGoal();
             if (goalScored) {
@@ -579,21 +596,19 @@ function gameLoop() {
                 penaltyStreak++;
                 updateMultiplier();
                 feedbackMessage = "Goal!";
-                celebrationTimer = 60; // Trigger celebration for 1 second
+                celebrationTimer = 60;
             } else {
                 penaltyStreak = 0;
                 penaltyMultiplier = 1;
                 feedbackMessage = "Miss!";
             }
-            feedbackTimer = 60; // Show feedback for ~1 second (assuming 60 FPS)
+            feedbackTimer = 60;
 
-            // Check for Sudden Death after 5 shots
             if (penaltyShotsTaken >= 5 && penaltyScore >= 400 && !isSuddenDeath) {
                 isSuddenDeath = true;
                 updateRewardStatus("Sudden Death Mode! Miss a shot and the game ends!");
             }
 
-            // End game in Sudden Death if the player misses
             if (isSuddenDeath && !goalScored) {
                 gameOver = true;
                 endPenaltyShootout();
@@ -605,7 +620,6 @@ function gameLoop() {
             goalkeeperDiveDirection = 'center';
             shotDirection = null;
 
-            // Reset ball position
             ballX = 200;
             ballY = 280;
             targetX = ballX;
@@ -627,33 +641,41 @@ function gameLoop() {
 
     // Draw goal celebration effect
     if (celebrationTimer > 0) {
-        // Flashing lights around goalpost
         ctx.fillStyle = celebrationTimer % 10 < 5 ? "#FFFF00" : "#FFFFFF";
-        ctx.fillRect(110, 0, 10, 70); // Left side
-        ctx.fillRect(280, 0, 10, 70); // Right side
-        ctx.fillRect(120, 0, 160, 5); // Top
+        ctx.fillRect(110, 0, 10, 70);
+        ctx.fillRect(280, 0, 10, 70);
+        ctx.fillRect(120, 0, 160, 5);
         celebrationTimer--;
     }
 
     requestAnimationFrame(gameLoop);
 }
 
-// SIUUU Reaction Tap Game Logic
+// SIUUU Reaction Tap Game Logic (With Enhancements)
 function startSiuuuReactionTap() {
     try {
+        console.log("Starting SIUUU Reaction Tap");
         siuuuGameActive = true;
         siuuuScore = 0;
         siuuuStreak = 0;
         siuuuMultiplier = 1;
-        siuuuTimeLeft = 2;
+        siuuuTimeLeft = Math.max(0.5, 2 - (playerLevel - 1) * 0.15); // Difficulty scaling
+        isPaused = false;
 
         const gameArea = document.getElementById("game-area");
-        if (gameArea) gameArea.classList.add("hidden"); // Hide Penalty Shootout
+        if (gameArea) gameArea.classList.add("hidden");
         const siuuuArea = document.getElementById("siuuu-game-area");
         if (siuuuArea) siuuuArea.classList.remove("hidden");
+        else console.error("siuuu-game-area not found");
+
+        const juggleArea = document.getElementById("juggle-game-area");
+        if (juggleArea) juggleArea.classList.add("hidden");
+        const triviaArea = document.getElementById("trivia-game-area");
+        if (triviaArea) triviaArea.classList.add("hidden");
 
         updateSiuuuScore();
         updateSiuuuStreak();
+        updateSiuuuHighScore();
         nextSiuuuWord();
     } catch (e) {
         console.error("Error in startSiuuuReactionTap:", e);
@@ -662,23 +684,38 @@ function startSiuuuReactionTap() {
 
 function handleSiuuuTap() {
     try {
+        console.log("Handling SIUUU tap, current word:", currentSiuuuWord);
         const wordDisplay = document.getElementById("siuuu-word-display");
-        if (!wordDisplay) return;
-
-        if (!siuuuGameActive) {
-            startSiuuuReactionTap(); // Start game on first tap
+        if (!wordDisplay) {
+            console.error("siuuu-word-display not found");
             return;
         }
+
+        if (!siuuuGameActive) {
+            startSiuuuReactionTap();
+            return;
+        }
+
+        if (isPaused) return;
 
         if (currentSiuuuWord === "Siuuu!") {
             siuuuStreak++;
             updateSiuuuMultiplier();
-            siuuuScore += 10 * siuuuMultiplier; // Points with multiplier
+            siuuuScore += 10 * siuuuMultiplier;
+            if (siuuuStreak % 5 === 0) {
+                const bonusPoints = siuuuStreak * 10;
+                siuuuScore += bonusPoints;
+                showRewardToast(`Combo Bonus! +${bonusPoints} CR7SIU Points for a ${siuuuStreak} streak!`);
+            }
             updateSiuuuScore();
             updateSiuuuStreak();
+            wordDisplay.classList.add("correct-tap");
+            setTimeout(() => wordDisplay.classList.remove("correct-tap"), 300);
             nextSiuuuWord();
         } else {
-            endSiuuuReactionTap(); // Wrong tap ends game
+            wordDisplay.classList.add("incorrect-tap");
+            setTimeout(() => wordDisplay.classList.remove("incorrect-tap"), 300);
+            endSiuuuReactionTap();
         }
     } catch (e) {
         console.error("Error in handleSiuuuTap:", e);
@@ -687,24 +724,32 @@ function handleSiuuuTap() {
 
 function nextSiuuuWord() {
     try {
+        console.log("Next SIUUU word triggered");
         clearInterval(siuuuTimerInterval);
-        siuuuTimeLeft = 2;
+        siuuuTimeLeft = Math.max(0.5, 2 - (playerLevel - 1) * 0.15);
         updateSiuuuTimer();
 
         const wordDisplay = document.getElementById("siuuu-word-display");
-        if (!wordDisplay) return;
+        if (!wordDisplay) {
+            console.error("siuuu-word-display not found");
+            return;
+        }
 
         currentSiuuuWord = siuuuWords[Math.floor(Math.random() * siuuuWords.length)];
         wordDisplay.textContent = currentSiuuuWord;
 
         siuuuTimerInterval = setInterval(() => {
-            siuuuTimeLeft -= 0.1;
-            updateSiuuuTimer();
-            if (siuuuTimeLeft <= 0) {
-                clearInterval(siuuuTimerInterval);
-                nextSiuuuWord(); // Move to next word if time runs out
+            if (!isPaused) {
+                siuuuTimeLeft -= 0.1;
+                updateSiuuuTimer();
+                if (siuuuTimeLeft <= 0) {
+                    clearInterval(siuuuTimerInterval);
+                    wordDisplay.classList.add("incorrect-tap");
+                    setTimeout(() => wordDisplay.classList.remove("incorrect-tap"), 300);
+                    endSiuuuReactionTap();
+                }
             }
-        }, 100); // Update every 0.1s
+        }, 100);
     } catch (e) {
         console.error("Error in nextSiuuuWord:", e);
     }
@@ -712,51 +757,269 @@ function nextSiuuuWord() {
 
 function updateSiuuuScore() {
     const scoreDisplay = document.getElementById("siuuu-score");
-    if (scoreDisplay) {
-        scoreDisplay.textContent = `Score: ${siuuuScore} CR7SIU Points`;
-    }
+    if (scoreDisplay) scoreDisplay.textContent = `Score: ${siuuuScore} CR7SIU Points`;
 }
 
 function updateSiuuuTimer() {
     const timerDisplay = document.getElementById("siuuu-timer");
+    const progressBar = document.getElementById("timer-progress-bar");
     if (timerDisplay) {
         timerDisplay.textContent = `Time Left: ${siuuuTimeLeft.toFixed(1)}s`;
+    }
+    if (progressBar) {
+        const maxTime = Math.max(0.5, 2 - (playerLevel - 1) * 0.15);
+        const percentage = (siuuuTimeLeft / maxTime) * 100;
+        progressBar.style.width = `${percentage}%`;
     }
 }
 
 function updateSiuuuStreak() {
     const streakDisplay = document.getElementById("siuuu-streak");
-    if (streakDisplay) {
-        streakDisplay.textContent = `Streak: ${siuuuStreak} | Multiplier: ${siuuuMultiplier}x`;
-    }
+    if (streakDisplay) streakDisplay.textContent = `Streak: ${siuuuStreak} | Multiplier: ${siuuuMultiplier}x`;
 }
 
 function updateSiuuuMultiplier() {
-    if (siuuuStreak >= 10) {
-        siuuuMultiplier = 3;
-    } else if (siuuuStreak >= 5) {
-        siuuuMultiplier = 2;
-    } else {
-        siuuuMultiplier = 1;
-    }
+    if (siuuuStreak >= 10) siuuuMultiplier = 3;
+    else if (siuuuStreak >= 5) siuuuMultiplier = 2;
+    else siuuuMultiplier = 1;
+}
+
+function updateSiuuuHighScore() {
+    const highScoreDisplay = document.getElementById("siuuu-high-score");
+    if (highScoreDisplay) highScoreDisplay.textContent = `High Score: ${siuuuHighScore} CR7SIU Points`;
 }
 
 function endSiuuuReactionTap() {
     try {
+        console.log("Ending SIUUU Reaction Tap");
         if (siuuuGameActive) {
             siuuuGameActive = false;
             clearInterval(siuuuTimerInterval);
+            if (siuuuScore > siuuuHighScore) {
+                siuuuHighScore = siuuuScore;
+                localStorage.setItem("siuuuHighScore", siuuuHighScore);
+                updateSiuuuHighScore();
+            }
             if (siuuuScore > 0) {
-                currentPoints += siuuuScore; // Add score to total CR7SIU Points
+                currentPoints += siuuuScore; // Add points to total
                 updatePointsAndLevel();
                 showRewardToast(`Game Over! You earned ${siuuuScore} CR7SIU Points with a ${siuuuStreak} streak!`);
             }
             const siuuuArea = document.getElementById("siuuu-game-area");
-            if (siuuuArea) siuuuArea.classList.add("hidden");
-            showPage("games"); // Return to Games menu
+            if (siuuuArea) {
+                siuuuArea.classList.add("game-over");
+                setTimeout(() => {
+                    siuuuArea.classList.add("hidden");
+                    siuuuArea.classList.remove("game-over");
+                    showPage("games");
+                }, 1000);
+            } else console.warn("siuuu-game-area not found when ending");
         }
     } catch (e) {
         console.error("Error in endSiuuuReactionTap:", e);
+    }
+}
+
+function pauseSiuuuGame() {
+    try {
+        if (!siuuuGameActive) return;
+        if (isPaused) {
+            isPaused = false;
+            document.getElementById("pause-siuuu-btn").textContent = "Pause";
+            nextSiuuuWord();
+        } else {
+            isPaused = true;
+            clearInterval(siuuuTimerInterval);
+            document.getElementById("pause-siuuu-btn").textContent = "Resume";
+            document.getElementById("siuuu-timer").textContent = "Paused";
+        }
+    } catch (e) {
+        console.error("Error in pauseSiuuuGame:", e);
+    }
+}
+
+// Tap-to-Juggle Challenge Logic
+function startTapToJuggle() {
+    try {
+        console.log("Starting Tap-to-Juggle Challenge");
+        juggleGameActive = true;
+        juggleCount = 0;
+
+        const juggleArea = document.getElementById("juggle-game-area");
+        if (juggleArea) juggleArea.classList.remove("hidden");
+        else console.error("juggle-game-area not found");
+
+        const gameAreas = ["game-area", "siuuu-game-area", "trivia-game-area"];
+        gameAreas.forEach(id => {
+            const area = document.getElementById(id);
+            if (area) area.classList.add("hidden");
+        });
+
+        updateJuggleCounter();
+        juggleTimer = setInterval(() => {
+            if (juggleGameActive) {
+                juggleCount++;
+                updateJuggleCounter();
+                animateJuggle();
+            }
+        }, 500);
+    } catch (e) {
+        console.error("Error in startTapToJuggle:", e);
+    }
+}
+
+function handleJuggleTap() {
+    try {
+        if (!juggleGameActive) startTapToJuggle();
+        if (juggleGameActive) {
+            juggleCount++;
+            updateJuggleCounter();
+            animateJuggle();
+        }
+    } catch (e) {
+        console.error("Error in handleJuggleTap:", e);
+    }
+}
+
+function updateJuggleCounter() {
+    const counterDisplay = document.getElementById("juggle-counter");
+    if (counterDisplay) counterDisplay.textContent = `Juggles: ${juggleCount} ⚽`;
+}
+
+function animateJuggle() {
+    const counterDisplay = document.getElementById("juggle-counter");
+    if (counterDisplay) {
+        counterDisplay.classList.add("juggle-anim");
+        setTimeout(() => counterDisplay.classList.remove("juggle-anim"), 300);
+    }
+}
+
+function endTapToJuggle() {
+    try {
+        if (juggleGameActive) {
+            juggleGameActive = false;
+            clearInterval(juggleTimer);
+            if (juggleCount > 0) {
+                const pointsEarned = juggleCount * 5; // 5 points per juggle
+                currentPoints += pointsEarned;
+                updatePointsAndLevel();
+                showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points with ${juggleCount} juggles!`);
+            }
+            const juggleArea = document.getElementById("juggle-game-area");
+            if (juggleArea) {
+                juggleArea.classList.add("game-over");
+                setTimeout(() => {
+                    juggleArea.classList.add("hidden");
+                    juggleArea.classList.remove("game-over");
+                    showPage("games");
+                }, 1000);
+            }
+        }
+    } catch (e) {
+        console.error("Error in endTapToJuggle:", e);
+    }
+}
+
+// CR7 Trivia Quiz Logic
+function startCr7Trivia() {
+    try {
+        console.log("Starting CR7 Trivia Quiz");
+        triviaGameActive = true;
+        triviaScore = 0;
+        triviaStreak = 0;
+        currentQuestionIndex = 0;
+        selectedAnswer = null;
+
+        const triviaArea = document.getElementById("trivia-game-area");
+        if (triviaArea) triviaArea.classList.remove("hidden");
+        else console.error("trivia-game-area not found");
+
+        const gameAreas = ["game-area", "siuuu-game-area", "juggle-game-area"];
+        gameAreas.forEach(id => {
+            const area = document.getElementById(id);
+            if (area) area.classList.add("hidden");
+        });
+
+        nextTriviaQuestion();
+    } catch (e) {
+        console.error("Error in startCr7Trivia:", e);
+    }
+}
+
+function nextTriviaQuestion() {
+    try {
+        if (!triviaGameActive || currentQuestionIndex >= triviaQuestions.length) {
+            endCr7Trivia();
+            return;
+        }
+
+        const question = triviaQuestions[currentQuestionIndex];
+        const questionDisplay = document.getElementById("trivia-question");
+        const optionsDisplay = document.getElementById("trivia-options");
+        if (questionDisplay && optionsDisplay) {
+            questionDisplay.textContent = question.question;
+            optionsDisplay.innerHTML = question.options.map((opt, index) => `
+                <button class="trivia-option" onclick="selectTriviaAnswer('${opt}', '${question.answer}')">${opt}</button>
+            `).join('');
+            document.getElementById("next-trivia-btn").disabled = true;
+        }
+    } catch (e) {
+        console.error("Error in nextTriviaQuestion:", e);
+    }
+}
+
+function selectTriviaAnswer(selected, correct) {
+    try {
+        selectedAnswer = selected;
+        const options = document.querySelectorAll(".trivia-option");
+        options.forEach(opt => opt.disabled = true);
+
+        if (selected === correct) {
+            triviaStreak++;
+            triviaScore += 10 * (triviaStreak >= 5 ? 2 : 1); // Double points after 5 correct
+            const questionDisplay = document.getElementById("trivia-question");
+            if (questionDisplay) questionDisplay.classList.add("correct-answer");
+            setTimeout(() => questionDisplay.classList.remove("correct-answer"), 300);
+        } else {
+            triviaStreak = 0;
+            const questionDisplay = document.getElementById("trivia-question");
+            if (questionDisplay) questionDisplay.classList.add("incorrect-answer");
+            setTimeout(() => questionDisplay.classList.remove("incorrect-answer"), 300);
+        }
+
+        updateTriviaScore();
+        document.getElementById("next-trivia-btn").disabled = false;
+    } catch (e) {
+        console.error("Error in selectTriviaAnswer:", e);
+    }
+}
+
+function updateTriviaScore() {
+    const scoreDisplay = document.getElementById("trivia-score");
+    if (scoreDisplay) scoreDisplay.textContent = `Score: ${triviaScore} CR7SIU Points | Streak: ${triviaStreak}`;
+}
+
+function endCr7Trivia() {
+    try {
+        if (triviaGameActive) {
+            triviaGameActive = false;
+            if (triviaScore > 0) {
+                currentPoints += triviaScore; // Add points to total
+                updatePointsAndLevel();
+                showRewardToast(`Quiz Over! You earned ${triviaScore} CR7SIU Points with a ${triviaStreak} streak!`);
+            }
+            const triviaArea = document.getElementById("trivia-game-area");
+            if (triviaArea) {
+                triviaArea.classList.add("game-over");
+                setTimeout(() => {
+                    triviaArea.classList.add("hidden");
+                    triviaArea.classList.remove("game-over");
+                    showPage("games");
+                }, 1000);
+            }
+        }
+    } catch (e) {
+        console.error("Error in endCr7Trivia:", e);
     }
 }
 
@@ -1119,7 +1382,6 @@ function isNewDay(lastClaimTime) {
 
 function updateButtonStates() {
     try {
-        // Update ad, check-in, and spin buttons
         if (isNewDay(lastAdClaim)) enableSpecificButton('ad-claim-button');
         else disableSpecificButton('ad-claim-button');
         if (isNewDay(lastCheckInClaim)) enableSpecificButton('check-in-button');
@@ -1127,7 +1389,6 @@ function updateButtonStates() {
         if (isNewDay(lastSpinClaim)) enableSpecificButton('spin-button');
         else disableSpecificButton('spin-button');
 
-        // Update task buttons
         Object.keys(tasksCompleted).forEach(task => {
             const button = document.getElementById(`task-${task}`);
             if (button) {
@@ -1141,7 +1402,6 @@ function updateButtonStates() {
             }
         });
 
-        // Update Claim Rewards button
         const claimButton = document.getElementById("claim-rewards-btn");
         if (claimButton) {
             const canClaim = isNewDay(lastRewardsClaim);
@@ -1311,7 +1571,10 @@ function updateRewardStatus(message) {
 
 document.addEventListener('touchstart', function(event) {
     try {
-        if (event.target.tagName === 'BUTTON') {
+        if (event.target.id === "juggle-counter") {
+            event.target.click();
+            handleJuggleTap();
+        } else if (event.target.tagName === 'BUTTON') {
             event.target.click();
         }
     } catch (e) {

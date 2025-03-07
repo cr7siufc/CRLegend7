@@ -667,14 +667,48 @@ input:focus {
     box-shadow: 0 0 15px #FFD700;
 }
 
-#siuuu-word-display.correct {
+#siuuu-word-display.correct-tap {
     background: rgba(0, 255, 0, 0.5);
     border-color: #00FF00;
+    animation: correctFlash 0.3s ease;
 }
 
-#siuuu-word-display.wrong {
+#siuuu-word-display.incorrect-tap {
     background: rgba(255, 0, 0, 0.5);
     border-color: #FF0000;
+    animation: incorrectShake 0.3s ease;
+}
+
+@keyframes correctFlash {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes incorrectShake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+#timer-progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #444;
+    border-radius: 5px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+
+#timer-progress-bar::before {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #FF4500, #FFD700);
+    transition: width 0.1s linear;
 }
 
 #siuuu-timer {
@@ -684,11 +718,19 @@ input:focus {
     text-shadow: 1px 1px 2px #000;
 }
 
-#siuuu-score {
+#siuuu-score, #siuuu-streak, #siuuu-high-score {
     font-size: 18px;
     color: #FFD700;
     margin: 10px 0;
     text-shadow: 1px 1px 2px #000;
+}
+
+#siuuu-controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
 #siuuu-controls button {
@@ -709,6 +751,198 @@ input:focus {
     border-color: #FF00FF;
     box-shadow: 0 0 15px #FFD700;
     transform: scale(1.05);
+}
+
+/* Styles for Tap-to-Juggle Challenge */
+#juggle-game-area {
+    margin: 30px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    text-align: center;
+}
+
+#juggle-counter {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFD700;
+    background: rgba(60, 60, 60, 0.85);
+    padding: 20px;
+    border: 3px solid #FF00FF;
+    border-radius: 10px;
+    margin: 15px auto;
+    width: 80%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 2px 2px 4px #000;
+}
+
+#juggle-counter:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #FFD700;
+}
+
+#juggle-counter.juggle-anim {
+    animation: juggleBounce 0.3s ease;
+}
+
+@keyframes juggleBounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+#juggle-controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+#juggle-controls button {
+    background: linear-gradient(45deg, #FF4500, #FF6347);
+    color: #fff;
+    border: 2px solid #FFA500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#juggle-controls button:hover {
+    background: linear-gradient(45deg, #FF6347, #FF7F50);
+    border-color: #FF00FF;
+    box-shadow: 0 0 15px #FFD700;
+    transform: scale(1.05);
+}
+
+/* Styles for CR7 Trivia Quiz */
+#trivia-game-area {
+    margin: 30px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    text-align: center;
+}
+
+#trivia-question {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    background: rgba(60, 60, 60, 0.85);
+    padding: 15px;
+    border: 3px solid #FF00FF;
+    border-radius: 10px;
+    margin: 15px auto;
+    width: 90%;
+    transition: all 0.2s ease;
+    text-shadow: 2px 2px 4px #000;
+}
+
+#trivia-question.correct-answer {
+    background: rgba(0, 255, 0, 0.5);
+    border-color: #00FF00;
+    animation: correctFlash 0.3s ease;
+}
+
+#trivia-question.incorrect-answer {
+    background: rgba(255, 0, 0, 0.5);
+    border-color: #FF0000;
+    animation: incorrectShake 0.3s ease;
+}
+
+#trivia-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.trivia-option {
+    background: linear-gradient(45deg, #444, #666);
+    color: #fff;
+    border: 2px solid #FFA500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.trivia-option:hover:not(:disabled) {
+    background: linear-gradient(45deg, #666, #888);
+    border-color: #FF00FF;
+    box-shadow: 0 0 15px #FFD700;
+    transform: scale(1.05);
+}
+
+.trivia-option:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#trivia-score {
+    font-size: 18px;
+    color: #FFD700;
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px #000;
+}
+
+#trivia-controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+#trivia-controls button {
+    background: linear-gradient(45deg, #FF4500, #FF6347);
+    color: #fff;
+    border: 2px solid #FFA500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#trivia-controls button:hover:not(:disabled) {
+    background: linear-gradient(45deg, #FF6347, #FF7F50);
+    border-color: #FF00FF;
+    box-shadow: 0 0 15px #FFD700;
+    transform: scale(1.05);
+}
+
+#trivia-controls button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Game Over Animation */
+#game-area.game-over,
+#siuuu-game-area.game-over,
+#juggle-game-area.game-over,
+#trivia-game-area.game-over {
+    animation: gameOverFade 1s ease forwards;
+}
+
+@keyframes gameOverFade {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.95); }
 }
 
 /* Responsive Design for Desktop and Mobile */
@@ -846,11 +1080,40 @@ input:focus {
         padding: 15px;
     }
 
-    #siuuu-timer, #siuuu-score {
+    #siuuu-timer, #siuuu-score, #siuuu-streak, #siuuu-high-score {
         font-size: 16px;
     }
 
     #siuuu-controls button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #juggle-counter {
+        font-size: 30px;
+        padding: 15px;
+    }
+
+    #juggle-controls button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #trivia-question {
+        font-size: 20px;
+        padding: 12px;
+    }
+
+    .trivia-option {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #trivia-score {
+        font-size: 16px;
+    }
+
+    #trivia-controls button {
         padding: 8px 16px;
         font-size: 14px;
     }
@@ -988,13 +1251,42 @@ input:focus {
         padding: 15px;
     }
 
-    #siuuu-timer, #siuuu-score {
+    #siuuu-timer, #siuuu-score, #siuuu-streak, #siuuu-high-score {
         font-size: 16px;
     }
 
     #siuuu-controls button {
         padding: 8px 16px;
         font-size: 14px;
+    }
+
+    #juggle-counter {
+        font-size: 28px;
+        padding: 15px;
+    }
+
+    #juggle-controls button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #trivia-question {
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .trivia-option {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    #trivia-score {
+        font-size: 14px;
+    }
+
+    #trivia-controls button {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
 
@@ -1106,13 +1398,42 @@ input:focus {
         padding: 10px;
     }
 
-    #siuuu-timer, #siuuu-score {
+    #siuuu-timer, #siuuu-score, #siuuu-streak, #siuuu-high-score {
         font-size: 14px;
     }
 
     #siuuu-controls button {
         padding: 6px 12px;
         font-size: 12px;
+    }
+
+    #juggle-counter {
+        font-size: 24px;
+        padding: 10px;
+    }
+
+    #juggle-controls button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    #trivia-question {
+        font-size: 16px;
+        padding: 8px;
+    }
+
+    .trivia-option {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+
+    #trivia-score {
+        font-size: 12px;
+    }
+
+    #trivia-controls button {
+        padding: 5px 10px;
+        font-size: 10px;
     }
 }
 
@@ -1127,7 +1448,7 @@ input:focus {
         background-size: cover;
     }
 
-    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn, footer button, #games-list button, .power-btn {
+    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn, footer button, #games-list button, .power-btn, #siuuu-controls button, #juggle-controls button, #trivia-controls button, .trivia-option {
         border-width: 3px;
     }
 }
