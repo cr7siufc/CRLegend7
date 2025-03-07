@@ -3,7 +3,9 @@ console.log("Initial localStorage values:", {
     username: localStorage.getItem("username"),
     points: localStorage.getItem("points"),
     level: localStorage.getItem("level"),
-    tokens: localStorage.getItem("tokens")
+    tokens: localStorage.getItem("tokens"),
+    attributes: localStorage.getItem("attributes"),
+    airdropTasksCompleted: localStorage.getItem("airdropTasksCompleted")
 });
 
 // Store user data in localStorage
@@ -11,8 +13,21 @@ let username = localStorage.getItem("username") || '';
 let currentPoints = parseInt(localStorage.getItem("points")) || 0;
 let playerLevel = parseInt(localStorage.getItem("level")) || 1;
 let currentTokens = parseInt(localStorage.getItem("tokens")) || 0;
-let attributes = JSON.parse(localStorage.getItem("attributes")) || {};
+let attributes = JSON.parse(localStorage.getItem("attributes")) || {
+    speed: 1,
+    power: 1,
+    stamina: 1,
+    accuracy: 1,
+    dribbling: 1,
+    defense: 1
+};
 let tasksCompleted = JSON.parse(localStorage.getItem("tasksCompleted")) || { youtube: false, xAccount: false, facebook: false };
+let airdropTasksCompleted = JSON.parse(localStorage.getItem("airdropTasksCompleted")) || {
+    followTwitter: false,
+    joinTelegram: false,
+    inviteFriends: false,
+    sharePost: false
+};
 let referralUsers = JSON.parse(localStorage.getItem("referralUsers")) || [];
 
 // Daily reset tracking
@@ -20,6 +35,12 @@ let lastAdClaim = parseInt(localStorage.getItem("lastAdClaim")) || 0;
 let lastCheckInClaim = parseInt(localStorage.getItem("lastCheckInClaim")) || 0;
 let lastSpinClaim = parseInt(localStorage.getItem("lastSpinClaim")) || 0;
 let lastTaskClaims = JSON.parse(localStorage.getItem("lastTaskClaims")) || { youtube: 0, xAccount: 0, facebook: 0 };
+let lastAirdropTaskClaims = JSON.parse(localStorage.getItem("lastAirdropTaskClaims")) || {
+    followTwitter: 0,
+    joinTelegram: 0,
+    inviteFriends: 0,
+    sharePost: 0
+};
 let lastRewardsClaim = parseInt(localStorage.getItem("lastRewardsClaim")) || 0;
 
 // Wheel data
@@ -139,8 +160,10 @@ function loadSession() {
         if (pointsDisplay) pointsDisplay.textContent = currentPoints;
 
         displayImprovements();
+        displayAirdropTasks();
         resetTasks();
         updateTaskButtons();
+        updateAirdropTaskButtons();
         displayReferrals();
         showPage('home');
     } catch (e) {
@@ -164,6 +187,10 @@ function showPage(page) {
         }
         if (page === "games") {
             initializeGameContainers();
+        }
+        if (page === "airdrop") {
+            displayAirdropTasks();
+            updateAirdropTaskButtons();
         }
     } catch (e) {
         console.error("Error in showPage:", e);
@@ -1179,12 +1206,16 @@ function showRewardToast(message) {
     }
 }
 
+// Updated displayImprovements to include all six attributes
 function displayImprovements() {
     try {
         const improvements = [
             { name: "Speed", level: attributes.speed || 1, cost: 1000 * (attributes.speed || 1) },
             { name: "Power", level: attributes.power || 1, cost: 1000 * (attributes.power || 1) },
-            { name: "Stamina", level: attributes.stamina || 1, cost: 1000 * (attributes.stamina || 1) }
+            { name: "Stamina", level: attributes.stamina || 1, cost: 1000 * (attributes.stamina || 1) },
+            { name: "Accuracy", level: attributes.accuracy || 1, cost: 1000 * (attributes.accuracy || 1) },
+            { name: "Dribbling", level: attributes.dribbling || 1, cost: 1000 * (attributes.dribbling || 1) },
+            { name: "Defense", level: attributes.defense || 1, cost: 1000 * (attributes.defense || 1) }
         ];
         const container = document.getElementById("attributes-container");
         if (!container) return;
@@ -1219,6 +1250,76 @@ function upgradeAttribute(attribute, cost) {
     }
 }
 
+// Airdrop Tasks Logic
+function displayAirdropTasks() {
+    try {
+        const tasksContainer = document.querySelector(".tasks-grid");
+        if (!tasksContainer) return;
+        tasksContainer.innerHTML = Object.keys(airdropTasksCompleted).map(task => `
+            <div class="task-card">
+                <h3>${task === 'followTwitter' ? 'Follow on Twitter' : 
+                      task === 'joinTelegram' ? 'Join Telegram' : 
+                      task === 'inviteFriends' ? 'Invite Friends' : 
+                      'Share Post'}</h3>
+                <p>${task === 'followTwitter' ? 'Follow our official Twitter account' : 
+                     task === 'joinTelegram' ? 'Join our Telegram community' : 
+                     task === 'inviteFriends' ? 'Invite 3 friends to join' : 
+                     'Share our airdrop post'}</p>
+                <button id="airdrop-task-${task}" onclick="completeAirdropTask('${task}')" 
+                    ${lastAirdropTaskClaims[task] && !isNewDay(lastAirdropTaskClaims[task]) ? 'disabled' : ''}>
+                    ${lastAirdropTaskClaims[task] && !isNewDay(lastAirdropTaskClaims[task]) ? 'Claimed' : 'Complete'}
+                </button>
+            </div>
+        `).join('');
+        updateAirdropTaskButtons();
+    } catch (e) {
+        console.error("Error in displayAirdropTasks:", e);
+    }
+}
+
+function completeAirdropTask(task) {
+    try {
+        console.log(`Attempting to complete airdrop task: ${task}`);
+        if (lastAirdropTaskClaims[task] && !isNewDay(lastAirdropTaskClaims[task])) {
+            updateRewardStatus("You can only claim this airdrop task once per day!");
+            return;
+        }
+
+        airdropTasksCompleted[task] = true;
+        lastAirdropTaskClaims[task] = Date.now();
+        localStorage.setItem("airdropTasksCompleted", JSON.stringify(airdropTasksCompleted));
+        localStorage.setItem("lastAirdropTaskClaims", JSON.stringify(lastAirdropTaskClaims));
+        
+        // Reward points based on task
+        const pointsEarned = task === 'inviteFriends' ? 300 : 200; // Higher reward for inviting friends
+        currentPoints += pointsEarned;
+        updatePointsAndLevel();
+        showRewardToast(`Airdrop Task Completed! You earned ${pointsEarned} CR7SIU Points!`);
+        updateAirdropTaskButtons();
+    } catch (e) {
+        console.error("Error in completeAirdropTask:", e);
+    }
+}
+
+function updateAirdropTaskButtons() {
+    try {
+        Object.keys(airdropTasksCompleted).forEach(task => {
+            const button = document.getElementById(`airdrop-task-${task}`);
+            if (button) {
+                const canClaim = isNewDay(lastAirdropTaskClaims[task]);
+                if (canClaim) {
+                    airdropTasksCompleted[task] = false;
+                    localStorage.setItem("airdropTasksCompleted", JSON.stringify(airdropTasksCompleted));
+                }
+                button.disabled = !canClaim;
+                button.textContent = canClaim ? "Complete" : "Claimed";
+            }
+        });
+    } catch (e) {
+        console.error("Error in updateAirdropTaskButtons:", e);
+    }
+}
+
 function generateReferralLink() {
     try {
         if (username) {
@@ -1234,6 +1335,7 @@ function generateReferralLink() {
     }
 }
 
+// Enhanced checkForReferral with milestone rewards
 function checkForReferral() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -1244,6 +1346,25 @@ function checkForReferral() {
             currentPoints += 5000;
             updatePointsAndLevel();
             updateRewardStatus("Congratulations! You've earned 5000 CR7SIU Points for a successful referral!");
+
+            // Check for referral milestones
+            const referralCount = referralUsers.length;
+            if (referralCount === 5) {
+                currentPoints += 10000;
+                updatePointsAndLevel();
+                showRewardToast("Milestone Reached! 5 Referrals - Bonus 10000 CR7SIU Points!");
+            } else if (referralCount === 10) {
+                currentPoints += 20000;
+                currentTokens += 5;
+                updatePointsAndLevel();
+                showRewardToast("Milestone Reached! 10 Referrals - Bonus 20000 Points + 5 Tokens!");
+            } else if (referralCount === 20) {
+                currentPoints += 50000;
+                currentTokens += 10;
+                updatePointsAndLevel();
+                showRewardToast("Milestone Reached! 20 Referrals - Bonus 50000 Points + 10 Tokens!");
+            }
+
             displayReferrals();
         }
     } catch (e) {

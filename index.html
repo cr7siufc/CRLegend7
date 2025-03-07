@@ -49,7 +49,7 @@
     <main id="improvements" class="hidden">
         <h2>Improvements</h2>
         <p>Upgrade your football skills to earn more points!</p>
-        <div id="attributes-container"></div>
+        <div id="attributes-container" class="attributes-grid"></div>
     </main>
 
     <main id="airdrop" class="hidden">
@@ -57,6 +57,13 @@
             <h1>Airdrop</h1>
             <p>Convert CR7SIU points to CR7SIU Tokens (5000 CR7SIU Points = 1 CR7SIU Token).</p>
             <button onclick="convertToTokens()">Convert CR7SIU Points</button>
+            
+            <div class="tasks-section">
+                <h2>Airdrop Tasks</h2>
+                <p>Complete these tasks to earn extra CR7SIU Points!</p>
+                <div class="tasks-grid"></div>
+            </div>
+
             <div id="referral-earning">
                 <h2>Referral Earning</h2>
                 <p>Earn 5000 CR7SIU Points for each successful referral!</p>
@@ -116,7 +123,7 @@
                 <div class="task">
                     <h3>Complete X Task</h3>
                     <p>Tweet with our hashtag</p>
-                    <button id="task-xAccount" onclick="completeTask('x')">Complete</button>
+                    <button id="task-xAccount" onclick="completeTask('xAccount')">Complete</button>
                 </div>
             </div>
             <button id="claim-rewards-btn" onclick="claimRewards()" disabled>Claim Rewards</button>

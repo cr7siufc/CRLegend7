@@ -378,48 +378,53 @@ input:focus {
 
 #attributes-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    margin: 30px auto;
-    padding: 0 15px;
+    padding: 20px;
     max-width: 1200px;
-    justify-items: center;
-    align-items: stretch;
+    margin: 0 auto;
 }
 
 .attribute-card {
-    padding: 20px;
-    border: 3px solid #0073e6;
-    background-color: rgba(60, 60, 60, 0.85);
-    border-radius: 12px;
-    color: #fff;
-    transition: all 0.3s;
-    width: 100%;
-    max-width: 220px;
-    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    padding: 15px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    transition: transform 0.2s;
 }
 
 .attribute-card:hover {
-    border-color: #FFD700;
-    transform: scale(1.02);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
 }
 
 .attribute-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #FFD700;
+}
+
+.attribute-card p {
     font-size: 16px;
     margin: 5px 0;
 }
 
-.attribute-card p {
-    font-size: 14px;
-    margin: 5px 0;
+.attribute-card button {
+    background: linear-gradient(45deg, #444, #666);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
 }
 
-.attribute-card button {
-    width: 100%;
-    margin-top: 10px;
+.attribute-card button:hover {
+    background: #FFD700;
+    color: #000;
 }
 
 .score-container {
@@ -1016,7 +1021,7 @@ input:focus {
     }
 
     #attributes-container {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 15px;
         padding: 0 10px;
     }
@@ -1027,11 +1032,11 @@ input:focus {
     }
 
     .attribute-card h3 {
-        font-size: 14px;
+        font-size: 18px;
     }
 
     .attribute-card p {
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .attribute-card button {
@@ -1187,7 +1192,7 @@ input:focus {
     }
 
     #attributes-container {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 10px;
         padding: 0 5px;
     }
@@ -1198,11 +1203,11 @@ input:focus {
     }
 
     .attribute-card h3 {
-        font-size: 12px;
+        font-size: 16px;
     }
 
     .attribute-card p {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .attribute-card button {
@@ -1436,6 +1441,7 @@ input:focus {
         font-size: 10px;
     }
 }
+
 /* Game Container Styling */
 .game-container {
     background: rgba(0, 0, 0, 0.7);
@@ -1543,6 +1549,131 @@ input:focus {
     gap: 20px;
     padding: 20px;
 }
+
+/* Styles for Airdrop Page */
+main#airdrop {
+    padding: 30px;
+    text-align: center;
+}
+
+main#airdrop h2 {
+    font-size: 28px;
+    color: #FFD700;
+    margin-bottom: 15px;
+}
+
+main#airdrop p {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.task-card {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+.task-card:hover {
+    transform: scale(1.05);
+}
+
+.task-card h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #FFD700;
+}
+
+.task-card p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.task-card button {
+    background: linear-gradient(45deg, #444, #666);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.task-card button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.task-card button:hover:not(:disabled) {
+    background: #FFD700;
+    color: #000;
+}
+
+.referral-section {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+    color: #fff;
+}
+
+.referral-section input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #FFD700;
+    background: #333;
+    color: #fff;
+}
+
+.referral-section button {
+    background: linear-gradient(45deg, #444, #666);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.referral-section button:hover {
+    background: #FFD700;
+    color: #000;
+}
+
+.referral-section p {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+#referrals-list div {
+    font-size: 16px;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
 /* High-DPI/Retina Displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     body {
@@ -1554,7 +1685,7 @@ input:focus {
         background-size: cover;
     }
 
-    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn, footer button, #games-list button, .power-btn, #siuuu-controls button, #juggle-controls button, #trivia-controls button, .trivia-option {
+    nav button, .task button, .attribute-card button, #spin-button, #claim-rewards-btn, footer button, #games-list button, .power-btn, #siuuu-controls button, #juggle-controls button, #trivia-controls button, .trivia-option, .task-card button, .referral-section button {
         border-width: 3px;
     }
 }
