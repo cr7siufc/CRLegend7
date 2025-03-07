@@ -49,6 +49,16 @@ let ballRotation = 0; // For spinning ball animation
 let crowdCheer = true; // Toggle for crowd animation
 let celebrationTimer = 0; // For goal celebration
 
+// SIUUU Reaction Tap game state
+let siuuuGameActive = false;
+let siuuuScore = 0;
+let siuuuStreak = 0;
+let siuuuMultiplier = 1;
+let siuuuTimeLeft = 2; // 2-second timer per word
+let siuuuTimerInterval = null;
+const siuuuWords = ["Siuuu!", "Ronaldo!", "Goal!", "Miss!", "CR7!"];
+let currentSiuuuWord = "";
+
 // Show username setup if it's the user's first session
 if (!username) {
     const setupElement = document.getElementById("username-setup");
@@ -125,7 +135,10 @@ function showPage(page) {
         if (page !== "games") {
             const gameArea = document.getElementById("game-area");
             if (gameArea) gameArea.classList.add("hidden");
+            const siuuuArea = document.getElementById("siuuu-game-area");
+            if (siuuuArea) siuuuArea.classList.add("hidden");
             endPenaltyShootout();
+            endSiuuuReactionTap();
         }
     } catch (e) {
         console.error("Error in showPage:", e);
@@ -623,6 +636,128 @@ function gameLoop() {
     }
 
     requestAnimationFrame(gameLoop);
+}
+
+// SIUUU Reaction Tap Game Logic
+function startSiuuuReactionTap() {
+    try {
+        siuuuGameActive = true;
+        siuuuScore = 0;
+        siuuuStreak = 0;
+        siuuuMultiplier = 1;
+        siuuuTimeLeft = 2;
+
+        const gameArea = document.getElementById("game-area");
+        if (gameArea) gameArea.classList.add("hidden"); // Hide Penalty Shootout
+        const siuuuArea = document.getElementById("siuuu-game-area");
+        if (siuuuArea) siuuuArea.classList.remove("hidden");
+
+        updateSiuuuScore();
+        updateSiuuuStreak();
+        nextSiuuuWord();
+    } catch (e) {
+        console.error("Error in startSiuuuReactionTap:", e);
+    }
+}
+
+function handleSiuuuTap() {
+    try {
+        const wordDisplay = document.getElementById("siuuu-word-display");
+        if (!wordDisplay) return;
+
+        if (!siuuuGameActive) {
+            startSiuuuReactionTap(); // Start game on first tap
+            return;
+        }
+
+        if (currentSiuuuWord === "Siuuu!") {
+            siuuuStreak++;
+            updateSiuuuMultiplier();
+            siuuuScore += 10 * siuuuMultiplier; // Points with multiplier
+            updateSiuuuScore();
+            updateSiuuuStreak();
+            nextSiuuuWord();
+        } else {
+            endSiuuuReactionTap(); // Wrong tap ends game
+        }
+    } catch (e) {
+        console.error("Error in handleSiuuuTap:", e);
+    }
+}
+
+function nextSiuuuWord() {
+    try {
+        clearInterval(siuuuTimerInterval);
+        siuuuTimeLeft = 2;
+        updateSiuuuTimer();
+
+        const wordDisplay = document.getElementById("siuuu-word-display");
+        if (!wordDisplay) return;
+
+        currentSiuuuWord = siuuuWords[Math.floor(Math.random() * siuuuWords.length)];
+        wordDisplay.textContent = currentSiuuuWord;
+
+        siuuuTimerInterval = setInterval(() => {
+            siuuuTimeLeft -= 0.1;
+            updateSiuuuTimer();
+            if (siuuuTimeLeft <= 0) {
+                clearInterval(siuuuTimerInterval);
+                nextSiuuuWord(); // Move to next word if time runs out
+            }
+        }, 100); // Update every 0.1s
+    } catch (e) {
+        console.error("Error in nextSiuuuWord:", e);
+    }
+}
+
+function updateSiuuuScore() {
+    const scoreDisplay = document.getElementById("siuuu-score");
+    if (scoreDisplay) {
+        scoreDisplay.textContent = `Score: ${siuuuScore} CR7SIU Points`;
+    }
+}
+
+function updateSiuuuTimer() {
+    const timerDisplay = document.getElementById("siuuu-timer");
+    if (timerDisplay) {
+        timerDisplay.textContent = `Time Left: ${siuuuTimeLeft.toFixed(1)}s`;
+    }
+}
+
+function updateSiuuuStreak() {
+    const streakDisplay = document.getElementById("siuuu-streak");
+    if (streakDisplay) {
+        streakDisplay.textContent = `Streak: ${siuuuStreak} | Multiplier: ${siuuuMultiplier}x`;
+    }
+}
+
+function updateSiuuuMultiplier() {
+    if (siuuuStreak >= 10) {
+        siuuuMultiplier = 3;
+    } else if (siuuuStreak >= 5) {
+        siuuuMultiplier = 2;
+    } else {
+        siuuuMultiplier = 1;
+    }
+}
+
+function endSiuuuReactionTap() {
+    try {
+        if (siuuuGameActive) {
+            siuuuGameActive = false;
+            clearInterval(siuuuTimerInterval);
+            if (siuuuScore > 0) {
+                currentPoints += siuuuScore; // Add score to total CR7SIU Points
+                updatePointsAndLevel();
+                showRewardToast(`Game Over! You earned ${siuuuScore} CR7SIU Points with a ${siuuuStreak} streak!`);
+            }
+            const siuuuArea = document.getElementById("siuuu-game-area");
+            if (siuuuArea) siuuuArea.classList.add("hidden");
+            showPage("games"); // Return to Games menu
+        }
+    } catch (e) {
+        console.error("Error in endSiuuuReactionTap:", e);
+    }
 }
 
 function earnPoints() {

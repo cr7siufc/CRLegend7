@@ -636,6 +636,81 @@ input:focus {
     transform: scale(1.05);
 }
 
+/* Styles for SIUUU Reaction Tap Game */
+#siuuu-game-area {
+    margin: 30px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    text-align: center;
+}
+
+#siuuu-word-display {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFD700;
+    background: rgba(60, 60, 60, 0.85);
+    padding: 20px;
+    border: 3px solid #FF00FF;
+    border-radius: 10px;
+    margin: 15px auto;
+    width: 80%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 2px 2px 4px #000;
+}
+
+#siuuu-word-display:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #FFD700;
+}
+
+#siuuu-word-display.correct {
+    background: rgba(0, 255, 0, 0.5);
+    border-color: #00FF00;
+}
+
+#siuuu-word-display.wrong {
+    background: rgba(255, 0, 0, 0.5);
+    border-color: #FF0000;
+}
+
+#siuuu-timer {
+    font-size: 18px;
+    color: #FF4500;
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px #000;
+}
+
+#siuuu-score {
+    font-size: 18px;
+    color: #FFD700;
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px #000;
+}
+
+#siuuu-controls button {
+    background: linear-gradient(45deg, #FF4500, #FF6347);
+    color: #fff;
+    border: 2px solid #FFA500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#siuuu-controls button:hover {
+    background: linear-gradient(45deg, #FF6347, #FF7F50);
+    border-color: #FF00FF;
+    box-shadow: 0 0 15px #FFD700;
+    transform: scale(1.05);
+}
+
 /* Responsive Design for Desktop and Mobile */
 @media (max-width: 1024px) {
     header {
@@ -765,6 +840,20 @@ input:focus {
         padding: 6px 12px;
         font-size: 12px;
     }
+
+    #siuuu-word-display {
+        font-size: 30px;
+        padding: 15px;
+    }
+
+    #siuuu-timer, #siuuu-score {
+        font-size: 16px;
+    }
+
+    #siuuu-controls button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -893,6 +982,20 @@ input:focus {
         padding: 5px 10px;
         font-size: 11px;
     }
+
+    #siuuu-word-display {
+        font-size: 28px;
+        padding: 15px;
+    }
+
+    #siuuu-timer, #siuuu-score {
+        font-size: 16px;
+    }
+
+    #siuuu-controls button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -996,6 +1099,20 @@ input:focus {
     .power-btn {
         padding: 4px 8px;
         font-size: 10px;
+    }
+
+    #siuuu-word-display {
+        font-size: 24px;
+        padding: 10px;
+    }
+
+    #siuuu-timer, #siuuu-score {
+        font-size: 14px;
+    }
+
+    #siuuu-controls button {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
 

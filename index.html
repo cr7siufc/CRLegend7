@@ -144,6 +144,7 @@
             <p>Play exciting CR7-themed games and earn CR7SIU Points!</p>
             <div id="games-list">
                 <button onclick="startPenaltyShootout()">CR7 Penalty Shootout 🎯</button>
+                <button onclick="startSiuuuReaction()">SIUUU Reaction Tap 🔥</button>
             </div>
             <div id="game-area" class="hidden">
                 <h2>CR7 Penalty Shootout</h2>
@@ -158,6 +159,16 @@
                 <div id="game-controls">
                     <p id="game-score">Score: 0 | Streak: 0 | Multiplier: 1x</p>
                     <button onclick="endPenaltyShootout()">End Game</button>
+                </div>
+            </div>
+            <div id="siuuu-game-area" class="hidden">
+                <h2>SIUUU Reaction Tap 🔥</h2>
+                <p id="siuuu-instructions">Tap only when "Siuuu!" appears! Be quick—time’s ticking!</p>
+                <div id="siuuu-word-display">Get Ready...</div>
+                <p id="siuuu-timer">Time Left: 1.00s</p>
+                <p id="siuuu-score">Score: 0</p>
+                <div id="siuuu-controls">
+                    <button onclick="endSiuuuReaction()">End Game</button>
                 </div>
             </div>
         </section>
