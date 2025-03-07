@@ -27,7 +27,7 @@ const wheelRewards = [500, 1000, 1500, 2000, 2500, 3000];
 const wheelColors = ["#FF4500", "#32CD32", "#1E90FF", "#FFD700", "#FF00FF", "#00CED1"];
 let isSpinning = false;
 
-// Penalty Shootout game state
+// Game states
 let penaltyGameActive = false;
 let penaltyShotsTaken = 0;
 let penaltyScore = 0;
@@ -49,7 +49,6 @@ let ballRotation = 0;
 let crowdCheer = true;
 let celebrationTimer = 0;
 
-// SIUUU Reaction Tap game state
 let siuuuGameActive = false;
 let siuuuScore = 0;
 let siuuuStreak = 0;
@@ -61,14 +60,12 @@ const siuuuWords = ["Siuuu!", "Ronaldo!", "Goal!", "Miss!", "CR7!"];
 let currentSiuuuWord = "";
 let isPaused = false;
 
-// Tap-to-Juggle Challenge game state
 let juggleGameActive = false;
 let juggleCount = 0;
 let juggleTimer = null;
-let juggleWindow = 1000; // Initial time window in ms
+let juggleWindow = 1000;
 let lastJuggleTime = 0;
 
-// CR7 Trivia Quiz game state
 let triviaGameActive = false;
 let triviaScore = 0;
 let triviaStreak = 0;
@@ -165,21 +162,78 @@ function showPage(page) {
             drawWheel();
             updateSpinTimer();
         }
-        // Reset all game states when navigating away from the games page
-        if (page !== "games") {
-            endPenaltyShootout();
-            endSiuuuReactionTap();
-            endTapToJuggle();
-            endCr7Trivia();
+        if (page === "games") {
+            initializeGameContainers();
         }
     } catch (e) {
         console.error("Error in showPage:", e);
     }
 }
 
+function initializeGameContainers() {
+    try {
+        const gamesContainer = document.getElementById("games-container");
+        if (!gamesContainer) {
+            console.error("games-container not found");
+            return;
+        }
+
+        gamesContainer.innerHTML = `
+            <div class="game-container" id="penalty-container">
+                <h2>CR7 Penalty Shootout</h2>
+                <p>Test your shooting skills with Ronaldo precision!</p>
+                <canvas id="penaltyCanvas" width="400" height="300"></canvas>
+                <div id="penalty-controls">
+                    <button id="start-penalty-btn" onclick="startPenaltyShootout()">Start</button>
+                    <button id="end-penalty-btn" onclick="endPenaltyShootout()" disabled>End</button>
+                    <div id="game-score">Score: 0 | Streak: 0 | Multiplier: 1x</div>
+                </div>
+            </div>
+            <div class="game-container" id="siuuu-container">
+                <h2>SIUUU Reaction Tap</h2>
+                <p>Tap "Siuuu!" as fast as you can!</p>
+                <div id="siuuu-word-display">---</div>
+                <div id="siuuu-timer">Time Left: 2.0s</div>
+                <div id="timer-progress-bar" style="width: 100%;"></div>
+                <div id="siuuu-score">Score: 0 CR7SIU Points</div>
+                <div id="siuuu-streak">Streak: 0 | Multiplier: 1x</div>
+                <div id="siuuu-high-score">High Score: ${siuuuHighScore} CR7SIU Points</div>
+                <button id="start-siuuu-btn" onclick="startSiuuuReactionTap()">Start</button>
+                <button id="end-siuuu-btn" onclick="endSiuuuReactionTap()" disabled>End</button>
+                <button id="pause-siuuu-btn" onclick="pauseSiuuuGame()" disabled>Pause</button>
+            </div>
+            <div class="game-container" id="juggle-container">
+                <h2>Tap-to-Juggle Challenge</h2>
+                <p>Keep the ball in the air with rapid taps!</p>
+                <div id="juggle-counter">Juggles: 0 ⚽</div>
+                <button id="start-juggle-btn" onclick="startTapToJuggle()">Start</button>
+                <button id="end-juggle-btn" onclick="endTapToJuggle()" disabled>End</button>
+            </div>
+            <div class="game-container" id="trivia-container">
+                <h2>CR7 Trivia Quiz</h2>
+                <p>Answer football trivia to earn points!</p>
+                <div id="trivia-question"></div>
+                <div id="trivia-options"></div>
+                <div id="trivia-score">Score: 0 CR7SIU Points | Streak: 0</div>
+                <button id="start-trivia-btn" onclick="startCr7Trivia()">Start</button>
+                <button id="end-trivia-btn" onclick="endCr7Trivia()" disabled>End</button>
+            </div>
+        `;
+
+        // Add event listeners for game interactions
+        document.getElementById("penaltyCanvas").addEventListener("click", handleGoalTap);
+        document.getElementById("penaltyCanvas").addEventListener("touchstart", handleGoalTap);
+        document.getElementById("siuuu-word-display").addEventListener("click", handleSiuuuTap);
+        document.getElementById("juggle-counter").addEventListener("click", handleJuggleTap);
+    } catch (e) {
+        console.error("Error in initializeGameContainers:", e);
+    }
+}
+
 // CR7 Penalty Shootout Game Logic
 function startPenaltyShootout() {
     try {
+        if (penaltyGameActive) return;
         penaltyGameActive = true;
         penaltyShotsTaken = 0;
         penaltyScore = 0;
@@ -204,15 +258,8 @@ function startPenaltyShootout() {
         crowdCheer = true;
         celebrationTimer = 0;
 
-        document.getElementById("game-area").classList.remove("hidden");
-        document.getElementById("siuuu-game-area").classList.add("hidden");
-        document.getElementById("juggle-game-area").classList.add("hidden");
-        document.getElementById("trivia-game-area").classList.add("hidden");
-
-        const canvas = document.getElementById("penaltyCanvas");
-        canvas.addEventListener("click", handleGoalTap);
-        canvas.addEventListener("touchstart", handleGoalTap);
-
+        document.getElementById("start-penalty-btn").disabled = true;
+        document.getElementById("end-penalty-btn").disabled = false;
         updateGameScore();
         gameLoop();
     } catch (e) {
@@ -222,28 +269,16 @@ function startPenaltyShootout() {
 
 function endPenaltyShootout() {
     try {
-        if (penaltyGameActive) {
-            penaltyGameActive = false;
-            const canvas = document.getElementById("penaltyCanvas");
-            if (canvas) {
-                canvas.removeEventListener("click", handleGoalTap);
-                canvas.removeEventListener("touchstart", handleGoalTap);
-            }
-            if (penaltyScore > 0) {
-                currentPoints += penaltyScore;
-                updatePointsAndLevel();
-                showRewardToast(`Game Over! You earned ${penaltyScore} CR7SIU Points!`);
-            }
-            const gameArea = document.getElementById("game-area");
-            if (gameArea) {
-                gameArea.classList.add("game-over");
-                setTimeout(() => {
-                    gameArea.classList.add("hidden");
-                    gameArea.classList.remove("game-over");
-                    showPage("games");
-                }, 1000);
-            }
+        if (!penaltyGameActive) return;
+        penaltyGameActive = false;
+        if (penaltyScore > 0) {
+            currentPoints += penaltyScore;
+            updatePointsAndLevel();
+            showRewardToast(`Game Over! You earned ${penaltyScore} CR7SIU Points!`);
         }
+        document.getElementById("start-penalty-btn").disabled = false;
+        document.getElementById("end-penalty-btn").disabled = true;
+        updateGameScore();
     } catch (e) {
         console.error("Error in endPenaltyShootout:", e);
     }
@@ -654,19 +689,17 @@ function gameLoop() {
 // SIUUU Reaction Tap Game Logic
 function startSiuuuReactionTap() {
     try {
-        console.log("Starting SIUUU Reaction Tap");
+        if (siuuuGameActive) return;
         siuuuGameActive = true;
         siuuuScore = 0;
         siuuuStreak = 0;
         siuuuMultiplier = 1;
-        siuuuTimeLeft = Math.max(0.5, 2 - (playerLevel - 1) * 0.15); // Difficulty scales with level
+        siuuuTimeLeft = Math.max(0.5, 2 - (playerLevel - 1) * 0.15);
         isPaused = false;
 
-        document.getElementById("game-area").classList.add("hidden");
-        document.getElementById("siuuu-game-area").classList.remove("hidden");
-        document.getElementById("juggle-game-area").classList.add("hidden");
-        document.getElementById("trivia-game-area").classList.add("hidden");
-
+        document.getElementById("start-siuuu-btn").disabled = true;
+        document.getElementById("end-siuuu-btn").disabled = false;
+        document.getElementById("pause-siuuu-btn").disabled = false;
         updateSiuuuScore();
         updateSiuuuStreak();
         updateSiuuuHighScore();
@@ -678,19 +711,13 @@ function startSiuuuReactionTap() {
 
 function handleSiuuuTap() {
     try {
-        console.log("Handling SIUUU tap, current word:", currentSiuuuWord);
         const wordDisplay = document.getElementById("siuuu-word-display");
         if (!wordDisplay) {
             console.error("siuuu-word-display not found");
             return;
         }
 
-        if (!siuuuGameActive) {
-            startSiuuuReactionTap();
-            return;
-        }
-
-        if (isPaused) return;
+        if (!siuuuGameActive || isPaused) return;
 
         if (currentSiuuuWord === "Siuuu!") {
             siuuuStreak++;
@@ -718,7 +745,6 @@ function handleSiuuuTap() {
 
 function nextSiuuuWord() {
     try {
-        console.log("Next SIUUU word triggered");
         clearInterval(siuuuTimerInterval);
         siuuuTimeLeft = Math.max(0.5, 2 - (playerLevel - 1) * 0.15);
         updateSiuuuTimer();
@@ -733,7 +759,7 @@ function nextSiuuuWord() {
         wordDisplay.textContent = currentSiuuuWord;
 
         siuuuTimerInterval = setInterval(() => {
-            if (!isPaused) {
+            if (!isPaused && siuuuGameActive) {
                 siuuuTimeLeft -= 0.1;
                 updateSiuuuTimer();
                 if (siuuuTimeLeft <= 0) {
@@ -783,30 +809,22 @@ function updateSiuuuHighScore() {
 
 function endSiuuuReactionTap() {
     try {
-        console.log("Ending SIUUU Reaction Tap");
-        if (siuuuGameActive) {
-            siuuuGameActive = false;
-            clearInterval(siuuuTimerInterval);
-            if (siuuuScore > siuuuHighScore) {
-                siuuuHighScore = siuuuScore;
-                localStorage.setItem("siuuuHighScore", siuuuHighScore);
-                updateSiuuuHighScore();
-            }
-            if (siuuuScore > 0) {
-                currentPoints += siuuuScore;
-                updatePointsAndLevel();
-                showRewardToast(`Game Over! You earned ${siuuuScore} CR7SIU Points with a ${siuuuStreak} streak!`);
-            }
-            const siuuuArea = document.getElementById("siuuu-game-area");
-            if (siuuuArea) {
-                siuuuArea.classList.add("game-over");
-                setTimeout(() => {
-                    siuuuArea.classList.add("hidden");
-                    siuuuArea.classList.remove("game-over");
-                    showPage("games");
-                }, 1000);
-            } else console.warn("siuuu-game-area not found when ending");
+        if (!siuuuGameActive) return;
+        siuuuGameActive = false;
+        clearInterval(siuuuTimerInterval);
+        if (siuuuScore > siuuuHighScore) {
+            siuuuHighScore = siuuuScore;
+            localStorage.setItem("siuuuHighScore", siuuuHighScore);
+            updateSiuuuHighScore();
         }
+        if (siuuuScore > 0) {
+            currentPoints += siuuuScore;
+            updatePointsAndLevel();
+            showRewardToast(`Game Over! You earned ${siuuuScore} CR7SIU Points with a ${siuuuStreak} streak!`);
+        }
+        document.getElementById("start-siuuu-btn").disabled = false;
+        document.getElementById("end-siuuu-btn").disabled = true;
+        document.getElementById("pause-siuuu-btn").disabled = true;
     } catch (e) {
         console.error("Error in endSiuuuReactionTap:", e);
     }
@@ -833,17 +851,14 @@ function pauseSiuuuGame() {
 // Tap-to-Juggle Challenge Logic
 function startTapToJuggle() {
     try {
-        console.log("Starting Tap-to-Juggle Challenge");
+        if (juggleGameActive) return;
         juggleGameActive = true;
         juggleCount = 0;
         juggleWindow = 1000;
         lastJuggleTime = Date.now();
 
-        document.getElementById("juggle-game-area").classList.remove("hidden");
-        document.getElementById("game-area").classList.add("hidden");
-        document.getElementById("siuuu-game-area").classList.add("hidden");
-        document.getElementById("trivia-game-area").classList.add("hidden");
-
+        document.getElementById("start-juggle-btn").disabled = true;
+        document.getElementById("end-juggle-btn").disabled = false;
         updateJuggleCounter();
     } catch (e) {
         console.error("Error in startTapToJuggle:", e);
@@ -857,7 +872,7 @@ function handleJuggleTap() {
             const currentTime = Date.now();
             if (currentTime - lastJuggleTime <= juggleWindow) {
                 juggleCount++;
-                juggleWindow = Math.max(500, juggleWindow - 50); // Increase difficulty
+                juggleWindow = Math.max(500, juggleWindow - 50);
                 lastJuggleTime = currentTime;
                 animateJuggle();
                 updateJuggleCounter();
@@ -885,24 +900,16 @@ function animateJuggle() {
 
 function endTapToJuggle() {
     try {
-        if (juggleGameActive) {
-            juggleGameActive = false;
-            const pointsEarned = juggleCount * 5;
-            if (pointsEarned > 0) {
-                currentPoints += pointsEarned;
-                updatePointsAndLevel();
-                showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points with ${juggleCount} juggles!`);
-            }
-            const juggleArea = document.getElementById("juggle-game-area");
-            if (juggleArea) {
-                juggleArea.classList.add("game-over");
-                setTimeout(() => {
-                    juggleArea.classList.add("hidden");
-                    juggleArea.classList.remove("game-over");
-                    showPage("games");
-                }, 1000);
-            }
+        if (!juggleGameActive) return;
+        juggleGameActive = false;
+        const pointsEarned = juggleCount * 5;
+        if (pointsEarned > 0) {
+            currentPoints += pointsEarned;
+            updatePointsAndLevel();
+            showRewardToast(`Game Over! You earned ${pointsEarned} CR7SIU Points with ${juggleCount} juggles!`);
         }
+        document.getElementById("start-juggle-btn").disabled = false;
+        document.getElementById("end-juggle-btn").disabled = true;
     } catch (e) {
         console.error("Error in endTapToJuggle:", e);
     }
@@ -911,18 +918,15 @@ function endTapToJuggle() {
 // CR7 Trivia Quiz Logic
 function startCr7Trivia() {
     try {
-        console.log("Starting CR7 Trivia Quiz");
+        if (triviaGameActive) return;
         triviaGameActive = true;
         triviaScore = 0;
         triviaStreak = 0;
         currentQuestionIndex = 0;
         selectedAnswer = null;
 
-        document.getElementById("trivia-game-area").classList.remove("hidden");
-        document.getElementById("game-area").classList.add("hidden");
-        document.getElementById("siuuu-game-area").classList.add("hidden");
-        document.getElementById("juggle-game-area").classList.add("hidden");
-
+        document.getElementById("start-trivia-btn").disabled = true;
+        document.getElementById("end-trivia-btn").disabled = false;
         nextTriviaQuestion();
     } catch (e) {
         console.error("Error in startCr7Trivia:", e);
@@ -944,7 +948,8 @@ function nextTriviaQuestion() {
             optionsDisplay.innerHTML = question.options.map((opt, index) => `
                 <button class="trivia-option" onclick="selectTriviaAnswer('${opt}', '${question.answer}')">${opt}</button>
             `).join('');
-            document.getElementById("next-trivia-btn").disabled = true;
+            document.getElementById("trivia-options").querySelectorAll("button").forEach(btn => btn.disabled = false);
+            document.getElementById("trivia-question").classList.remove("correct-answer", "incorrect-answer");
         }
     } catch (e) {
         console.error("Error in nextTriviaQuestion:", e);
@@ -962,18 +967,22 @@ function selectTriviaAnswer(selected, correct) {
             triviaScore += 20 * (triviaStreak >= 5 ? 2 : 1);
             const questionDisplay = document.getElementById("trivia-question");
             if (questionDisplay) questionDisplay.classList.add("correct-answer");
-            setTimeout(() => questionDisplay.classList.remove("correct-answer"), 300);
+            setTimeout(() => {
+                questionDisplay.classList.remove("correct-answer");
+                currentQuestionIndex++;
+                nextTriviaQuestion();
+            }, 300);
         } else {
             triviaStreak = 0;
             const questionDisplay = document.getElementById("trivia-question");
             if (questionDisplay) questionDisplay.classList.add("incorrect-answer");
-            setTimeout(() => questionDisplay.classList.remove("incorrect-answer"), 300);
+            setTimeout(() => {
+                questionDisplay.classList.remove("incorrect-answer");
+                endCr7Trivia();
+            }, 300);
         }
 
         updateTriviaScore();
-        document.getElementById("next-trivia-btn").disabled = false;
-        currentQuestionIndex++;
-        nextTriviaQuestion();
     } catch (e) {
         console.error("Error in selectTriviaAnswer:", e);
     }
@@ -986,23 +995,17 @@ function updateTriviaScore() {
 
 function endCr7Trivia() {
     try {
-        if (triviaGameActive) {
-            triviaGameActive = false;
-            if (triviaScore > 0) {
-                currentPoints += triviaScore;
-                updatePointsAndLevel();
-                showRewardToast(`Quiz Over! You earned ${triviaScore} CR7SIU Points with a ${triviaStreak} streak!`);
-            }
-            const triviaArea = document.getElementById("trivia-game-area");
-            if (triviaArea) {
-                triviaArea.classList.add("game-over");
-                setTimeout(() => {
-                    triviaArea.classList.add("hidden");
-                    triviaArea.classList.remove("game-over");
-                    showPage("games");
-                }, 1000);
-            }
+        if (!triviaGameActive) return;
+        triviaGameActive = false;
+        if (triviaScore > 0) {
+            currentPoints += triviaScore;
+            updatePointsAndLevel();
+            showRewardToast(`Quiz Over! You earned ${triviaScore} CR7SIU Points with a ${triviaStreak} streak!`);
         }
+        document.getElementById("start-trivia-btn").disabled = false;
+        document.getElementById("end-trivia-btn").disabled = true;
+        document.getElementById("trivia-question").textContent = "";
+        document.getElementById("trivia-options").innerHTML = "";
     } catch (e) {
         console.error("Error in endCr7Trivia:", e);
     }
@@ -1037,7 +1040,7 @@ function updatePointsAndLevel() {
 
 function updateLevel() {
     try {
-        playerLevel = Math.floor(currentPoints / 1000) + 1; // Adjusted to 1000 points per level
+        playerLevel = Math.floor(currentPoints / 1000) + 1;
         const playerLevelDisplay = document.getElementById("player-level");
         if (playerLevelDisplay) playerLevelDisplay.textContent = playerLevel;
         localStorage.setItem("level", playerLevel);
@@ -1099,7 +1102,7 @@ function completeTask(task) {
         lastTaskClaims[task] = Date.now();
         localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
         localStorage.setItem("lastTaskClaims", JSON.stringify(lastTaskClaims));
-        currentPoints += 100; // Adjusted to 100 points per task
+        currentPoints += 100;
         updatePointsAndLevel();
         showRewardToast(`Task Completed! You earned 100 CR7SIU Points!`);
         updateTaskButtons();
